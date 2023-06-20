@@ -1,10 +1,8 @@
-import math
-import sys
 from typing import List
 import svg
 
 
-def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
+def draw_exon(exons: List[int], scale:int = 1, canvas_width=1000) -> svg.SVG:
     elements = list()
 
     # Default positions
@@ -17,9 +15,12 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
     start_frame = 0
 
     for exon in exons:
+        # If we overflow the width, go to a new line
+        if x_position + exon + height > canvas_width/scale:
+            x_position = 10
+            y_position += 2*height
 
         end_frame = (start_frame + exon) % 3
-        print(f"exo_size = {exon}, start_frame = {start_frame}, end_frame = {end_frame}", file=sys.stderr)
 
         points: List[float] = list()
 
@@ -75,7 +76,14 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
                 x_position, y_position + height,
                 x_position - 0.5*height, y_position + 0.5*height
             ]
-
+        elif start_frame == 2 and end_frame == 0:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                x_position + exon, y_position + height,
+                x_position, y_position + height,
+                x_position + 0.5* height, y_position + 0.5*height
+            ]
         elif start_frame == 2 and end_frame == 1:
             points = [
                 x_position, y_position,
@@ -86,6 +94,17 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
                 # Indentation at the start of the exon
                 x_position, y_position + height,
                 x_position + 0.5*height, y_position + 0.5*height,
+            ]
+        elif start_frame == 2 and end_frame == 2:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                # Pointy bit at the end of the exon
+                x_position + exon + 0.5*height, y_position + 0.5*height,
+                x_position + exon, y_position + height,
+                x_position, y_position + height,
+                # Notch at the start of the exon
+                x_position + 0.5* height, y_position + 0.5*height,
             ]
         else:
             continue
@@ -100,4 +119,4 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
 
         start_frame = end_frame
 
-    return svg.SVG(width=1000, height=700, elements=elements)
+    return svg.SVG(width=canvas_width, height=700, elements=elements)
