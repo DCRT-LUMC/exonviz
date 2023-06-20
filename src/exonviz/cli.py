@@ -10,7 +10,7 @@ from exonviz.exon import draw_exon
 def main() -> None:
     parser = argparse.ArgumentParser(description="Description of command.")
     args = parser.parse_args()
-    plot = draw_exon([21, 22, 23, 23])#, 21, 23])
+    plot = draw_exon([21, 22, 23, 23, 23, 21, 22])#, 21, 23])
     print(plot)
 
 

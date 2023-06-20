@@ -31,7 +31,7 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
                 x_position, y_position + height  # bottomleft
             ]
         elif start_frame == 0 and end_frame == 1:
-            points = [ 
+            points = [
                 x_position, y_position,
                 x_position+exon, y_position,
                 x_position+exon-0.5*height, y_position + 0.5*height,
@@ -54,6 +54,39 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
                 x_position, y_position + height,
                 x_position - 0.5*height, y_position + 0.5*height,
             ]
+        elif start_frame == 1 and end_frame == 1:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                # Notch at the end of the exon
+                x_position + exon - 0.5*height, y_position + 0.5*height,
+                x_position + exon, y_position + height,
+                x_position, y_position + height,
+                # Pointy bit at the start of the exon
+                x_position - 0.5*height, y_position + 0.5*height,
+            ]
+        elif start_frame == 1 and end_frame == 2:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                # Pointy bit at the end of the exon
+                x_position + exon + 0.5*height, y_position + 0.5*height,
+                x_position + exon, y_position + height,
+                x_position, y_position + height,
+                x_position - 0.5*height, y_position + 0.5*height
+            ]
+
+        elif start_frame == 2 and end_frame == 1:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                # Pointy bit at the end of the exon
+                x_position + exon-0.5*height, y_position + 0.5*height,
+                x_position + exon, y_position + height,
+                # Indentation at the start of the exon
+                x_position, y_position + height,
+                x_position + 0.5*height, y_position + 0.5*height,
+            ]
         else:
             continue
             raise NotImplementedError()
@@ -68,4 +101,3 @@ def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
         start_frame = end_frame
 
     return svg.SVG(width=1000, height=700, elements=elements)
-            
