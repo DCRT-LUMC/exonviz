@@ -4,7 +4,7 @@ from typing import List
 import svg
 
 
-def draw_exon(exons: List[int], scale:int = 10) -> svg.SVG:
+def draw_exon(exons: List[int], scale:int = 5) -> svg.SVG:
     elements = list()
 
     # Default positions
@@ -19,6 +19,9 @@ def draw_exon(exons: List[int], scale:int = 10) -> svg.SVG:
     for exon in exons:
 
         end_frame = (start_frame + exon) % 3
+        print(f"exo_size = {exon}, start_frame = {start_frame}, end_frame = {end_frame}", file=sys.stderr)
+
+        points: List[float] = list()
 
         if start_frame == 0 and end_frame == 0:
             points = [
@@ -27,7 +30,7 @@ def draw_exon(exons: List[int], scale:int = 10) -> svg.SVG:
                 x_position+exon, y_position + height, #  bottom right
                 x_position, y_position + height  # bottomleft
             ]
-        elif start_frame == 0 and end_frame == 2:
+        elif start_frame == 0 and end_frame == 1:
             points = [ 
                 x_position, y_position,
                 x_position+exon, y_position,
@@ -35,8 +38,17 @@ def draw_exon(exons: List[int], scale:int = 10) -> svg.SVG:
                 x_position+exon, y_position+height,
                 x_position, y_position + height,
             ]
+        elif start_frame == 1 and end_frame == 0:
+            points = [
+                x_position, y_position,
+                x_position + exon, y_position,
+                x_position + exon, y_position + height,
+                x_position, y_position + height,
+                x_position - 0.5*height, y_position + 0.5*height,
+            ]
+            print('hi', file=sys.stderr)
+
         else:
-            print(f"start_frame = {start_frame}, end_frame = {end_frame}", file=sys.stderr)
             continue
             raise NotImplementedError()
 
