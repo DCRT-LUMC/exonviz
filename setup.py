@@ -24,14 +24,14 @@ def read(*names, **kwargs):
 
 
 setup(
-    name='python-project',
+    name='exonviz',
     version='0.0.1',
     license='MIT',
-    description='An example package. Generated with cookiecutter-pylibrary.',
+    description='Visualise exons and their reading frames',
     long_description='Long description for your python-project',
     author='Redmar van den Berg',
     author_email='Redmar@ubuntu.com',
-    url='https://github.com/redmar-van-den-berg/python-project',
+    url='https://github.com/redmar-van-den-berg/exonviz',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
