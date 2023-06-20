@@ -65,6 +65,7 @@ setup(
     ],
     python_requires='>=3.7',
     install_requires=[
+        'svg.py==1.4.2',
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
@@ -77,7 +78,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'python-project=python_project.cli:main',
+            'exonviz=exonviz.cli:main',
         ]
     },
 )
