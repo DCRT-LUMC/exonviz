@@ -24,86 +24,90 @@ def draw_exon(exons: List[int], scale: int = 1, canvas_width: int = 1000) -> svg
 
         points: List[float] = list()
 
+        top_left = (x_position, y_position)
+        top_right = (x_position + exon, y_position)
+        bottom_right = (x_position + exon, y_position + height)
+        bottom_left = (x_position, y_position + height)
         # fmt: off
         if start_frame == 0 and end_frame == 0:
             points = [
-                x_position, y_position, #  topleft
-                x_position+exon, y_position, #  topright
-                x_position+exon, y_position + height, #  bottom right
-                x_position, y_position + height  # bottomleft
+                *top_left,
+                *top_right,
+                *bottom_right,
+                *bottom_left
             ]
         elif start_frame == 0 and end_frame == 1:
             points = [
-                x_position, y_position,
-                x_position+exon, y_position,
+                *top_left,
+                *top_right,
                 x_position+exon-0.5*height, y_position + 0.5*height,
-                x_position+exon, y_position+height,
-                x_position, y_position + height,
+                *bottom_right,
+                *bottom_left
             ]
         elif start_frame == 0 and end_frame == 2:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
+                *top_left,
+                *top_right,
                 x_position + exon + 0.5*height, y_position + 0.5*height,
-                x_position + exon, y_position + height,
-                x_position, y_position + height
+                *bottom_right,
+                *bottom_left
             ]
         elif start_frame == 1 and end_frame == 0:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
-                x_position + exon, y_position + height,
-                x_position, y_position + height,
+                *top_left,
+                *top_right,
+                *bottom_right,
+                *bottom_left,
                 x_position - 0.5*height, y_position + 0.5*height,
             ]
         elif start_frame == 1 and end_frame == 1:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
+                *top_left,
+                *top_right,
                 # Notch at the end of the exon
                 x_position + exon - 0.5*height, y_position + 0.5*height,
-                x_position + exon, y_position + height,
-                x_position, y_position + height,
+                *bottom_right,
+                *bottom_left,
                 # Pointy bit at the start of the exon
                 x_position - 0.5*height, y_position + 0.5*height,
             ]
         elif start_frame == 1 and end_frame == 2:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
+                *top_left,
+                *top_right,
                 # Pointy bit at the end of the exon
                 x_position + exon + 0.5*height, y_position + 0.5*height,
-                x_position + exon, y_position + height,
-                x_position, y_position + height,
+                *bottom_right,
+                *bottom_left,
                 x_position - 0.5*height, y_position + 0.5*height
             ]
         elif start_frame == 2 and end_frame == 0:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
-                x_position + exon, y_position + height,
-                x_position, y_position + height,
+                *top_left,
+                *top_right,
+                *bottom_right,
+                *bottom_left,
                 x_position + 0.5* height, y_position + 0.5*height
             ]
         elif start_frame == 2 and end_frame == 1:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
+                *top_left,
+                *top_right,
                 # Pointy bit at the end of the exon
                 x_position + exon-0.5*height, y_position + 0.5*height,
-                x_position + exon, y_position + height,
+                *bottom_right,
+                *bottom_left,
                 # Indentation at the start of the exon
-                x_position, y_position + height,
                 x_position + 0.5*height, y_position + 0.5*height,
             ]
         elif start_frame == 2 and end_frame == 2:
             points = [
-                x_position, y_position,
-                x_position + exon, y_position,
+                *top_left,
+                *top_right,
                 # Pointy bit at the end of the exon
                 x_position + exon + 0.5*height, y_position + 0.5*height,
-                x_position + exon, y_position + height,
-                x_position, y_position + height,
+                *bottom_right,
+                *bottom_left,
                 # Notch at the start of the exon
                 x_position + 0.5* height, y_position + 0.5*height,
             ]
