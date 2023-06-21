@@ -2,7 +2,7 @@ from typing import List
 import svg
 
 
-def draw_exon(exons: List[int], scale:int = 1, canvas_width=1000) -> svg.SVG:
+def draw_exon(exons: List[int], scale: int = 1, canvas_width=1000) -> svg.SVG:
     elements = list()
 
     # Default positions
@@ -16,14 +16,15 @@ def draw_exon(exons: List[int], scale:int = 1, canvas_width=1000) -> svg.SVG:
 
     for exon in exons:
         # If we overflow the width, go to a new line
-        if x_position + exon + height > canvas_width/scale:
+        if x_position + exon + height > canvas_width / scale:
             x_position = 10
-            y_position += 2*height
+            y_position += 2 * height
 
         end_frame = (start_frame + exon) % 3
 
         points: List[float] = list()
 
+        # fmt: off
         if start_frame == 0 and end_frame == 0:
             points = [
                 x_position, y_position, #  topleft
@@ -106,9 +107,7 @@ def draw_exon(exons: List[int], scale:int = 1, canvas_width=1000) -> svg.SVG:
                 # Notch at the start of the exon
                 x_position + 0.5* height, y_position + 0.5*height,
             ]
-        else:
-            continue
-            raise NotImplementedError()
+        #fmt: off
 
         x_position = x_position + exon + exon_gap
 
