@@ -28,7 +28,7 @@ setup(
     version='0.0.1',
     license='MIT',
     description='Visualise exons and their reading frames',
-    long_description='Long description for your python-project',
+    long_description='',
     author='Redmar van den Berg',
     author_email='Redmar@ubuntu.com',
     url='https://github.com/redmar-van-den-berg/exonviz',
@@ -45,7 +45,6 @@ setup(
         'Operating System :: Unix',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -57,14 +56,15 @@ setup(
         'Topic :: Utilities',
     ],
     project_urls={
-        'Changelog': 'https://github.com/redmar-van-den-berg/python-project/blob/master/CHANGELOG.rst',
-        'Issue Tracker': 'https://github.com/redmar-van-den-berg/python-project/issues',
+        'Changelog': 'https://github.com/redmar-van-den-berg/exonviz/blob/master/CHANGELOG.rst',
+        'Issue Tracker': 'https://github.com/redmar-van-den-berg/exonviz/issues',
     },
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=[
+        'svg.py',
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
