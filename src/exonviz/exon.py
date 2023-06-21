@@ -7,7 +7,7 @@ def draw_exon(exons: List[int], scale: int = 1, canvas_width: int = 1000) -> svg
 
     # Default positions
     y_position = 10
-    height = 10
+    height = 20
     exon_gap = 5
 
     # This x position will be updated
@@ -118,7 +118,8 @@ def draw_exon(exons: List[int], scale: int = 1, canvas_width: int = 1000) -> svg
         # Scale the points
         points = [x*scale for x in points]
 
-        elements.append(svg.Polygon(points = points, stroke='green', stroke_width=1)) # type: ignore
+        fill = "green" if start_frame == end_frame else "black"
+        elements.append(svg.Polygon(points = points, stroke='green', fill=fill, stroke_width=1)) # type: ignore
 
         start_frame = end_frame
 
