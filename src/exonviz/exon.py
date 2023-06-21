@@ -2,7 +2,7 @@ from typing import List
 import svg
 
 
-def draw_exon(exons: List[int], scale: int = 1, canvas_width=1000) -> svg.SVG:
+def draw_exon(exons: List[int], scale: int = 1, canvas_width: int = 1000) -> svg.SVG:
     elements = list()
 
     # Default positions
@@ -114,8 +114,8 @@ def draw_exon(exons: List[int], scale: int = 1, canvas_width=1000) -> svg.SVG:
         # Scale the points
         points = [x*scale for x in points]
 
-        elements.append(svg.Polygon(points = points, stroke='green', stroke_width=1))
+        elements.append(svg.Polygon(points = points, stroke='green', stroke_width=1)) # type: ignore
 
         start_frame = end_frame
 
-    return svg.SVG(width=canvas_width, height=700, elements=elements)
+    return svg.SVG(width=canvas_width, height=700, elements=elements)  # type: ignore
