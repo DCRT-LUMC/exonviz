@@ -2,6 +2,7 @@ from typing import List
 
 from exonviz.exon import draw_exon
 from exonviz.exon import shift
+from exonviz.exon import Exon
 
 
 # Describe the expected output for a given start and end frame
@@ -28,9 +29,8 @@ targets = {
 
 def test_in_frame() -> None:
     """ "This draws a square, like this: |||||"""
+    exon = Exon("exon-1", 21, 0)
     height = 10
-    size = 21
-    start_frame = 0
 
     # fmt: off
     target = [
@@ -42,14 +42,13 @@ def test_in_frame() -> None:
     ]
     # fmt: on
 
-    assert draw_exon(height, size, start_frame) == target
+    assert draw_exon(exon, height) == target
 
 
 def test_end_frame_1() -> None:
     """Looks like this: ||||>"""
+    exon = Exon("exon-1", 22, 0)
     height = 10
-    size = 22
-    start_frame = 0
 
     # fmt: off
     target = [
@@ -61,7 +60,7 @@ def test_end_frame_1() -> None:
         0, 0
     ]
 
-    assert draw_exon(height, size, start_frame) == target
+    assert draw_exon(exon, height) == target
 
 
 def test_no_shift() -> None:

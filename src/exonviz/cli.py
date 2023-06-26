@@ -4,7 +4,21 @@ without executing side effects
 """
 
 import argparse
-from exonviz.exon import draw_exons
+from typing import List
+from exonviz.exon import draw_exons, Exon
+
+
+def fetch_exons(sizes: List[int]) -> List[Exon]:
+    """Make or fetch the requested exons"""
+    start_frame: int = 0
+    exons: List[Exon] = list()
+
+    for i, size in enumerate(sizes):
+        E = Exon(f"exon-{i+1}", size, start_frame)
+        start_frame = E.end_frame
+        exons.append(E)
+
+    return exons
 
 
 def main() -> None:
@@ -12,7 +26,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Description of command.")
     parser.add_argument("--exon-sizes", type=int, nargs="+", default=example_exons)
     args = parser.parse_args()
-    plot = draw_exons(args.exon_sizes)
+
+    exons = fetch_exons(args.exon_sizes)
+    plot = draw_exons(exons)
     print(plot)
 
 
