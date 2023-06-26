@@ -1,6 +1,16 @@
 from typing import List, Union
 import svg
+from dataclasses import dataclass, field
 
+@dataclass
+class Exon():
+    name: str
+    size: int
+    start_frame: int
+    end_frame: int =  field(init=False)
+
+    def __post_init__(self) -> None:
+        self.end_frame = (self.start_frame + self.size) % 3
 
 def shift(
     points: List[Union[float, int]], x_offset: int, y_offset: int
