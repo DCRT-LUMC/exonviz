@@ -3,6 +3,7 @@ from exonviz.exon import shift
 
 
 # Describe the expected output for a given start and end frame
+# fmt: off
 targets = {
     "frame0_0": [
         0, 0,
@@ -20,9 +21,11 @@ targets = {
         0, 0
     ]
 }
+# fmt: on
+
 
 def test_in_frame() -> None:
-    """"This draws a square, like this: |||||"""
+    """ "This draws a square, like this: |||||"""
     height = 10
     size = 21
     start_frame = 0
@@ -38,6 +41,7 @@ def test_in_frame() -> None:
     # fmt: on
 
     assert draw_exon(height, size, start_frame) == target
+
 
 def test_end_frame_1() -> None:
     """Looks like this: ||||<"""
