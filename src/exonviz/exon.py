@@ -3,7 +3,7 @@ import svg
 
 
 def shift(points: List[Union[float,int]], x_offset: int, y_offset:int) -> List[Union[float,int]]:
-    """ Shift the positions, modifying in place"""
+    """ Shift the x- and y position by the supplied offsets"""
     return [x+y_offset if i%2 else x+x_offset for i,x in enumerate(points)]
 
 
