@@ -4,7 +4,7 @@ without executing side effects
 """
 
 import argparse
-from exonviz.exon import draw_exon
+from exonviz.exon import draw_exons
 
 
 def main() -> None:
@@ -12,7 +12,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Description of command.")
     parser.add_argument("--exon-sizes", type=int, nargs="+", default=example_exons)
     args = parser.parse_args()
-    plot = draw_exon(args.exon_sizes)
+    plot = draw_exons(args.exon_sizes)
     print(plot)
 
 
