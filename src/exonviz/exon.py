@@ -44,99 +44,44 @@ def draw_exons(exons: List[int], scale: int = 1, canvas_width: int = 1000) -> sv
 
 
 def draw_exon(height: int, exon: int, start_frame: int) -> List[float]:
+    """ Draw the specified exon by calculating all the x,y points that have to be connectd
+
+    We draw clockwise, starting from the top left
+
+    """
     end_frame = (start_frame + exon) % 3
 
     points: List[float] = list()
 
+    # Fixed points for every exon
     top_left = (0, 0)
     top_right = (exon, 0)
     bottom_right = (exon, height)
     bottom_left = (0, height)
-    # fmt: off
-    if start_frame == 0 and end_frame == 0:
-        points = [
-            *top_left,
-            *top_right,
-            *bottom_right,
-            *bottom_left,
-            *top_left
-        ]
-    elif start_frame == 0 and end_frame == 1:
-        points = [
-            *top_left,
-            *top_right,
-            exon-0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left,
-            *top_left
-        ]
-    elif start_frame == 0 and end_frame == 2:
-        points = [
-            *top_left,
-            *top_right,
-            exon + 0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left
-        ]
-    elif start_frame == 1 and end_frame == 0:
-        points = [
-            *top_left,
-            *top_right,
-            *bottom_right,
-            *bottom_left,
-            -0.5*height, 0.5*height,
-        ]
-    elif start_frame == 1 and end_frame == 1:
-        points = [
-            *top_left,
-            *top_right,
-            # Notch at the end of the exon
-            exon - 0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left,
-            # Pointy bit at the start of the exon
-            -0.5*height, 0.5*height,
-        ]
-    elif start_frame == 1 and end_frame == 2:
-        points = [
-            *top_left,
-            *top_right,
-            # Pointy bit at the end of the exon
-            exon + 0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left,
-            -0.5*height, 0.5*height
-        ]
-    elif start_frame == 2 and end_frame == 0:
-        points = [
-            *top_left,
-            *top_right,
-            *bottom_right,
-            *bottom_left,
-            0.5*height, 0.5*height
-        ]
-    elif start_frame == 2 and end_frame == 1:
-        points = [
-            *top_left,
-            *top_right,
-            # Pointy bit at the end of the exon
-            exon-0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left,
-            # Indentation at the start of the exon
-            0.5*height, 0.5*height,
-        ]
-    elif start_frame == 2 and end_frame == 2:
-        points = [
-            *top_left,
-            *top_right,
-            # Pointy bit at the end of the exon
-            exon + 0.5*height, 0.5*height,
-            *bottom_right,
-            *bottom_left,
-            # Notch at the start of the exon
-            0.5* height, 0.5*height,
-        ]
-    #fmt: off
 
-    return points
+    # Pre-calculate the ends for the 6 possible frames
+    # Use the frame to fetch the index
+    #fmt: off
+    left_end = [
+        tuple(), #  Straigt line, we don't need to draw anything
+        (-0.5*height, 0.5*height), #  notch
+        (0.5*height, 0.5*height) #  point
+    ]
+
+    right_end = [
+        tuple(), #  straight line, we don't need to draw anything
+        (exon-0.5*height, 0.5*height), #  notch
+        (exon+0.5*height, 0.5*height) #  point
+
+    ]
+    #fmt: on
+
+    return [
+        *top_left,
+        *top_right,
+        *right_end[end_frame],
+        *bottom_right,
+        *bottom_left,
+        *left_end[start_frame],
+        *top_left
+    ]
