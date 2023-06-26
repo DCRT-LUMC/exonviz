@@ -44,7 +44,7 @@ def test_in_frame() -> None:
 
 
 def test_end_frame_1() -> None:
-    """Looks like this: ||||<"""
+    """Looks like this: ||||>"""
     height = 10
     size = 22
     start_frame = 0
@@ -53,7 +53,7 @@ def test_end_frame_1() -> None:
     target = [
         0, 0,
         22, 0,
-        17, 5,
+        27, 5,
         22, 10,
         0, 10,
         0, 0
