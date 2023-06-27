@@ -4,10 +4,11 @@ import json
 
 from exonviz.exon import Exon
 
+
 def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
     """Fetch variant information from mutalyzer"""
 
-    url=f"https://mutalyzer.nl/api/normalize/{variant}"
+    url = f"https://mutalyzer.nl/api/normalize/{variant}"
 
     try:
         with urllib.request.urlopen(url) as response:
@@ -20,10 +21,9 @@ def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
 
 def cds_start(mutalyzer: Dict[str, Any]) -> int:
     """Extract the coding start from mutalyzer payload"""
-    return int(mutalyzer["cds"]["g"][0][0])-1
+    return int(mutalyzer["cds"]["g"][0][0]) - 1
 
 
 def cds_end(mutalyzer: Dict[str, Any]) -> int:
     """Extract the coding start from mutalyzer payload"""
     return int(mutalyzer["cds"]["g"][0][1])
-
