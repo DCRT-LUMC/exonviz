@@ -16,7 +16,8 @@ def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
     except:
         print(f"Error for {url}")
         return None
-    return js["selector_short"]
+    selector: Dict[str, Any] = js["selector_short"]
+    return selector
 
 
 def cds_start(mutalyzer: Dict[str, Any]) -> int:

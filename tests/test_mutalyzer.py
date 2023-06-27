@@ -17,7 +17,7 @@ def test_cds_end() -> None:
     assert cds_end(mutalyzer) == 11295
 
 
-def test_get_coding_size_noncoding():
+def test_get_coding_size_noncoding() -> None:
     """Test the size for non-coding exons"""
     exons = [["1", "100"], ["201", "300"]]
     coding_start = 200
