@@ -1,4 +1,4 @@
-from typing import List, Union, cast
+from typing import List, Union, Optional
 import svg
 from dataclasses import dataclass, field
 
@@ -29,16 +29,35 @@ class Region:
             size = abs(self.end - self.start)
         return size
 
+    def __eq__(self, other: 'Region') -> bool:
+        return self.start == other.start and self.end == other.end
 
-@dataclass
-class Exon:
-    name: str
-    size: int
-    start_frame: int
-    end_frame: int = field(init=False)
+class Exon(Region):
+    def __init__(
+        self,
+        start: Union[int, List[int]],
+        end: Union[int, List[int]],
+        frame: int,
+        coding: Optional[Region] = None,
+    ) -> None:
+        super().__init__(start, end)
+        self.frame = frame
+        self.coding = coding
 
-    def __post_init__(self) -> None:
-        self.end_frame = (self.start_frame + self.size) % 3
+        self.non_coding: Optional[Region]
+
+        # If there is no coding region, the whole exon is non-coding
+        if self.coding is None:
+            self.non_coding = Region(self.start, self.end)
+        # If the whole exon is coding, nothing is non-coding
+        elif self.coding.start == self.start and self.coding.end == self.end:
+            self.non_coding = None
+
+
+
+    @property
+    def end_frame(self) -> int:
+        return (self.size + self.frame) % 3
 
 
 def shift(
