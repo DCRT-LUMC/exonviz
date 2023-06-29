@@ -1,9 +1,9 @@
-from typing import List, Union
+from typing import List, Union, cast
 import svg
 from dataclasses import dataclass, field
 
 
-class Region():
+class Region:
     def __init__(self, start: Union[int, List[int]], end: Union[int, List[int]]):
         both_int = isinstance(start, int) and isinstance(end, int)
         both_list = isinstance(start, list) and isinstance(end, list)
@@ -11,8 +11,9 @@ class Region():
         if not (both_int or both_list):
             raise ValueError("Mixing int and list is not supported")
 
-        if both_list and len(start) != len(end):
-            raise ValueError("start and end must be the same size")
+        if isinstance(start, list) and isinstance(end, list):
+            if len(start) != len(end):
+                raise ValueError("start and end must be the same size")
 
         self.start = start
         self.end = end
@@ -20,13 +21,14 @@ class Region():
     @property
     def size(self) -> int:
         """The size property."""
-        if isinstance(self.start, list):
+        if isinstance(self.start, list) and isinstance(self.end, list):
             size = 0
             for start, end in zip(self.start, self.end):
                 size += abs(end - start)
-        else:
+        elif isinstance(self.start, int) and isinstance(self.end, int):
             size = abs(self.end - self.start)
         return size
+
 
 @dataclass
 class Exon:
