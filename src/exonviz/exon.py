@@ -52,6 +52,9 @@ class Exon(Region):
         # If the whole exon is coding, nothing is non-coding
         elif self.coding.start == self.start and self.coding.end == self.end:
             self.non_coding = None
+        # If the start of the exon is non coding
+        elif self.coding.start > self.start:
+            self.non_coding = Region(self.start, self.coding.start)
 
 
 

@@ -84,7 +84,9 @@ class TestExon:
         assert E.coding == Region(0, 21)
 
     def test_Exon_start_non_coding(self) -> None:
-        pass
+        """Test the non_coding region if the start of the exon is non coding"""
+        E = Exon(start=0, end=21, frame=0, coding=Region(4, 21))
+        assert E.non_coding == Region(0, 4)
 
     def test_Exon_end_non_coding(self) -> None:
         pass
