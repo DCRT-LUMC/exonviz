@@ -2,7 +2,7 @@ from typing import List
 
 from exonviz.exon import draw_exon
 from exonviz.exon import shift
-from exonviz.exon import Exon
+from exonviz.exon import Exon, Region
 
 
 # Describe the expected output for a given start and end frame
@@ -29,7 +29,7 @@ targets = {
 
 def test_in_frame() -> None:
     """ "This draws a square, like this: |||||"""
-    exon = Exon("exon-1", 21, 0)
+    exon = Exon(0, 21, frame=0, coding=Region(0, 21))
     height = 10
 
     # fmt: off
@@ -47,7 +47,7 @@ def test_in_frame() -> None:
 
 def test_end_frame_1() -> None:
     """Looks like this: ||||>"""
-    exon = Exon("exon-1", 22, 0)
+    exon = Exon(start=0, end=22, frame=0, coding=Region(0, 22))
     height = 10
 
     # fmt: off
@@ -59,6 +59,7 @@ def test_end_frame_1() -> None:
         0, 10,
         0, 0
     ]
+    # fmt: on
 
     assert draw_exon(exon, height) == target
 

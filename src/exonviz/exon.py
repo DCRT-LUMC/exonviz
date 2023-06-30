@@ -1,4 +1,4 @@
-from typing import List, Union, Optional, Tuple
+from typing import List, Union, Tuple
 import svg
 from dataclasses import dataclass, field
 
@@ -19,13 +19,15 @@ class Region:
         """The size property."""
         return abs(self.end - self.start)
 
-    def __eq__(self, other: "Region") -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Region):
+            return NotImplemented
         return self.start == other.start and self.end == other.end
 
     def __bool__(self) -> bool:
         return self.size != 0
 
-    def __sub__(self, other) -> Tuple["Region", "Region"]:
+    def __sub__(self, other: "Region") -> Tuple["Region", "Region"]:
         """Subtracting a region from itself returns the remaining two regions.
 
         Namely before and after the subtracted regio
@@ -56,8 +58,9 @@ class Region:
 
         return (before, after)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Region({self.start}, {self.end})"
+
 
 class Exon(Region):
     def __init__(
@@ -65,7 +68,7 @@ class Exon(Region):
         start: int,
         end: int,
         frame: int,
-        coding: Optional[Region] = None,
+        coding: Region,
     ) -> None:
         super().__init__(start, end)
         self.frame = frame
@@ -73,26 +76,19 @@ class Exon(Region):
 
         self.non_coding = self._determine_non_coding()
 
-    def _determine_non_coding(self) -> List[Region]:
-        region = None
-        # If there is no coding region, the whole exon is non-coding
-        if self.coding is None:
-            region = Region(self.start, self.end)
-        # If the whole exon is coding, nothing is non-coding
-        elif self.coding.start == self.start and self.coding.end == self.end:
-            region = None
-        # The start of the exon is non coding
-        elif self.coding.start > self.start:
-            region = Region(self.start, self.coding.start)
-        # The end of th exon is non coding
-        elif self.coding.end < self.end:
-            region = Region(self.coding.end, self.end)
+    def __repr__(self) -> str:
+        return f"Exon({self.start}, {self.end}, {self.frame}, {self.coding}, {self.non_coding})"
 
-        return region
+    def _determine_non_coding(self) -> List[Region]:
+        exon_region = Region(self.start, self.end)
+        non_coding = exon_region - self.coding
+
+        # Return only the non-empty regions
+        return [region for region in non_coding if region]
 
     @property
     def end_frame(self) -> int:
-        return (self.size + self.frame) % 3
+        return (self.coding.size + self.frame) % 3
 
 
 def shift(
@@ -128,7 +124,7 @@ def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> s
 
         x_position = x_position + exon.size + exon_gap
 
-        fill = "green" if exon.start_frame == exon.end_frame else "black"
+        fill = "green" if exon.frame == exon.end_frame else "black"
 
         elements.append(
             svg.Polygon(
@@ -174,6 +170,6 @@ def draw_exon(exon: Exon, height: int) -> List[float]:
         *right_end[exon.end_frame],
         *bottom_right,
         *bottom_left,
-        *left_end[exon.start_frame],
+        *left_end[exon.frame],
         *top_left,
     ]

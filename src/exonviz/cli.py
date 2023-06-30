@@ -5,7 +5,7 @@ without executing side effects
 
 import argparse
 from typing import List
-from exonviz.exon import draw_exons, Exon
+from exonviz.exon import draw_exons, Exon, Region
 
 
 def fetch_exons(sizes: List[int]) -> List[Exon]:
@@ -14,7 +14,7 @@ def fetch_exons(sizes: List[int]) -> List[Exon]:
     exons: List[Exon] = list()
 
     for i, size in enumerate(sizes):
-        E = Exon(f"exon-{i+1}", size, start_frame)
+        E = Exon(start=0, end=size, frame=start_frame, coding=Region(0, size))
         start_frame = E.end_frame
         exons.append(E)
 
