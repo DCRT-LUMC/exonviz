@@ -4,39 +4,32 @@ from dataclasses import dataclass, field
 
 
 class Region:
-    def __init__(self, start: Union[int, List[int]], end: Union[int, List[int]]):
-        both_int = isinstance(start, int) and isinstance(end, int)
-        both_list = isinstance(start, list) and isinstance(end, list)
+    """A region has a start and end, which informs the size
 
-        if not (both_int or both_list):
-            raise ValueError("Mixing int and list is not supported")
+    Subtracting two regions returns two regions, namelya region before and after the substracted
+    region
+    """
 
-        if isinstance(start, list) and isinstance(end, list):
-            if len(start) != len(end):
-                raise ValueError("start and end must be the same size")
-
+    def __init__(self, start: int, end: int):
         self.start = start
         self.end = end
 
     @property
     def size(self) -> int:
         """The size property."""
-        if isinstance(self.start, list) and isinstance(self.end, list):
-            size = 0
-            for start, end in zip(self.start, self.end):
-                size += abs(end - start)
-        elif isinstance(self.start, int) and isinstance(self.end, int):
-            size = abs(self.end - self.start)
-        return size
+        return abs(self.end - self.start)
 
-    def __eq__(self, other: 'Region') -> bool:
+    def __eq__(self, other: "Region") -> bool:
         return self.start == other.start and self.end == other.end
+
+    def __bool__(self) -> bool:
+        return self.size != 0
 
 class Exon(Region):
     def __init__(
         self,
-        start: Union[int, List[int]],
-        end: Union[int, List[int]],
+        start: int,
+        end: int,
         frame: int,
         coding: Optional[Region] = None,
     ) -> None:
@@ -46,8 +39,7 @@ class Exon(Region):
 
         self.non_coding = self._determine_non_coding()
 
-
-    def _determine_non_coding(self) -> Optional[Region]:
+    def _determine_non_coding(self) -> List[Region]:
         region = None
         # If there is no coding region, the whole exon is non-coding
         if self.coding is None:

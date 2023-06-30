@@ -8,34 +8,21 @@ class TestRegion:
 
         assert R.size == 1
 
-    def test_gapped_region(self) -> None:
-        R = Region([0, 20], [10, 30])
-        assert R.start == [0, 20]
-        assert R.end == [10, 30]
-        assert R.size == 20
-
-    def test_one_start_two_end(self) -> None:
-        """Both start and end have to be either list or int, no mixing"""
-        with pytest.raises(ValueError):
-            Region(0, [10, 20])
-
-    def test_start_end_unequal_length(self) -> None:
-        """Both start and end have to be the same size"""
-        with pytest.raises(ValueError):
-            Region([0], [10, 20])
-
     def test_negative_region(self) -> None:
         R = Region(10, 0)
         assert R.size == 10
 
-    def test_negative_region_list(self) -> None:
-        R = Region([10, 30], [0, 20])
-        assert R.size == 20
+    def test_empty_region(self) -> None:
+        R = Region(10, 10)
+        assert R.size == 0
 
-    def test_interleaved_negative_region_list(self) -> None:
-        R = Region([0, 10], [10, 0])
-        assert R.size == 20
+    def test_empty_region_falsy(self) -> None:
+        R = Region(10, 10)
+        assert not R
 
+    def test_non_empty_region_truthy(self) -> None:
+        R = Region(0, 1)
+        assert R
 
 class TestExon:
     end_frame = [
