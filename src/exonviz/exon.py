@@ -44,19 +44,25 @@ class Exon(Region):
         self.frame = frame
         self.coding = coding
 
-        self.non_coding: Optional[Region]
+        self.non_coding = self._determine_non_coding()
 
+
+    def _determine_non_coding(self) -> Optional[Region]:
+        region = None
         # If there is no coding region, the whole exon is non-coding
         if self.coding is None:
-            self.non_coding = Region(self.start, self.end)
+            region = Region(self.start, self.end)
         # If the whole exon is coding, nothing is non-coding
         elif self.coding.start == self.start and self.coding.end == self.end:
-            self.non_coding = None
-        # If the start of the exon is non coding
+            region = None
+        # The start of the exon is non coding
         elif self.coding.start > self.start:
-            self.non_coding = Region(self.start, self.coding.start)
+            region = Region(self.start, self.coding.start)
+        # The end of th exon is non coding
+        elif self.coding.end < self.end:
+            region = Region(self.coding.end, self.end)
 
-
+        return region
 
     @property
     def end_frame(self) -> int:
