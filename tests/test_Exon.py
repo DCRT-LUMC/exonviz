@@ -24,6 +24,98 @@ class TestRegion:
         R = Region(0, 1)
         assert R
 
+    def test_subtract_region_from_itself(self) -> None:
+        """Subtracting a region from itself gives to emtpy Regions"""
+        R = Region(0, 10)
+        before, after = R - R
+
+        assert not before
+        assert not after
+
+    def test_subtract_region_from_start(self) -> None:
+        bigger = Region(0, 10)
+        smaller = Region(0, 5)
+
+        before, after = bigger - smaller
+
+        assert not before
+        assert after == Region(5, 10)
+
+    def test_subtract_region_from_end(self) -> None:
+        bigger = Region(0, 10)
+        smaller = Region(5, 10)
+
+        before, after = bigger - smaller
+
+        assert before == Region(0, 5)
+        assert not after
+
+    def test_substract_region_from_center(self) -> None:
+        bigger = Region(0, 10)
+        smaller = Region(3, 7)
+
+        before, after = bigger - smaller
+
+        assert before == Region(0, 3)
+        assert after == Region(7, 10)
+
+    def test_subtract_larger_overlapping_start(self) -> None:
+        bigger = Region(10, 20)
+        smaller = Region(8, 13)
+
+        before, after = bigger - smaller
+
+        assert not before
+        assert after == Region(13, 20)
+
+    def test_subtract_larger_overlapping_end(self) -> None:
+        bigger = Region(10, 20)
+        smaller = Region(13, 25)
+
+        before, after = bigger - smaller
+
+        assert not after
+        assert before == Region(10, 13)
+
+    def test_subtract_larger_overlapping_all(self) -> None:
+        bigger = Region(0, 20)
+        smaller = Region(10, 15)
+
+        before, after = smaller - bigger
+
+        assert not before
+        assert not after
+
+    def test_subtract_unrelated_region_before(self) -> None:
+        region = Region(0, 20)
+        unrelated = Region(-20, -10)
+
+        before, after = region - unrelated
+
+        # This test relies on the implementation of 'before'
+        assert before == Region(0, 0)
+        assert after == Region(0, 20)
+
+    def test_subtract_unrelated_region_after(self) -> None:
+        region = Region(0, 20)
+        unrelated = Region(40, 60)
+
+        before, after = region - unrelated
+
+        assert before == Region(0, 20)
+        # This test relies on the implementation of 'after'
+        assert after == Region(20, 20)
+
+    def test_subtract_empty_region(self) -> None:
+        region = Region(0, 20)
+        empty = Region(10, 10)
+
+        before, after = region - empty
+
+        assert before == Region(0, 10)
+        assert after == Region(10, 20)
+
+
 class TestExon:
     end_frame = [
         # Exon, expected end_frame
@@ -51,11 +143,10 @@ class TestExon:
         E = Exon(start=0, end=21, frame=0)
         assert E.size == 21
 
-    @pytest.mark.parametrize("exon,expected", end_frame) # type: ignore
+    @pytest.mark.parametrize("exon,expected", end_frame)  # type: ignore
     def test_Exon_end_frame(self, exon: Exon, expected: int) -> None:
         """Test the Exon ending frame"""
         assert exon.end_frame == expected
-
 
     def test_Exon_non_coding(self) -> None:
         """If there is no coding, the whole exon should be none coding"""
@@ -63,10 +154,9 @@ class TestExon:
         assert E.coding is None
         assert E.non_coding == Region(0, 21)
 
-
     def test_Exon_coding(self) -> None:
         """If the whole Exon is coding, non_coding should be None"""
-        E =Exon(start=0, end=21, frame=0, coding=Region(0, 21))
+        E = Exon(start=0, end=21, frame=0, coding=Region(0, 21))
         assert E.non_coding is None
         assert E.coding == Region(0, 21)
 

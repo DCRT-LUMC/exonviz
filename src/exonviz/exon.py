@@ -1,4 +1,4 @@
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Tuple
 import svg
 from dataclasses import dataclass, field
 
@@ -24,6 +24,40 @@ class Region:
 
     def __bool__(self) -> bool:
         return self.size != 0
+
+    def __sub__(self, other) -> Tuple["Region", "Region"]:
+        """Subtracting a region from itself returns the remaining two regions.
+
+        Namely before and after the subtracted regio
+        """
+        # If other does not overlap and lies before
+        if other.end < self.start:
+            return Region(self.start, self.start), self
+
+        # If other does not overlap and lies after
+        if other.start > self.end:
+            return self, Region(self.end, self.end)
+
+        # Determine what is left before the subtracted regio
+        start = self.start
+        if other.start < self.start:
+            end = self.start
+        else:
+            end = other.start
+        before = Region(start, end)
+
+        # Determine what is left after the subtracted regio
+        if other.end > self.end:
+            start = self.end
+        else:
+            start = other.end
+        end = self.end
+        after = Region(start, end)
+
+        return (before, after)
+
+    def __repr__(self):
+        return f"Region({self.start}, {self.end})"
 
 class Exon(Region):
     def __init__(
