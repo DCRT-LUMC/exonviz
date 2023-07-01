@@ -164,25 +164,41 @@ class TestExon:
         Note that Exon.non_coding is always a list of Regions
         """
         E = Exon(start=0, end=21, frame=0, coding=Region(0, 0))
+        before_coding, after_coding = E.non_coding
+
+        assert not before_coding
         assert not E.coding
-        assert E.non_coding[0] == Region(0, 21)
+        assert after_coding == Region(0, 21)
 
     def test_Exon_coding(self) -> None:
         """If the whole Exon is coding, non_coding should be empty"""
         E = Exon(start=0, end=21, frame=0, coding=Region(0, 21))
-        assert not E.non_coding
+        before_coding, after_coding = E.non_coding
+
+        assert not before_coding
         assert E.coding == Region(0, 21)
+        assert not after_coding
 
     def test_Exon_start_non_coding(self) -> None:
         """Test the non_coding region if the start of the exon is non coding"""
         E = Exon(start=0, end=21, frame=0, coding=Region(4, 21))
-        assert E.non_coding[0] == Region(0, 4)
+        before_coding, after_coding = E.non_coding
+
+        assert before_coding == Region(0, 4)
+        assert E.coding == Region(4, 21)
+        assert not after_coding
 
     def test_Exon_end_non_coding(self) -> None:
         E = Exon(start=0, end=21, frame=0, coding=Region(0, 18))
-        assert E.non_coding[0] == Region(18, 21)
+        before_coding, after_coding = E.non_coding
+
+        assert not before_coding
+        assert after_coding == Region(18, 21)
 
     def test_Exon_start_end_non_coding(self) -> None:
         """If only the center of the exon is coding"""
         E = Exon(start=0, end=21, frame=0, coding=Region(10, 18))
-        assert E.non_coding == [Region(0, 10), Region(18, 21)]
+        before_coding, after_coding = E.non_coding
+
+        assert before_coding == Region(0, 10)
+        assert after_coding == Region(18, 21)

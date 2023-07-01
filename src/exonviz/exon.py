@@ -79,12 +79,10 @@ class Exon(Region):
     def __repr__(self) -> str:
         return f"Exon({self.start}, {self.end}, {self.frame}, {self.coding}, {self.non_coding})"
 
-    def _determine_non_coding(self) -> List[Region]:
+    def _determine_non_coding(self) -> Tuple[Region, Region]:
+        """Determine the non-coding parts of the exon"""
         exon_region = Region(self.start, self.end)
-        non_coding = exon_region - self.coding
-
-        # Return only the non-empty regions
-        return [region for region in non_coding if region]
+        return exon_region - self.coding
 
     @property
     def end_frame(self) -> int:
