@@ -1,6 +1,6 @@
 from typing import List
 
-from exonviz.exon import draw_exon
+from exonviz.exon import draw_coding, draw_non_coding
 from exonviz.exon import shift
 from exonviz.exon import Exon, Region
 
@@ -42,7 +42,7 @@ def test_in_frame() -> None:
     ]
     # fmt: on
 
-    assert draw_exon(exon, height) == target
+    assert draw_coding(exon, height) == target
 
 
 def test_end_frame_1() -> None:
@@ -61,7 +61,7 @@ def test_end_frame_1() -> None:
     ]
     # fmt: on
 
-    assert draw_exon(exon, height) == target
+    assert draw_coding(exon, height) == target
 
 
 def test_no_shift() -> None:
@@ -79,3 +79,26 @@ def test_shift_x_y() -> None:
     """Shift both X and Y by 10"""
     points: List[float] = [0, 0, 0, 10]
     assert shift(points, 10, 8) == [10, 8, 10, 18]
+
+
+def test_draw_non_coding() -> None:
+    R = Region(0, 12)
+    height = 10
+
+    # fmt: off
+    expected = [
+        12, 2.5,
+        12, 7.5,
+        0, 7.5,
+        0, 2.5,
+        12, 2.5,
+    ]
+    # fmt: on
+    assert draw_non_coding(R, height=height) == expected
+
+
+def test_draw_non_coding_empty_region() -> None:
+    R = Region(0, 0)
+    height = 10
+
+    assert draw_non_coding(R, height) == list()

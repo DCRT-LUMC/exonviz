@@ -90,7 +90,7 @@ class Exon(Region):
 
 
 def shift(
-    points: List[Union[float, int]], x_offset: int, y_offset: int
+    points: List[Union[float, int]], x_offset: float, y_offset: float
 ) -> List[Union[float, int]]:
     """Shift the x- and y position by the supplied offsets"""
     return [x + y_offset if i % 2 else x + x_offset for i, x in enumerate(points)]
@@ -113,36 +113,44 @@ def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> s
             x_position = 10
             y_position += 2 * height
 
-        points = draw_exon(exon, height)
+        for section in draw_exon(exon, height):
+            # Shift the points
+            section = shift(section, x_position, y_position)
 
-        # Shift the points
-        points = shift(points, x_position, y_position)
-        # Scale the points
-        points = [x * scale for x in points]
+            # Scale the points
+            section = [x * scale for x in section]
 
-        x_position = x_position + exon.size + exon_gap
+            fill = "green" if exon.frame == exon.end_frame else "black"
 
-        fill = "green" if exon.frame == exon.end_frame else "black"
-
-        elements.append(
-            svg.Polygon(
-                points=points, stroke="green", fill=fill, stroke_width=1  # type: ignore
+            elements.append(
+                svg.Polygon(
+                    points=section, stroke="red", fill=fill, stroke_width=1  # type: ignore
+                )
             )
-        )
+        x_position = x_position + exon.size + exon_gap
 
     return svg.SVG(width=canvas_width, height=700, elements=elements)  # type: ignore
 
 
-def draw_exon(exon: Exon, height: int) -> List[float]:
-    """Draw the specified exon by calculating all the points that have to be connected
+def draw_non_coding(region: Region, height: float) -> List[float]:
+    """Draw a non coding region"""
+    if not region:
+        return list()
 
-    We draw clockwise, starting from the top left
+    top_left = (0, 0.25 * height)
+    top_right = (region.size, 0.25 * height)
+    bottom_right = (region.size, 0.75 * height)
+    bottom_left = (0, 0.75 * height)
 
-    """
+    # We need to end top-right, to draw the next thing
+    return [*top_right, *bottom_right, *bottom_left, *top_left, *top_right]
+
+
+def draw_coding(exon: Exon, height: float) -> List[float]:
     # Fixed points for every exon
     top_left = (0, 0)
-    top_right = (exon.size, 0)
-    bottom_right = (exon.size, height)
+    top_right = (exon.coding.size, 0)
+    bottom_right = (exon.coding.size, height)
     bottom_left = (0, height)
 
     # Pre-calculate the ends for the 6 possible frames
@@ -156,8 +164,8 @@ def draw_exon(exon: Exon, height: int) -> List[float]:
 
     right_end = [
         tuple(), #  straight line, we don't need to draw anything
-        (exon.size+0.5*height, 0.5*height), #  point
-        (exon.size-0.5*height, 0.5*height), #  notch
+        (exon.coding.size+0.5*height, 0.5*height), #  point
+        (exon.coding.size-0.5*height, 0.5*height), #  notch
 
     ]
     # fmt: on
@@ -171,3 +179,33 @@ def draw_exon(exon: Exon, height: int) -> List[float]:
         *left_end[exon.frame],
         *top_left,
     ]
+
+
+Section = List[float]
+
+
+def draw_exon(exon: Exon, height: int) -> Tuple[Section, Section, Section]:
+    """Draw the specified exon by calculating all the points that have to be connected
+
+    We draw clockwise, starting from the top left
+
+    """
+
+    # Get the non coding regions
+    before_coding, after_coding = exon.non_coding
+
+    before = draw_non_coding(before_coding, height)
+    coding = shift(draw_coding(exon, height), x_offset=before_coding.size, y_offset=0)
+
+    # Depending on the end of the coding part (notch or point), we have to shift the
+    # non-coding part so it matches
+    x_offset: float = before_coding.size + exon.coding.size
+    if exon.end_frame == 1:
+        x_offset += 0.5 * height
+    elif exon.end_frame == 2:
+        x_offset -= 0.5 * height
+
+    after = shift(draw_non_coding(after_coding, height), x_offset=x_offset, y_offset=0)
+
+    # We need to draw the coding region last, so it overlaps properly
+    return (before, after, coding)
