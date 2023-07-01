@@ -96,20 +96,22 @@ def shift(
     return [x + y_offset if i % 2 else x + x_offset for i, x in enumerate(points)]
 
 
-def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> svg.SVG:
+def draw_exons(exons: List[Exon], scale: int = 1, max_width: int = 1000) -> svg.SVG:
     elements = list()
 
+    # The maximum width we have reached for this picture
+    canvas_width: float = 0
     # Default values needed for drawing
     height = 20
     exon_gap = 5
 
     # These values will be updated as we draw the figure
-    x_position: float = 10
-    y_position = 10
+    x_position: float = 0
+    y_position = 0
 
     for exon in exons:
         # If we overflow the width, go to a new line
-        if x_position + exon.size + height > canvas_width / scale:
+        if x_position + exon.size + height > max_width / scale:
             x_position = 10
             y_position += 2 * height
 
@@ -133,8 +135,9 @@ def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> s
             x_position += 0.5 * height
         elif exon.end_frame == 2:
             x_position -= 0.5 * height
+        canvas_width = max(x_position, canvas_width)
 
-    return svg.SVG(width=canvas_width, height=700, elements=elements)  # type: ignore
+    return svg.SVG(width=canvas_width, height=y_position + height, elements=elements)  # type: ignore
 
 
 def draw_non_coding(region: Region, height: float) -> List[float]:

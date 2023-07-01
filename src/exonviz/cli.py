@@ -27,10 +27,14 @@ def main() -> None:
     parser.add_argument("--exon-sizes", type=int, nargs="+", default=example_exons)
     args = parser.parse_args()
 
-    E = Exon(0, 128, 0, coding=Region(50, 100))
-    D = Exon(0, 128, 0, coding=Region(50, 101))
-    F = Exon(0, 128, 0, coding=Region(50, 102))
-    exons = [E, D, F]
+    exons = [
+        Exon(0, 128, 0, coding=Region(50, 100)),
+        Exon(0, 128, 0, coding=Region(50, 101)),
+        Exon(0, 128, 0, coding=Region(50, 102)),
+        Exon(0, 128, 0, coding=Region(50, 102)),
+        Exon(0, 128, 0, coding=Region(0, 128)),
+        Exon(0, 128, 0, coding=Region(0, 128)),
+    ]
     plot = draw_exons(exons)
     print(plot)
 
