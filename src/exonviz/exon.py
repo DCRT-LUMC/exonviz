@@ -104,7 +104,7 @@ def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> s
     exon_gap = 5
 
     # These values will be updated as we draw the figure
-    x_position = 10
+    x_position: float = 10
     y_position = 10
 
     for exon in exons:
@@ -128,6 +128,11 @@ def draw_exons(exons: List[Exon], scale: int = 1, canvas_width: int = 1000) -> s
                 )
             )
         x_position = x_position + exon.size + exon_gap
+        # If we had to shift to align the non-coding parts properly
+        if exon.end_frame == 1:
+            x_position += 0.5 * height
+        elif exon.end_frame == 2:
+            x_position -= 0.5 * height
 
     return svg.SVG(width=canvas_width, height=700, elements=elements)  # type: ignore
 
