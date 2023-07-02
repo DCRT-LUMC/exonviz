@@ -5,7 +5,8 @@ without executing side effects
 
 import argparse
 from typing import List
-from exonviz.exon import draw_exons, Exon, Region
+from .draw import draw_exons
+from .exon import Exon, Region
 
 
 def fetch_exons(sizes: List[int]) -> List[Exon]:

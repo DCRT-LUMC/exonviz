@@ -2,7 +2,7 @@ from typing import Dict, Any, Optional
 import urllib.request
 import json
 
-from exonviz.exon import Exon
+from .exon import Exon
 
 
 def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:

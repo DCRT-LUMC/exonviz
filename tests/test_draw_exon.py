@@ -1,7 +1,7 @@
 from typing import List
 
-from exonviz.exon import draw_coding, draw_non_coding
-from exonviz.exon import shift
+from exonviz.draw import draw_coding, draw_non_coding
+from exonviz.draw import shift
 from exonviz.exon import Exon, Region
 
 
