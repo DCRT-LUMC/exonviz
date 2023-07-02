@@ -6,8 +6,11 @@
 Visualise exons
 ------------------------------------------------------------------------
 ## Usage
-Directly pass the size of exons to generate a figure.
+Pass a transcript to exonviz to generate a figure.
 
+## Examples
 ```bash
-exonviz --exon-sizes 31 62 93 78 93 173 119 182 129 189 182 151 120 102 108 180 176 124 88 242 181 146 213 114 156 171 183 135 150 162 111 174 156 171 180 129 171 123 138 153 183 195 173 148 176 148 150 186 102 109 233 118 212 155 190 173 157 121 269 147 79 61 62 75 202 86 158 167 112 137 39 66 66 159 244 124 93 32 12 > dmd.svg
+exonviz NM_004006.3:c.= > dmd.svg
+exonviz NM_000533.5:c.= > plp1.svg
+exonviz ENST00000358273.9:c.= >nf1-202.svg
 ```

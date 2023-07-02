@@ -202,3 +202,10 @@ class TestExon:
 
         assert before_coding == Region(0, 10)
         assert after_coding == Region(18, 21)
+
+    def test_exon_slice_coding(self) -> None:
+        """If the coding region is larger than the exon, slice it to the exon size"""
+        coding = Region(10, 100)
+        E = Exon(start=0, end=21, frame=0, coding=coding)
+
+        assert E.coding == Region(10, 21)

@@ -70,7 +70,7 @@ class Exon(Region):
     ) -> None:
         super().__init__(start, end)
         self.frame = frame
-        self.coding = coding
+        self.coding = Region(max(start, coding.start), min(end, coding.end))
 
         self.non_coding = self._determine_non_coding()
 

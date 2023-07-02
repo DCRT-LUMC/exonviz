@@ -7,35 +7,26 @@ import argparse
 from typing import List
 from .draw import draw_exons
 from .exon import Exon, Region
+from .mutalyzer import mutalyzer, extract_exons
 
 
-def fetch_exons(sizes: List[int]) -> List[Exon]:
+def fetch_exons(transcript: str) -> List[Exon]:
     """Make or fetch the requested exons"""
-    start_frame: int = 0
-    exons: List[Exon] = list()
 
-    for i, size in enumerate(sizes):
-        E = Exon(start=0, end=size, frame=start_frame, coding=Region(0, size))
-        start_frame = E.end_frame
-        exons.append(E)
-
-    return exons
+    payload = mutalyzer(transcript)
+    if payload:
+        return extract_exons(payload)
+    else:
+        return list()
 
 
 def main() -> None:
     example_exons = [21, 22, 23, 23, 23, 21, 22, 21, 22]
     parser = argparse.ArgumentParser(description="Description of command.")
-    parser.add_argument("--exon-sizes", type=int, nargs="+", default=example_exons)
+    parser.add_argument("transcript", help="Transcript (with version) to visualise")
     args = parser.parse_args()
 
-    exons = [
-        Exon(0, 128, 0, coding=Region(50, 100)),
-        Exon(0, 128, 0, coding=Region(50, 101)),
-        Exon(0, 128, 0, coding=Region(50, 102)),
-        Exon(0, 128, 0, coding=Region(50, 102)),
-        Exon(0, 128, 0, coding=Region(0, 128)),
-        Exon(0, 128, 0, coding=Region(0, 128)),
-    ]
+    exons = fetch_exons(args.transcript)
     plot = draw_exons(exons)
     print(plot)
 

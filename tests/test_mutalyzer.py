@@ -1,4 +1,5 @@
-from exonviz.mutalyzer import cds_start, cds_end
+from exonviz.mutalyzer import cds_start, cds_end, coding_region, extract_exons
+from exonviz.exon import Exon, Region
 
 # Example mutalyzer payload
 mutalyzer = {
@@ -17,7 +18,10 @@ def test_cds_end() -> None:
     assert cds_end(mutalyzer) == 11295
 
 
-def test_get_coding_size_noncoding() -> None:
-    """Test the size for non-coding exons"""
-    exons = [["1", "100"], ["201", "300"]]
-    coding_start = 200
+def test_coding_region() -> None:
+    assert coding_region(mutalyzer) == Region(237, 11295)
+
+
+def test_extract_exons() -> None:
+    exons = extract_exons(mutalyzer)
+    assert exons[0] == Exon(0, 268, 0, Region(237, 11295))
