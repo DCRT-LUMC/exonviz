@@ -4,10 +4,26 @@ without executing side effects
 """
 
 import argparse
+import re
+
 from typing import List
 from .draw import draw_exons
-from .exon import Exon, Region
+from .exon import Exon
 from .mutalyzer import mutalyzer, extract_exons
+
+
+def check_input(transcript: str) -> str:
+    """Check the input from the user, and rewrite when needed"""
+    # If it looks like there is no variant
+    if re.match(r"^\w+\.\d+$", transcript):
+        return f"{transcript}:c.="
+
+    # If it looks like the user forgot the version number, there isn't much we can do
+    if re.match(r"^\w+$", transcript):
+        msg = "Please specify the version of the transcript you are interested in: "
+        raise RuntimeError(msg + transcript)
+
+    return transcript
 
 
 def fetch_exons(transcript: str) -> List[Exon]:
@@ -21,12 +37,24 @@ def fetch_exons(transcript: str) -> List[Exon]:
 
 
 def main() -> None:
-    example_exons = [21, 22, 23, 23, 23, 21, 22, 21, 22]
     parser = argparse.ArgumentParser(description="Description of command.")
     parser.add_argument("transcript", help="Transcript (with version) to visualise")
     args = parser.parse_args()
 
-    exons = fetch_exons(args.transcript)
+    # Does the transcript format make sense?
+    try:
+        transcript = check_input(args.transcript)
+    except RuntimeError as e:
+        print(e)
+        exit(1)
+
+    # Try to talk to mutalyzer
+    try:
+        exons = fetch_exons(transcript)
+    except RuntimeError as e:
+        print(e)
+        exit(2)
+
     plot = draw_exons(exons)
     print(plot)
 

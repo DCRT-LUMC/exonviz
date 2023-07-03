@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional, List
 import urllib.request
+from urllib.error import HTTPError
 import json
 
 from .exon import Exon, Region
@@ -10,7 +11,12 @@ def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
 
     url = f"https://mutalyzer.nl/api/normalize/{variant}"
 
-    with urllib.request.urlopen(url) as response:
+    try:
+        response = urllib.request.urlopen(url)
+    except HTTPError as e:
+        msg = f"Fetching '{url}' returned {e}"
+        raise RuntimeError(msg)
+    else:
         js = json.loads(response.read())
     selector: Dict[str, Any] = js["selector_short"]
     return selector
