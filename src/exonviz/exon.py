@@ -9,6 +9,7 @@ class Region:
     """
 
     def __init__(self, start: int, end: int):
+        """Ensures that start is always before end"""
         self.start = start
         self.end = end
 
@@ -17,9 +18,15 @@ class Region:
         """The size property."""
         return abs(self.end - self.start)
 
+    @property
+    def reverse(self) -> bool:
+        return self.start > self.end
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Region):
             return NotImplemented
+        if not self.reverse == other.reverse:
+            raise NotImplementedError
         return self.start == other.start and self.end == other.end
 
     def __bool__(self) -> bool:
@@ -30,6 +37,8 @@ class Region:
 
         Namely before and after the subtracted regio
         """
+        if not self.reverse == other.reverse:
+            raise NotImplementedError
         # If other does not overlap and lies before
         if other.end < self.start:
             return Region(self.start, self.start), self
@@ -57,7 +66,7 @@ class Region:
         return (before, after)
 
     def __repr__(self) -> str:
-        return f"Region({self.start}, {self.end})"
+        return f"Region(start={self.start}, end={self.end}, reverse={self.reverse}, size={self.size})"
 
 
 class Exon(Region):
@@ -70,12 +79,24 @@ class Exon(Region):
     ) -> None:
         super().__init__(start, end)
         self.frame = frame
-        self.coding = Region(max(start, coding.start), min(end, coding.end))
+        self.coding = self._determine_coding(coding)
 
         self.non_coding = self._determine_non_coding()
 
     def __repr__(self) -> str:
-        return f"Exon({self.start}, {self.end}, {self.frame}, {self.coding}, {self.non_coding})"
+        return (
+            f"Exon(start={self.start}, end={self.end}, frame={self.frame}, "
+            f"coding={self.coding}, non_coding={self.non_coding})"
+        )
+
+    def _determine_coding(self, coding) -> Region:
+        if coding.start > self.end:
+            coding = Region(self.end, self.end)
+        elif coding.end < self.start:
+            coding = Region(self.start, self.start)
+        else:
+            coding = Region(max(self.start, coding.start), min(self.end, coding.end))
+        return coding
 
     def _determine_non_coding(self) -> Tuple[Region, Region]:
         """Determine the non-coding parts of the exon"""

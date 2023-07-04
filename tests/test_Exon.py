@@ -115,7 +115,35 @@ class TestRegion:
         assert before == Region(0, 10)
         assert after == Region(10, 20)
 
+    def test_region_dont_flip_reverse(self) -> None:
+        """Make sure we respect Regions that are in reverse"""
+        region = Region(20, 10)
 
+        assert region.start == 20
+        assert region.end == 10
+        assert region.size == 10
+
+    @pytest.mark.parametrize("start, end, reverse", [(10, 20, False), (20, 10, True), (10, 10, False)])
+    def test_region_reverse(self, start: int, end: int, reverse: bool) -> None:
+        region = Region(start, end)
+
+        assert region.reverse == reverse
+
+    def test_unsupportd_mixed_reverse_equality(self):
+        """Equality is not supported for a reverse/forward region"""
+        forward = Region(0, 10)
+        reverse = Region(10, 0)
+
+        with pytest.raises(NotImplementedError):
+            forward == reverse
+
+    def test_unsupportd_mixed_reverse_subtraction(self):
+        """Subtraction is not supported for a reverse/forward region"""
+        forward = Region(0, 10)
+        reverse = Region(10, 0)
+
+        with pytest.raises(NotImplementedError):
+            forward == reverse
 class TestExon:
     end_frame = [
         # Exon, expected end_frame
@@ -203,9 +231,41 @@ class TestExon:
         assert before_coding == Region(0, 10)
         assert after_coding == Region(18, 21)
 
-    def test_exon_slice_coding(self) -> None:
-        """If the coding region is larger than the exon, slice it to the exon size"""
-        coding = Region(10, 100)
-        E = Exon(start=0, end=21, frame=0, coding=coding)
+    CODING_SLICE = [
+        # Coding region to pass to exon, sliced coding region
+        (Region(200, 300), Region(121, 121)),  # coding region starts after exon
+        (Region(0, 90), Region(100, 100)),  # coding region stops before exon
+        (Region(0, 100), Region(100, 100)),  # coding region stops as the exon starts
+        (Region(0, 101), Region(100, 101)),  # coding region overlaps exon by 1
+        (Region(100, 200), Region(100, 121)),  # coding region extends after
+        (Region(0, 200), Region(100, 121)),  # coding region fully contains exon
+    ]
 
-        assert E.coding == Region(10, 21)
+    @pytest.mark.parametrize("coding_region, coding_region_exon", CODING_SLICE)
+    def test_exon_slice_coding(
+        self, coding_region: Region, coding_region_exon: Region
+    ) -> None:
+        """If the coding region is larger than the exon, slice it to the exon size"""
+        E = Exon(start=100, end=121, frame=0, coding=coding_region)
+
+        assert E.coding == coding_region_exon
+
+    CODING_REVERSE_SLICE = [
+        # Coding region to pass to exon, sliced coding region
+        # (Region(100, 50), Region(100, 100)),  # coding region starts after exon
+        # (Region(0, 90), Region(100, 100)),  # coding region stops before exon
+        # (Region(0, 100), Region(100, 100)),  # coding region stops as the exon starts
+        # (Region(0, 101), Region(100, 101)),  # coding region overlaps exon by 1
+        # (Region(100, 200), Region(100, 121)),  # coding region extends after
+        # (Region(0, 200), Region(100, 121)),  # coding region fully contains exon
+    ]
+
+    @pytest.mark.parametrize("coding_region, coding_region_exon", CODING_REVERSE_SLICE)
+    def test_exon_slice_coding_negative_strand(
+        self, coding_region: Region, coding_region_exon: Region
+    ) -> None:
+        """Test slicing the coding region to the exon, if the exon is the negative strand"""
+        coding = Region(100, 10)
+        E = Exon(start=121, end=100, frame=0, coding=coding)
+
+        assert E.coding == coding_region_exon
