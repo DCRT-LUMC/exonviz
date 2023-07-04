@@ -8,10 +8,6 @@ class TestRegion:
 
         assert R.size == 1
 
-    def test_negative_region(self) -> None:
-        R = Region(10, 0)
-        assert R.size == 10
-
     def test_empty_region(self) -> None:
         R = Region(10, 10)
         assert R.size == 0
@@ -115,35 +111,12 @@ class TestRegion:
         assert before == Region(0, 10)
         assert after == Region(10, 20)
 
-    def test_region_dont_flip_reverse(self) -> None:
-        """Make sure we respect Regions that are in reverse"""
-        region = Region(20, 10)
+    def test_reverse_region(self) -> None:
+        """Test to make sure we reject reverse regions"""
+        with pytest.raises(ValueError):
+            region = Region(20, 10)
 
-        assert region.start == 20
-        assert region.end == 10
-        assert region.size == 10
 
-    @pytest.mark.parametrize("start, end, reverse", [(10, 20, False), (20, 10, True), (10, 10, False)])
-    def test_region_reverse(self, start: int, end: int, reverse: bool) -> None:
-        region = Region(start, end)
-
-        assert region.reverse == reverse
-
-    def test_unsupportd_mixed_reverse_equality(self):
-        """Equality is not supported for a reverse/forward region"""
-        forward = Region(0, 10)
-        reverse = Region(10, 0)
-
-        with pytest.raises(NotImplementedError):
-            forward == reverse
-
-    def test_unsupportd_mixed_reverse_subtraction(self):
-        """Subtraction is not supported for a reverse/forward region"""
-        forward = Region(0, 10)
-        reverse = Region(10, 0)
-
-        with pytest.raises(NotImplementedError):
-            forward == reverse
 class TestExon:
     end_frame = [
         # Exon, expected end_frame

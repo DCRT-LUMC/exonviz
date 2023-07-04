@@ -2,14 +2,12 @@ from typing import List, Union, Tuple
 
 
 class Region:
-    """A region has a start and end, which informs the size
-
-    Subtracting two regions returns two regions, namelya region before and after the substracted
-    region
-    """
+    """A region has a start and end, and an implicit size"""
 
     def __init__(self, start: int, end: int):
         """Ensures that start is always before end"""
+        if end < start:
+            raise ValueError("Reverse regions are not allowed (Region{start}, {end})")
         self.start = start
         self.end = end
 
@@ -18,15 +16,9 @@ class Region:
         """The size property."""
         return abs(self.end - self.start)
 
-    @property
-    def reverse(self) -> bool:
-        return self.start > self.end
-
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Region):
             return NotImplemented
-        if not self.reverse == other.reverse:
-            raise NotImplementedError
         return self.start == other.start and self.end == other.end
 
     def __bool__(self) -> bool:
@@ -37,8 +29,6 @@ class Region:
 
         Namely before and after the subtracted regio
         """
-        if not self.reverse == other.reverse:
-            raise NotImplementedError
         # If other does not overlap and lies before
         if other.end < self.start:
             return Region(self.start, self.start), self
@@ -66,7 +56,7 @@ class Region:
         return (before, after)
 
     def __repr__(self) -> str:
-        return f"Region(start={self.start}, end={self.end}, reverse={self.reverse}, size={self.size})"
+        return f"Region(start={self.start}, end={self.end}, size={self.size})"
 
 
 class Exon(Region):
