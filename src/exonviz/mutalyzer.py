@@ -32,7 +32,16 @@ def convert_coding_positions(positions: List[List[str]]) -> Tuple[int, int]:
     start = start - 1
     return (start, end)
 
-def convert_exon_positions(positions : List[List[str]]) -> List[Tuple[int, int]]:
+
+def is_reverse(positions: List[List[str]]) -> bool:
+    """Is the transcript in reverse"""
+    start = int(positions[0][0])
+    end = int(positions[0][1])
+
+    return start > end
+
+
+def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
     converted = list()
     for mutalyzer_start, mutalyzer_end in positions:
         start = int(mutalyzer_start)
@@ -46,9 +55,13 @@ def convert_exon_positions(positions : List[List[str]]) -> List[Tuple[int, int]]
         converted.append((start, end))
     return converted
 
-def extract_exons(mutalyzer: Dict[str, Any]) -> List[Exon]:
+
+def extract_exons(mutalyzer: Dict[str, Any]) -> Tuple[List[Exon], bool]:
     """Extract Exons from mutalyzer payload"""
     exons: List[Exon] = list()
+
+    # Is the mutalyzer code in reverse
+    reverse = is_reverse(mutalyzer["cds"]["g"])
 
     # Get the coding region
     coding = Region(*convert_coding_positions(mutalyzer["cds"]["g"]))
@@ -61,4 +74,4 @@ def extract_exons(mutalyzer: Dict[str, Any]) -> List[Exon]:
         frame = E.end_frame
         exons.append(E)
 
-    return exons
+    return exons, reverse

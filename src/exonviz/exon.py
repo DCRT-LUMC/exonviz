@@ -79,7 +79,7 @@ class Exon(Region):
             f"coding={self.coding}, non_coding={self.non_coding})"
         )
 
-    def _determine_coding(self, coding) -> Region:
+    def _determine_coding(self, coding: Region) -> Region:
         if coding.start > self.end:
             coding = Region(self.end, self.end)
         elif coding.end < self.start:

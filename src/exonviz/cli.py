@@ -5,8 +5,9 @@ without executing side effects
 
 import argparse
 import re
+import sys
 
-from typing import List
+from typing import List, Tuple
 from .draw import draw_exons
 from .exon import Exon
 from .mutalyzer import mutalyzer, extract_exons
@@ -26,14 +27,14 @@ def check_input(transcript: str) -> str:
     return transcript
 
 
-def fetch_exons(transcript: str) -> List[Exon]:
+def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
     """Make or fetch the requested exons"""
 
     payload = mutalyzer(transcript)
     if payload:
         return extract_exons(payload)
     else:
-        return list()
+        return list(), False
 
 
 def main() -> None:
@@ -50,12 +51,14 @@ def main() -> None:
 
     # Try to talk to mutalyzer
     try:
-        exons = fetch_exons(transcript)
+        exons, reverse = fetch_exons(transcript)
     except RuntimeError as e:
         print(e)
         exit(2)
 
-    plot = draw_exons(exons)
+    for exon in exons:
+        print(exon, file=sys.stderr)
+    plot = draw_exons(exons, reverse)
     print(plot)
 
 

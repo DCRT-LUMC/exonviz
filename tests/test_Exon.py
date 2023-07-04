@@ -222,23 +222,3 @@ class TestExon:
         E = Exon(start=100, end=121, frame=0, coding=coding_region)
 
         assert E.coding == coding_region_exon
-
-    CODING_REVERSE_SLICE = [
-        # Coding region to pass to exon, sliced coding region
-        # (Region(100, 50), Region(100, 100)),  # coding region starts after exon
-        # (Region(0, 90), Region(100, 100)),  # coding region stops before exon
-        # (Region(0, 100), Region(100, 100)),  # coding region stops as the exon starts
-        # (Region(0, 101), Region(100, 101)),  # coding region overlaps exon by 1
-        # (Region(100, 200), Region(100, 121)),  # coding region extends after
-        # (Region(0, 200), Region(100, 121)),  # coding region fully contains exon
-    ]
-
-    @pytest.mark.parametrize("coding_region, coding_region_exon", CODING_REVERSE_SLICE)
-    def test_exon_slice_coding_negative_strand(
-        self, coding_region: Region, coding_region_exon: Region
-    ) -> None:
-        """Test slicing the coding region to the exon, if the exon is the negative strand"""
-        coding = Region(100, 10)
-        E = Exon(start=121, end=100, frame=0, coding=coding)
-
-        assert E.coding == coding_region_exon

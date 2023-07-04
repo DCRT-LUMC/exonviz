@@ -2,6 +2,7 @@ from exonviz.mutalyzer import (
     extract_exons,
     convert_exon_positions,
     convert_coding_positions,
+    is_reverse,
 )
 from exonviz.exon import Exon, Region
 
@@ -23,7 +24,7 @@ def test_convert_coding_positions_reverse() -> None:
 
 
 def test_extract_exons() -> None:
-    exons = extract_exons(mutalyzer)
+    exons, reverse = extract_exons(mutalyzer)
     assert exons[0] == Exon(0, 268, 0, Region(237, 11295))
 
 
@@ -35,6 +36,11 @@ def test_convert_mutalyzer_positions() -> None:
         (268, 330),
         (11283, 13992),
     ]
+
+
+def test_is_reverse() -> None:
+    assert is_reverse([["10", "4"]])
+    assert not is_reverse([["4", "10"]])
 
 
 def test_convert_mutalyzer_positions_reverse() -> None:
