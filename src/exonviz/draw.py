@@ -1,6 +1,7 @@
 from typing import List, Union, Tuple
 import svg
 from .exon import Exon, Region
+import math
 
 
 def shift(
@@ -11,15 +12,16 @@ def shift(
 
 
 def draw_exons(
-    exons: List[Exon], reverse: bool, scale: int = 1, max_width: int = 1000
+    exons: List[Exon], reverse: bool, scale: int = 1, max_width: float = 1024
 ) -> svg.SVG:
     elements = list()
 
     # The maximum width we have reached for this picture
     canvas_width: float = 0
     # Default values needed for drawing
-    height = 20
-    exon_gap = 5
+    total_width = min(sum(exon.size for exon in exons), max_width)
+    height = min(0.1 * total_width, 20)
+    exon_gap = min(height/4, 5)
 
     # These values will be updated as we draw the figure
     x_position: float = 10
@@ -38,11 +40,12 @@ def draw_exons(
             # Scale the points
             section = [x * scale for x in section]
 
-            fill = "green" if exon.frame == exon.end_frame else "black"
+            #fill = "green" if exon.frame == exon.end_frame else "black"
+            fill = "#4C72B7"
 
             elements.append(
                 svg.Polygon(
-                    points=section, stroke="red", fill=fill, stroke_width=1  # type: ignore
+                    points=section, stroke="red", fill=fill, stroke_width=0  # type: ignore
                 )
             )
         x_position = x_position + exon.size + exon_gap
