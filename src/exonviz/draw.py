@@ -21,7 +21,7 @@ def draw_exons(
     # Default values needed for drawing
     total_width = min(sum(exon.size for exon in exons), max_width)
     height = min(0.1 * total_width, 20)
-    exon_gap = min(height/4, 5)
+    exon_gap = min(height / 4, 5)
 
     # These values will be updated as we draw the figure
     x_position: float = 10
@@ -40,7 +40,7 @@ def draw_exons(
             # Scale the points
             section = [x * scale for x in section]
 
-            #fill = "green" if exon.frame == exon.end_frame else "black"
+            # fill = "green" if exon.frame == exon.end_frame else "black"
             fill = "#4C72B7"
 
             elements.append(
