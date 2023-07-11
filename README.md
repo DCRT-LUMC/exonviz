@@ -5,12 +5,16 @@
 # Exonviz
 Visualise exons
 ------------------------------------------------------------------------
+## Installation
+Exonviz requires Python to run, and can be installed using `pip install exonviz`.
+
 ## Usage
 Pass either a transcript (with version!), or a valid HGVS description to exonviz to generate a figure.
+
 ### Options
 Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
 
-```bash
+```python
 
 usage: exonviz [-h] [--max-width MAX_WIDTH] [--height HEIGHT] [--non-coding]
                [--gap GAP]
