@@ -4,16 +4,19 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import io
-import re
 from glob import glob
 from os.path import basename
 from os.path import dirname
 from os.path import join
 from os.path import splitext
+from pathlib import Path
 
 from setuptools import find_packages
 from setuptools import setup
 
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 def read(*names, **kwargs):
     with io.open(
@@ -24,12 +27,13 @@ def read(*names, **kwargs):
 
 setup(
     name="exonviz",
-    version="0.0.1",
-    license="MIT",
+    version="0.0.3",
+    license="AGPL-3.0",
     description="Visualise exons and their reading frames",
-    long_description="",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Redmar van den Berg",
-    author_email="Redmar@ubuntu.com",
+    author_email="RedmarvandenBerg@lumc.nl",
     url="https://github.com/redmar-van-den-berg/exonviz",
     packages=find_packages("src"),
     package_dir={"": "src"},
@@ -55,7 +59,7 @@ setup(
         "Topic :: Utilities",
     ],
     project_urls={
-        "Changelog": "https://github.com/redmar-van-den-berg/exonviz/blob/master/CHANGELOG.rst",
+        "Changelog": "https://github.com/redmar-van-den-berg/exonviz/blob/main/CHANGELOG.md",
         "Issue Tracker": "https://github.com/redmar-van-den-berg/exonviz/issues",
     },
     keywords=[
