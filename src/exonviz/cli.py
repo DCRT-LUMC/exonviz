@@ -6,6 +6,7 @@ without executing side effects
 import argparse
 import re
 import sys
+import math
 
 from typing import List, Tuple
 from .draw import draw_exons
@@ -38,8 +39,22 @@ def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Description of command.")
+    parser = argparse.ArgumentParser(
+        description="Description of command.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument("transcript", help="Transcript (with version) to visualise")
+    parser.add_argument(
+        "--max-width", type=int, help="Maximum width of the figure", default=math.inf
+    )
+    parser.add_argument("--height", type=int, help="Exon height", default=None)
+    parser.add_argument(
+        "--non-coding",
+        action="store_true",
+        default=False,
+        help="Show non coding regions",
+    )
+    parser.add_argument("--gap", type=int, help="Gap between the exons", default=None)
     args = parser.parse_args()
 
     # Does the transcript format make sense?
@@ -58,7 +73,14 @@ def main() -> None:
 
     for exon in exons:
         print(exon, file=sys.stderr)
-    plot = draw_exons(exons, reverse)
+    plot = draw_exons(
+        exons,
+        reverse,
+        max_width=args.max_width,
+        height=args.height,
+        non_coding=args.non_coding,
+        gap_size=args.gap,
+    )
     print(plot)
 
 
