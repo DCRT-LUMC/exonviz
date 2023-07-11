@@ -25,7 +25,7 @@ def draw_exons(
 
     # These values will be updated as we draw the figure
     x_position: float = 10
-    y_position = 0
+    y_position: float = 0
 
     for exon in exons:
         # If we overflow the width, go to a new line
@@ -107,7 +107,7 @@ Section = List[float]
 
 
 def draw_exon(
-    exon: Exon, height: int, reverse: bool
+    exon: Exon, height: float, reverse: bool
 ) -> Tuple[Section, Section, Section]:
     """Draw the specified exon by calculating all the points that have to be connected
 
