@@ -8,7 +8,10 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 -->
 
-v0.0.3
+v0.2.0-dev
+---------------------------
+
+v0.1.0
 ---------------------------
 + Various changes related to packaging
 
