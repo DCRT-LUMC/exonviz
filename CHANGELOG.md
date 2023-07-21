@@ -8,8 +8,12 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 -->
 
-v0.1.2-dev
+v0.1.3-dev
 ---------------------------
+
+v0.1.2
+---------------------------
++ Be explicit about which functions we expose
 
 v0.1.1
 ---------------------------
