@@ -8,8 +8,9 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 -->
 
-v0.2.0-dev
+v0.1.1-dev
 ---------------------------
++ Expose type hints when used as a library
 
 v0.1.0
 ---------------------------
