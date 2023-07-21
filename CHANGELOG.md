@@ -12,6 +12,7 @@ v0.1.1-dev
 ---------------------------
 + Publish type hints when used as a library
 + Expose interface functions at the package level
++ Fix a bug where mutalyzer errors are written to STDOUT
 
 v0.1.0
 ---------------------------

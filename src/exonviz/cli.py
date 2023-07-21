@@ -64,8 +64,8 @@ def main() -> None:
     try:
         exons, reverse = fetch_exons(args.transcript)
     except RuntimeError as e:
-        print(e)
-        exit(2)
+        print(e, file=sys.stderr)
+        exit(1)
 
     for exon in exons:
         print(exon, file=sys.stderr)
