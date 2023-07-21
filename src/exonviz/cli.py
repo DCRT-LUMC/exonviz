@@ -31,6 +31,9 @@ def check_input(transcript: str) -> str:
 def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
     """Make or fetch the requested exons"""
 
+    # Does the transcript format make sense?
+    transcript = check_input(transcript)
+
     payload = mutalyzer(transcript)
     if payload:
         return extract_exons(payload)
@@ -57,16 +60,9 @@ def main() -> None:
     parser.add_argument("--gap", type=int, help="Gap between the exons", default=None)
     args = parser.parse_args()
 
-    # Does the transcript format make sense?
-    try:
-        transcript = check_input(args.transcript)
-    except RuntimeError as e:
-        print(e)
-        exit(1)
-
     # Try to talk to mutalyzer
     try:
-        exons, reverse = fetch_exons(transcript)
+        exons, reverse = fetch_exons(args.transcript)
     except RuntimeError as e:
         print(e)
         exit(2)

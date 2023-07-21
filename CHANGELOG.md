@@ -10,7 +10,8 @@ that users understand how the changes affect the new version.
 
 v0.1.1-dev
 ---------------------------
-+ Expose type hints when used as a library
++ Publish type hints when used as a library
++ Expose interface functions at the package level
 
 v0.1.0
 ---------------------------
