@@ -8,7 +8,12 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.1.3-dev
++ Refactor drawing fuction to take a configuration dict
++ Add default configuration for drawing
 
+### Breaking changes
++ Rename `--max-width` to `--width`
++ Rename `--non-coding` to `--noncoding`
 ## v0.1.2
 + Be explicit about which functions we expose
 

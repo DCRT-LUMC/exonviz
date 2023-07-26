@@ -13,6 +13,8 @@ from .draw import draw_exons
 from .exon import Exon
 from .mutalyzer import mutalyzer, extract_exons
 
+from .draw import _config
+
 
 def check_input(transcript: str) -> str:
     """Check the input from the user, and rewrite when needed"""
@@ -41,24 +43,39 @@ def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
         return list(), False
 
 
-def main() -> None:
+def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Description of command.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument("transcript", help="Transcript (with version) to visualise")
-    parser.add_argument(
-        "--max-width", type=int, help="Maximum width of the figure", default=math.inf
-    )
-    parser.add_argument("--height", type=int, help="Exon height", default=None)
-    parser.add_argument(
-        "--non-coding",
-        action="store_true",
-        default=False,
-        help="Show non coding regions",
-    )
-    parser.add_argument("--gap", type=int, help="Gap between the exons", default=None)
+
+    for key, value, description in _config:
+        # Booleans are a special case
+        if type(value) == bool:
+            action = "store_false" if value else "store_true"
+            parser.add_argument(
+                f"--{key}", default=value, action=action, help=description
+            )
+        else:
+            parser.add_argument(
+                f"--{key}",
+                type=type(value),
+                default=value,
+                help=description,
+            )
+
+    return parser
+
+
+def main() -> None:
+    parser = make_parser()
     args = parser.parse_args()
+
+    # Make the configuration for the drawing
+    config = dict()
+    for key, *_ in _config:
+        config[key] = getattr(args, key)
 
     # Try to talk to mutalyzer
     try:
@@ -69,13 +86,11 @@ def main() -> None:
 
     for exon in exons:
         print(exon, file=sys.stderr)
+
     plot = draw_exons(
         exons,
         reverse,
-        max_width=args.max_width,
-        height=args.height,
-        non_coding=args.non_coding,
-        gap_size=args.gap,
+        config=config,
     )
     print(plot)
 

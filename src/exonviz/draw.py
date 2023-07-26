@@ -1,7 +1,16 @@
-from typing import List, Union, Tuple, Optional
+from typing import List, Union, Tuple, Optional, Any, Dict
 import svg
 from .exon import Exon, Region
 import math
+
+
+# Options for drawing the figure. Used to create the cli parser and default dict
+_config = [
+    ("width", math.inf, "Maximum width of the figure"),
+    ("height", 20, "Exon height"),
+    ("noncoding", False, "Show non coding regions"),
+    ("gap", 5, "Gap between the exons"),
+]
 
 
 def shift(
@@ -14,29 +23,13 @@ def shift(
 def draw_exons(
     exons: List[Exon],
     reverse: bool,
+    config: Dict[str, Any],
     scale: int = 1,
-    max_width: float = 1024,
-    height: Optional[float] = None,
-    non_coding: bool = False,
-    gap_size: Optional[int] = None,
 ) -> svg.SVG:
     elements = list()
 
     # The maximum width we have reached for this picture
     canvas_width: float = 0
-    # Default values needed for drawing
-    if non_coding:
-        total_width = min(sum(exon.size for exon in exons), max_width)
-    else:
-        total_width = min(sum(exon.coding.size for exon in exons), max_width)
-
-    if height is None:
-        height = min(0.1 * total_width, 20)
-
-    if gap_size is None:
-        exon_gap = min(height / 4, 5)
-    else:
-        exon_gap = gap_size
 
     # These values will be updated as we draw the figure
     x_position: float = 10
@@ -45,21 +38,22 @@ def draw_exons(
     for exon in exons:
         # The visual size of the exon depends on wether or not we draw the non-coding
         # regions
-        if non_coding:
+        if config["noncoding"]:
             exon_size = exon.size
         else:
             exon_size = exon.coding.size
 
         # If we overflow the width, go to a new line
-        if x_position + exon_size + height > max_width / scale:
+        if x_position + exon_size + config["height"] > config["width"] / scale:
             # If we are still at the start position for x, we dont start a new line
-            # (this happens when the exon we want to draw is larger than max_width)
+            # (this happens when the exon we want to draw is larger than
+            # config["width"])
             if x_position == 10:
                 continue
             x_position = 10
-            y_position += 2 * height
+            y_position += 2 * config["height"]
 
-        for section in draw_exon(exon, height, reverse, non_coding):
+        for section in draw_exon(exon, config["height"], reverse, config["noncoding"]):
             # Don't draw the empty sections
             if not section:
                 continue
@@ -77,10 +71,10 @@ def draw_exons(
                     points=section, stroke="red", fill=fill, stroke_width=0  # type: ignore
                 )
             )
-        x_position = x_position + exon_size + exon_gap
+        x_position = x_position + exon_size + config["gap"]
         canvas_width = max(x_position, canvas_width)
 
-    return svg.SVG(width=canvas_width, height=y_position + height, elements=elements)  # type: ignore
+    return svg.SVG(width=canvas_width, height=y_position + config["height"], elements=elements)  # type: ignore
 
 
 def draw_non_coding(region: Region, height: float) -> List[float]:
