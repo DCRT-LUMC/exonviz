@@ -14,6 +14,8 @@ that users understand how the changes affect the new version.
 ### Breaking changes
 + Rename `--max-width` to `--width`
 + Rename `--non-coding` to `--noncoding`
++ `draw_exons` now takes a configuration dictionary
+
 ## v0.1.2
 + Be explicit about which functions we expose
 

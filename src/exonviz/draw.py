@@ -12,6 +12,8 @@ _config = [
     ("gap", 5, "Gap between the exons"),
 ]
 
+config = {key: value for key, value, description in _config}
+
 
 def shift(
     points: List[Union[float, int]], x_offset: float, y_offset: float
