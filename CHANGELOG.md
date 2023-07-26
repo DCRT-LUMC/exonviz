@@ -10,6 +10,7 @@ that users understand how the changes affect the new version.
 ## v0.1.3-dev
 + Refactor drawing fuction to take a configuration dict
 + Add default configuration for drawing
++ Add option to set the color
 
 ### Breaking changes
 + Rename `--max-width` to `--width`

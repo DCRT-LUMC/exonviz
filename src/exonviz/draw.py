@@ -10,6 +10,7 @@ _config = [
     ("height", 20, "Exon height"),
     ("noncoding", False, "Show non coding regions"),
     ("gap", 5, "Gap between the exons"),
+    ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
 ]
 
 config = {key: value for key, value, description in _config}
@@ -65,12 +66,9 @@ def draw_exons(
             # Scale the points
             section = [x * scale for x in section]
 
-            # fill = "green" if exon.frame == exon.end_frame else "black"
-            fill = "#4C72B7"
-
             elements.append(
                 svg.Polygon(
-                    points=section, stroke="red", fill=fill, stroke_width=0  # type: ignore
+                    points=section, stroke="red", fill=config["color"], stroke_width=0  # type: ignore
                 )
             )
         x_position = x_position + exon_size + config["gap"]

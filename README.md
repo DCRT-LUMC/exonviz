@@ -31,6 +31,7 @@ optional arguments:
   --height HEIGHT  Exon height (default: 20)
   --noncoding      Show non coding regions (default: False)
   --gap GAP        Gap between the exons (default: 5)
+  --color COLOR    Color for the exons (e.g. 'purple') (default: #4C72B7)
 ```
 
 ## Examples
@@ -44,7 +45,7 @@ Using the default settings, which does not include non-coding regions of the exo
 ### DMD
 Since DMD has many exons, we specify a maximum width for the figure:
 
-`exonviz "NM_004006.3:c.=" --width 1024 > DMD.svg`
+`exonviz "NM_004006.3:c.=" --width 1024 --color purple > DMD.svg`
 
 ![Figure of DMD exons](https://raw.githubusercontent.com/Redmar-van-den-Berg/exonviz/main/examples/DMD.svg)
 
