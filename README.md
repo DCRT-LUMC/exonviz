@@ -18,7 +18,10 @@ Pass either a transcript (with version!), or a valid HGVS description to exonviz
 Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
 
 ```
-usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding] [--gap GAP] transcript
+
+usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding]
+               [--gap GAP] [--color COLOR] [--exonnumber]
+               transcript
 
 Description of command.
 
@@ -32,6 +35,7 @@ optional arguments:
   --noncoding      Show non coding regions (default: False)
   --gap GAP        Gap between the exons (default: 5)
   --color COLOR    Color for the exons (e.g. 'purple') (default: #4C72B7)
+  --exonnumber     Show exon number (default: False)
 ```
 
 ## Examples
@@ -45,7 +49,7 @@ Using the default settings, which does not include non-coding regions of the exo
 ### DMD
 Since DMD has many exons, we specify a maximum width for the figure:
 
-`exonviz "NM_004006.3:c.=" --width 1024 --color purple > DMD.svg`
+`exonviz "NM_004006.3:c.=" --width 1024 --color purple --exonnumber > DMD.svg`
 
 ![Figure of DMD exons](https://raw.githubusercontent.com/Redmar-van-den-Berg/exonviz/main/examples/DMD.svg)
 

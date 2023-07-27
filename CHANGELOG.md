@@ -7,7 +7,10 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 --->
 
-## v0.1.3-dev
+## v0.1.4-dev
++ Add option to show exon number
+
+## v0.1.3
 + Refactor drawing fuction to take a configuration dict
 + Add default configuration for drawing
 + Add option to set the color

@@ -2,6 +2,7 @@ from typing import List, Union, Tuple, Optional, Any, Dict
 import svg
 from .exon import Exon, Region
 import math
+import textwrap
 
 
 # Options for drawing the figure. Used to create the cli parser and default dict
@@ -11,6 +12,7 @@ _config = [
     ("noncoding", False, "Show non coding regions"),
     ("gap", 5, "Gap between the exons"),
     ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
+    ("exonnumber", False, "Show exon number"),
 ]
 
 config = {key: value for key, value, description in _config}
@@ -31,6 +33,14 @@ def draw_exons(
 ) -> svg.SVG:
     elements = list()
 
+    # Set style for exonnumber, even if we don't need it
+    elements.append(
+        svg.Style(
+            text=textwrap.dedent(f"""
+            .exonnr {{ text-anchor: middle; dominant-baseline: central; font: {config["height"]/2}px sans-serif; fill: white;}}
+            """),
+        )
+    )
     # The maximum width we have reached for this picture
     canvas_width: float = 0
 
@@ -38,7 +48,7 @@ def draw_exons(
     x_position: float = 10
     y_position: float = 0
 
-    for exon in exons:
+    for i,exon in enumerate(exons, start=1):
         # The visual size of the exon depends on wether or not we draw the non-coding
         # regions
         if config["noncoding"]:
@@ -46,6 +56,9 @@ def draw_exons(
         else:
             exon_size = exon.coding.size
 
+        # If there is nothing to draw, skip
+        if not exon_size:
+            continue
         # If we overflow the width, go to a new line
         if x_position + exon_size + config["height"] > config["width"] / scale:
             # If we are still at the start position for x, we dont start a new line
@@ -70,6 +83,11 @@ def draw_exons(
                 svg.Polygon(
                     points=section, stroke="red", fill=config["color"], stroke_width=0  # type: ignore
                 )
+            )
+        # Put in the exon number
+        if config["exonnumber"]:
+            elements.append(
+                svg.Text(x=x_position + (exon_size/2), y=y_position + 0.5 * config["height"], class_=["exonnr"], text=i)
             )
         x_position = x_position + exon_size + config["gap"]
         canvas_width = max(x_position, canvas_width)
