@@ -31,14 +31,16 @@ def draw_exons(
     config: Dict[str, Any],
     scale: int = 1,
 ) -> svg.SVG:
-    elements = list()
+    elements: List[Union[svg.Style, svg.Text]] = list()
 
     # Set style for exonnumber, even if we don't need it
     elements.append(
         svg.Style(
-            text=textwrap.dedent(f"""
+            text=textwrap.dedent(
+                f"""
             .exonnr {{ text-anchor: middle; dominant-baseline: central; font: {config["height"]/2}px sans-serif; fill: white;}}
-            """),
+            """
+            ),
         )
     )
     # The maximum width we have reached for this picture
@@ -48,7 +50,7 @@ def draw_exons(
     x_position: float = 10
     y_position: float = 0
 
-    for i,exon in enumerate(exons, start=1):
+    for i, exon in enumerate(exons, start=1):
         # The visual size of the exon depends on wether or not we draw the non-coding
         # regions
         if config["noncoding"]:
@@ -87,7 +89,12 @@ def draw_exons(
         # Put in the exon number
         if config["exonnumber"]:
             elements.append(
-                svg.Text(x=x_position + (exon_size/2), y=y_position + 0.5 * config["height"], class_=["exonnr"], text=i)
+                svg.Text(
+                    x=x_position + (exon_size / 2),
+                    y=y_position + 0.5 * config["height"],
+                    class_=["exonnr"],
+                    text=str(i),
+                )
             )
         x_position = x_position + exon_size + config["gap"]
         canvas_width = max(x_position, canvas_width)
