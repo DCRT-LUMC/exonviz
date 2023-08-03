@@ -6,14 +6,23 @@ without executing side effects
 import argparse
 import re
 import sys
-import math
+import gzip
 
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from .draw import draw_exons
 from .exon import Exon
 from .mutalyzer import mutalyzer, extract_exons
 
 from .draw import _config
+
+
+def get_MANE() -> Dict[str, str]:
+    with gzip.open("data/mane.txt.gz", "rt") as fin:
+        mane = dict()
+        for line in fin:
+            gene, transcript = line.strip("\n").split("\t")
+            mane[gene] = transcript
+    return mane
 
 
 def check_input(transcript: str) -> str:
@@ -33,8 +42,14 @@ def check_input(transcript: str) -> str:
 def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
     """Make or fetch the requested exons"""
 
-    # Does the transcript format make sense?
-    transcript = check_input(transcript)
+    # If the transcript is actually the gene name, substitute the MANE transcript
+    MANE = get_MANE()
+    transcript = MANE.get(transcript, transcript)
+    if transcript in MANE:
+        transcript = MANE[transcript]
+    else:
+        # Does the transcript format make sense?
+        transcript = check_input(transcript)
 
     payload = mutalyzer(transcript)
     if payload:

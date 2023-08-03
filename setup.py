@@ -40,7 +40,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
     package_data={
-        "exonviz": ["py.typed"]
+        "exonviz": ["py.typed", "data/mane.txt.gz"]
     },
     zip_safe=False,
     classifiers=[
