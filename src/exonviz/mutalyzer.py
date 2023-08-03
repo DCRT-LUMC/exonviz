@@ -18,6 +18,10 @@ def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
         raise RuntimeError(msg)
     else:
         js = json.loads(response.read())
+
+    if "selector_short" not in js:
+        msg = f"No exons found for {variant} (is it a genomic variant?)"
+        raise RuntimeError(msg)
     selector: Dict[str, Any] = js["selector_short"]
     return selector
 
