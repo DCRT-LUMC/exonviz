@@ -8,6 +8,7 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.1.4-dev
++ Add support for drawing only part of the transcript
 + Add support for gene names (defaults to MANE_Select transcript)
 + Add option to show exon number
 

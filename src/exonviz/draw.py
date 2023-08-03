@@ -13,6 +13,8 @@ _config = [
     ("gap", 5, "Gap between the exons"),
     ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
     ("exonnumber", False, "Show exon number"),
+    ("firstexon", 1, "The first exon to draw"),
+    ("lastexon", math.inf, "The last exon to draw"),
 ]
 
 config = {key: value for key, value, description in _config}
@@ -50,7 +52,10 @@ def draw_exons(
     x_position: float = 10
     y_position: float = 0
 
-    for i, exon in enumerate(exons, start=1):
+    # Get the first and last exon to draw
+    first = config["firstexon"]
+    last = int(min(config["lastexon"], len(exons)))
+    for i, exon in enumerate(exons[first-1:last], start=first):
         # The visual size of the exon depends on wether or not we draw the non-coding
         # regions
         if config["noncoding"]:
