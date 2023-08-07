@@ -7,10 +7,9 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 --->
 
-## v0.1.5
-+ Bugfix release, dropping support for Python 3.8
 
 ## v0.1.4
++ Drop support for Python 3.8
 + Add support for drawing only part of the transcript
 + Add support for gene names (defaults to MANE_Select transcript)
 + Add option to show exon number
