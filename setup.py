@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="exonviz",
-    version="0.1.4",
+    version="0.1.5",
     license="AGPL-3.0",
     description="Visualise exons and their reading frames",
     long_description=long_description,
@@ -51,7 +51,6 @@ setup(
         "Operating System :: Unix",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
@@ -68,7 +67,7 @@ setup(
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=[
         "svg.py",
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
