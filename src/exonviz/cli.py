@@ -7,6 +7,7 @@ import argparse
 import re
 import sys
 import gzip
+from importlib import resources
 
 from typing import List, Tuple, Dict
 from .draw import draw_exons
@@ -17,7 +18,8 @@ from .draw import _config
 
 
 def get_MANE() -> Dict[str, str]:
-    with gzip.open("data/mane.txt.gz", "rt") as fin:
+    fname = str(resources.files("exonviz.data").joinpath("mane.txt.gz"))
+    with gzip.open(fname, "rt") as fin:
         mane = dict()
         for line in fin:
             gene, transcript = line.strip("\n").split("\t")
