@@ -55,7 +55,7 @@ def draw_exons(
     # Get the first and last exon to draw
     first = config["firstexon"]
     last = int(min(config["lastexon"], len(exons)))
-    for i, exon in enumerate(exons[first-1:last], start=first):
+    for i, exon in enumerate(exons[first - 1 : last], start=first):
         # The visual size of the exon depends on wether or not we draw the non-coding
         # regions
         if config["noncoding"]:
