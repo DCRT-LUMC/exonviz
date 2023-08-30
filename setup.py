@@ -34,7 +34,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Redmar van den Berg",
     author_email="RedmarvandenBerg@lumc.nl",
-    url="https://github.com/redmar-van-den-berg/exonviz",
+    url="https://github.com/DCRT-LUMC/exonviz",
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
@@ -61,8 +61,8 @@ setup(
         "Topic :: Utilities",
     ],
     project_urls={
-        "Changelog": "https://github.com/redmar-van-den-berg/exonviz/blob/main/CHANGELOG.md",
-        "Issue Tracker": "https://github.com/redmar-van-den-berg/exonviz/issues",
+        "Changelog": "https://github.com/DCRT-LUMC/exonviz/blob/main/CHANGELOG.md",
+        "Issue Tracker": "https://github.com/DCRT-LUMC/exonviz/issues",
     },
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
