@@ -43,7 +43,7 @@ optional arguments:
 
 ## Examples
 ### SDHD
-Using the default settings, which does not include non-coding regions of the exon:
+Using the default settings, which does not include non-coding regions of the transcript:
 
 `exonviz SDHD > SDHD.svg`
 
@@ -58,7 +58,7 @@ a maximum width for the figure, since DMD has many exons:
 ![Figure of DMD exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/DMD.svg)
 
 
-# ATXN1
+### ATXN1
 Include the non coding exons, since most exons of ATXN1 are non coding. We
 limit the maximum width and increase the height of the picture. For clarity, we
 also increase the distance between the displayed exons:
