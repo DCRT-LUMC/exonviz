@@ -8,7 +8,7 @@ def default_exon() -> Exon:
     """
     ==========
     """
-    return Exon(10)
+    return Exon(100)
 
 
 @pytest.fixture
@@ -16,12 +16,12 @@ def center_coding() -> Exon:
     """
     ====||||==
     """
-    c = Coding(4, 8)
-    return Exon(size=10, coding=c)
+    c = Coding(40, 80)
+    return Exon(size=100, coding=c)
 
 
 def test_default_exon(default_exon: Exon) -> None:
-    assert default_exon.size == 10
+    assert default_exon.size == 100
 
     # Test the default coding region
     assert not default_exon.coding
@@ -29,7 +29,8 @@ def test_default_exon(default_exon: Exon) -> None:
 
 
 def test_draw_exon(center_coding: Exon) -> None:
-    elements = center_coding.draw()
+    height = 20
+    elements = center_coding.draw(height=20)
 
     # Get the non coding part of the exon
     non_coding = elements[0]
@@ -51,7 +52,7 @@ def test_draw_exon(center_coding: Exon) -> None:
     assert coding.height == 20
 
     # Check that the start and end are correct
-    assert coding.x == 4
+    assert coding.x == 40
     assert coding.y == 0
 
 
