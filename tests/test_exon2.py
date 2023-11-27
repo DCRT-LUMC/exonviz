@@ -63,3 +63,19 @@ def test_default_coding() -> None:
 
     # An empty coding region is false
     assert not c
+
+
+start_end_frame = [
+    #start, end, start_expected, end_expected
+    (0, 0, None, None),
+]
+
+@pytest.mark.parametrize("start_frame, end_frame, start_element, end_element", start_end_frame)
+def test_draw_coding_frames(start_frame: int, end_frame: int, start_element: None, end_element:None) -> None:
+    c = Coding(0, 10)
+    e = Exon(size=10, coding=c)
+    elements = e.draw()
+
+    # The coding region frames are the third and fourth element
+    #start = elements[2]
+    #end = elements[3]

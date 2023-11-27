@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from svg import Rect
+from svg import Rect, Polygon
 
 Element = Rect
 
@@ -38,12 +38,29 @@ class Exon:
         elements = list()
 
         elements.append(self._draw_noncoding(height))
-        elements.append(self._draw_coding(height))
+        elements += (self._draw_coding(height))
 
         return elements
 
-    def _draw_noncoding(self, height: int) -> Rect:
-        return Rect(x=0, y=height * 0.25, width=self.size, height=height * 0.5)
+    def _draw_noncoding(self, height: int, color: str = "blue") -> Rect:
+        return Rect(x=0, y=height * 0.25, width=self.size, height=height * 0.5, fill=color)
 
-    def _draw_coding(self, height: int) -> Rect:
-        return Rect(x=self.coding.start, y=0, width=self.coding.size, height=height)
+    def _draw_coding(self, height: int, color: str ="green") -> List[Element]:
+        # Fixed points for every exon
+        elements = list()
+        # First, we add the coding region block
+        elements.append(Rect(x=self.coding.start, y=0, width=self.coding.size, height=height, fill=color))
+        # Next, we add the starting frame
+
+        #start = Polygon(
+        #    points = [
+        #        0, 0,
+        #        0.5*height, 0,
+        #        0.5*height, height,
+        #        0, height,
+        #        0, 0
+        #    ], fill="orange"
+        #)
+
+        #elements.append(start)
+        return elements
