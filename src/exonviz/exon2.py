@@ -13,7 +13,6 @@ class Coding:
     start_frame: int = 0
     end_frame: int = 0
 
-
     def __bool__(self) -> bool:
         return self.end > self.start
 
@@ -30,7 +29,7 @@ class Exon:
         else:
             self.coding = coding
 
-    def draw(self, height: int=20) -> List[Element]:
+    def draw(self, height: int = 20) -> List[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
@@ -44,15 +43,7 @@ class Exon:
         return elements
 
     def _draw_noncoding(self, height: int) -> Rect:
-        return Rect(
-            x=0, y=height*0.25,
-            width = self.size,
-            height=height*0.5
-        )
+        return Rect(x=0, y=height * 0.25, width=self.size, height=height * 0.5)
 
     def _draw_coding(self, height: int) -> Rect:
-        return Rect(
-            x=self.coding.start, y = 0,
-            width = self.coding.size,
-            height = height
-        )
+        return Rect(x=self.coding.start, y=0, width=self.coding.size, height=height)

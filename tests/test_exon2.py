@@ -2,12 +2,14 @@ import pytest
 
 from exonviz.exon2 import Coding, Exon
 
+
 @pytest.fixture
 def default_exon() -> Exon:
     """
     ==========
     """
     return Exon(10)
+
 
 @pytest.fixture
 def center_coding() -> Exon:
@@ -16,6 +18,7 @@ def center_coding() -> Exon:
     """
     c = Coding(4, 8)
     return Exon(size=10, coding=c)
+
 
 def test_default_exon(default_exon: Exon) -> None:
     assert default_exon.size == 10
@@ -27,7 +30,7 @@ def test_default_exon(default_exon: Exon) -> None:
 
 def test_draw_exon(center_coding: Exon) -> None:
     elements = center_coding.draw()
-    
+
     # Get the non coding part of the exon
     non_coding = elements[0]
 
