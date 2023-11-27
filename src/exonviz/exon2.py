@@ -1,13 +1,30 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from svg import Rect
 
 Element = Rect
 
+
 @dataclass()
+class Coding:
+    start: int = 0
+    end: int = 0
+    start_frame: int = 0
+    end_frame: int = 0
+
+
+    def __bool__(self) -> bool:
+        return self.end > self.start
+
+
 class Exon:
-    size: int
+    def __init__(self, size: int, coding: Optional[Coding] = None) -> None:
+        self.size = size
+        if coding is None:
+            self.coding = Coding()
+        else:
+            self.coding = coding
 
     def draw(self, height: int=20) -> List[Element]:
         """Draw the Exon, in SVG format
@@ -27,14 +44,3 @@ class Exon:
             width = self.size,
             height=height
         )
-
-@dataclass()
-class Coding:
-    start: int = 0
-    end: int = 0
-    start_frame: int = 0
-    end_frame: int = 0
-
-
-    def __bool__(self) -> bool:
-        return self.end > self.start

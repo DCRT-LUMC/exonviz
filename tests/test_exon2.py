@@ -9,6 +9,10 @@ def default_exon() -> Exon:
 def test_default_exon(default_exon: Exon) -> None:
     assert default_exon.size == 10
 
+    # Test the default coding region
+    assert not default_exon.coding
+    assert default_exon.coding.start == 0
+
 
 def test_draw_exon(default_exon: Exon) -> None:
     elements = default_exon.draw()
