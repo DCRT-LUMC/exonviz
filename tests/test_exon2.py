@@ -1,6 +1,6 @@
 import pytest
 
-from exonviz.exon2 import Coding, Exon
+from exonviz.exon2 import Coding, Exon, Variant
 
 
 @pytest.fixture
@@ -20,12 +20,21 @@ def center_coding() -> Exon:
     return Exon(size=100, coding=c)
 
 
+@pytest.fixture
+def with_variant() -> Exon:
+    vars = [Variant(10, "A>T", "red"), Variant(30, "C>G", "blue")]
+    return Exon(size=100, variants=vars)
+
+
 def test_default_exon(default_exon: Exon) -> None:
     assert default_exon.size == 100
 
     # Test the default coding region
     assert not default_exon.coding
     assert default_exon.coding.start == 0
+
+    # Test that we made variants into a list
+    assert default_exon.variants == list()
 
 
 def test_draw_exon(center_coding: Exon) -> None:
@@ -127,3 +136,33 @@ def test_draw_coding_frames(
     # The coding region frames are the third and fourth element
     start_cap = elements[2]
     end_cap = elements[3]
+
+
+def test_draw_variants(with_variant: Exon) -> None:
+    elements = with_variant.draw(height=20)
+    assert len(elements) == 3
+
+    var1 = elements[1]
+    assert var1.x == 10
+    assert var1.fill == "red"
+
+    var2 = elements[2]
+    assert var2.x == 30
+    assert var2.fill == "blue"
+
+
+def test_draw_variants_offset(with_variant: Exon) -> None:
+    elements = with_variant.draw(height=20, x=11)
+    var1 = elements[1]
+    assert var1.x == 10 + 11  #  variant.position + offset
+
+
+def test_draw_variant_coding() -> None:
+    e = Exon(size=100, coding=Coding(0, 100), variants=[Variant(10, "A>T", "blue")])
+
+    elements = e.draw()
+
+    assert len(elements) == 5
+
+    variant = elements[4]
+    assert variant.x == 10 + 5  #  variant.position + drawing offset for the start cap

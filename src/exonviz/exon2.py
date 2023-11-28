@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Sequence
 
 from decimal import Decimal
 from svg import Rect, Polygon
@@ -22,13 +22,31 @@ class Coding:
         return self.end - self.start
 
 
+@dataclass()
+class Variant:
+    position: int
+    name: str
+    color: str
+
+
 class Exon:
-    def __init__(self, size: int, coding: Optional[Coding] = None) -> None:
+    def __init__(
+        self,
+        size: int,
+        coding: Optional[Coding] = None,
+        variants: Optional[Sequence[Variant]] = None,
+    ) -> None:
         self.size = size
+
         if coding is None:
             self.coding = Coding()
         else:
             self.coding = coding
+
+        if variants is None:
+            self.variants: Sequence[Variant] = list()
+        else:
+            self.variants = variants
 
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
@@ -41,8 +59,10 @@ class Exon:
         # for the cap
         if self.coding and self.coding.start == 0:
             x += height * 0.25
+
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += self._draw_coding(height, x=x, y=y)
+        elements += self._draw_variants(height, x=x, y=y)
 
         return elements
 
@@ -113,6 +133,20 @@ class Exon:
         start_cap = [phase0, phase1, phase2]
 
         return Polygon(points=start_cap[self.coding.start_phase], fill="orange")
+
+    def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
+        elements = list()
+        for variant in self.variants:
+            elements.append(
+                Rect(
+                    x=x + variant.position,
+                    y=y,
+                    width=height / 20,
+                    height=height,
+                    fill=variant.color,
+                )
+            )
+        return elements
 
     def _draw_end_cap(self, height: float, x: float, y: float) -> Polygon:
         # fmt: off
