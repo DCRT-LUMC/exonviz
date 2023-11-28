@@ -4,15 +4,15 @@ from typing import Any, List, Optional
 from decimal import Decimal
 from svg import Rect, Polygon
 
-Element =  Any
+Element = Any
 
 
 @dataclass()
 class Coding:
     start: int = 0
     end: int = 0
-    start_frame: int = 0
-    end_frame: int = 0
+    start_phase: int = 0
+    end_phase: int = 0
 
     def __bool__(self) -> bool:
         return self.end > self.start
@@ -76,11 +76,12 @@ class Exon:
             )
         )
         elements.append(self._draw_start_cap(height, cx, y))
-        elements.append(self._draw_end_cap(height, cx+self.coding.size, y))
+        elements.append(self._draw_end_cap(height, cx + self.coding.size, y))
 
         return elements
 
-    def _draw_start_cap(self, height: float, x:float, y: float) -> Polygon:
+    def _draw_start_cap(self, height: float, x: float, y: float) -> Polygon:
+        # fmt: off
         # Square
         phase0: List[Decimal | float | int]  = [
            x, y,
@@ -90,16 +91,8 @@ class Exon:
            x, y
         ]
 
-        # Arrow
-        phase1: List[Decimal | float | int]  = [
-           x, y,
-           x-0.5*height, y+0.5*height,
-           x, y+height,
-           x, y
-        ]
-
         # Notch
-        phase2: List[Decimal | float | int]  = [
+        phase1: List[Decimal | float | int]  = [
            x, y,
            x-0.5*height, y,
            x, y+0.5*height,
@@ -108,14 +101,21 @@ class Exon:
            x, y
         ]
 
+        # Arrow
+        phase2: List[Decimal | float | int]  = [
+           x, y,
+           x-0.5*height, y+0.5*height,
+           x, y+height,
+           x, y
+        ]
+        # fmt: on
+
         start_cap = [phase0, phase1, phase2]
-        phase = 0
 
-        return Polygon(
-            points = start_cap[phase], fill="orange"
-        )
+        return Polygon(points=start_cap[self.coding.start_phase], fill="orange")
 
-    def _draw_end_cap(self, height: float, x:float, y: float) -> Polygon:
+    def _draw_end_cap(self, height: float, x: float, y: float) -> Polygon:
+        # fmt: off
         # Square
         phase0: List[Decimal | float | int] = [
            x, y,
@@ -142,10 +142,10 @@ class Exon:
            x, y+height,
            x, y
         ]
+        # fmt: off
 
         end_cap = [phase0, phase1, phase2]
 
-        phase = 2 #self.coding.start_phase
         return Polygon(
-            points = end_cap[phase], fill="orange"
+            points = end_cap[self.coding.end_phase], fill="orange"
         )
