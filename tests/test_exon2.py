@@ -1,6 +1,7 @@
 import pytest
 
 from exonviz.exon2 import Coding, Exon, Variant
+from GTGT.range import Range
 
 
 @pytest.fixture
@@ -25,6 +26,13 @@ def with_variant() -> Exon:
     vars = [Variant(10, "A>T", "red"), Variant(30, "C>G", "blue")]
     return Exon(size=100, variants=vars)
 
+
+@pytest.fixture
+def all() -> Exon:
+    """Create an exon with all possible features"""
+    vars = [Variant(10, "A>T", "red"), Variant(30, "C>G", "blue")]
+    c = Coding(40, 80)
+    return Exon(size=100, coding=c, variants=vars, name="Exon-1")
 
 def test_default_exon(default_exon: Exon) -> None:
     assert default_exon.size == 100
@@ -179,3 +187,33 @@ def test_draw_name() -> None:
     assert text.x == 11 + 50  # offset + half the exon size
     assert text.y == 23 + 5  # offset + half the height
     assert text.text == "Exon-1"
+
+
+split_coding = [
+    # size, new, old
+    (50, (40, 50), (0, 30)),
+    # The size ends before the coding region
+    (10, (0, 0), (30, 70)),
+    # The size has the entire coding region
+    (80, (40, 80), (0, 0)),
+    # The size is bigger than the coding region
+    (100, (40, 80), (0, 0)),
+]
+@pytest.mark.parametrize("size, new, old", split_coding)
+def test_split_coding(size: int, new: Range, old: Range) -> None:
+    c = Coding(40, 80, 1, 2)
+    n = c.split(size=size)
+
+    old_range = (c.start, c.end)
+    new_range = (n.start, n.end)
+
+    assert new_range == new
+    assert old_range == old
+
+def test_split_exon(all: Exon) -> None:
+    # Split the exon in half
+    new = all.split(size=50)
+
+    # Check the size of new and old
+    assert new.size == 50
+    assert all.size == 50

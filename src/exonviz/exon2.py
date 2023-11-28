@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence
+from typing import Any, List, Optional, Sequence, Iterator
 
 from decimal import Decimal
 from svg import Rect, Polygon, Text
+
+from GTGT.range import intersect
 
 Element = Any
 
@@ -20,6 +22,22 @@ class Coding:
     @property
     def size(self) -> int:
         return self.end - self.start
+
+    def split(self, size: int) -> "Coding":
+        old = (self.start, self.end)
+        new = intersect(old, (0, size))
+        # Determine the start and end postions for the new Coding region
+        if not new:
+            new_start = 0
+            new_end = 0
+        elif len(new) == 1:
+            new_start, new_end = new[0]
+        else:
+            raise RuntimeError
+        # Update the start/end of self
+        self.start = max(0, self.start - size)
+        self.end = max(0, self.end - size)
+        return Coding(start=new_start, end=new_end)
 
 
 @dataclass()
@@ -49,6 +67,14 @@ class Exon:
             self.variants: Sequence[Variant] = list()
         else:
             self.variants = variants
+
+    def __repr__(self) -> str:
+        return (
+        f"Exon(size={self.size}, "
+        f"coding={self.coding}, "
+        f"variants={self.variants}, "
+        f"name={self.name})"
+        )
 
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
@@ -198,3 +224,10 @@ class Exon:
                 text=self.name,
             )
         ]
+    def split(self, size: int) -> "Exon":
+        # Update the size
+        n_size = size
+        self.size -= size
+        return Exon(size=n_size)
+
+    
