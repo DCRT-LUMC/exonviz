@@ -29,27 +29,31 @@ class Exon:
         else:
             self.coding = coding
 
-    def draw(self, height: int = 20) -> List[Element]:
+    def draw(self, height: int = 20, x: int=0, y: int=0) -> List[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
-
         """
         elements = list()
 
-        elements.append(self._draw_noncoding(height))
-        elements += (self._draw_coding(height))
+        elements.append(self._draw_noncoding(height, x=x, y=y))
+        elements += (self._draw_coding(height, x=x, y=y))
 
         return elements
 
-    def _draw_noncoding(self, height: int, color: str = "blue") -> Rect:
-        return Rect(x=0, y=height * 0.25, width=self.size, height=height * 0.5, fill=color)
+    def _draw_noncoding(self, height: int, x: int, y: int, color: str = "blue") -> Rect:
+        return Rect(x=x, y=y+height * 0.25, width=self.size, height=height * 0.5, fill=color)
 
-    def _draw_coding(self, height: int, color: str ="green") -> List[Element]:
+    def _draw_coding(self, height: int, x: int, y: int, color: str ="green") -> List[Element]:
         # Fixed points for every exon
-        elements = list()
+        elements: List[Element] = list()
+
+        # Is there a coding region defined?
+        if not self.coding:
+            return elements
+
         # First, we add the coding region block
-        elements.append(Rect(x=self.coding.start, y=0, width=self.coding.size, height=height, fill=color))
+        elements.append(Rect(x=x+self.coding.start, y=y, width=self.coding.size, height=height, fill=color))
         # Next, we add the starting frame
 
         #start = Polygon(

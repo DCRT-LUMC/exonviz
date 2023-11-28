@@ -39,9 +39,11 @@ def test_draw_exon(center_coding: Exon) -> None:
     assert non_coding.width == center_coding.size
     assert non_coding.height == 10
 
-    # The rectangle should start at an y offset of 0.25*y,
-    # to leave space for the bigger coding region
+    # The drawing should start at an x-offset of 0.5*height, in case we need to
+    # draw the notch/arrow
     assert non_coding.x == 0
+    # The non-coding rectangle should start at an y offset of 0.25*height,
+    # to leave space for the bigger coding region
     assert non_coding.y == 5
 
     # Get the coding part of the exon
@@ -55,6 +57,26 @@ def test_draw_exon(center_coding: Exon) -> None:
     assert coding.x == 40
     assert coding.y == 0
 
+
+def test_draw_exon_offset_noncoding(default_exon: Exon) -> None:
+    """Test drawing an exon with offsets"""
+    elements = default_exon.draw(x=11, y=13, height=20)
+    # If the exon is non coding, there should only be a single element
+    assert len(elements) == 1
+
+    non_coding = elements[0]
+    assert non_coding.x == 11 #  offset
+    assert non_coding.y == 13+5 #  offset + 0.25 * height
+
+
+def test_draw_exon_offset_coding(center_coding: Exon) -> None:
+    """Test drawing a coding exon with offsets"""
+    elements = center_coding.draw(x=11, y=13, height=20)
+    # If the exon is non coding, there should only be a single element
+
+    coding = elements[1]
+    assert coding.x == 11 + 40 #  offset + start coding region
+    assert coding.y == 13 #  offset
 
 def test_default_coding() -> None:
     c = Coding()
