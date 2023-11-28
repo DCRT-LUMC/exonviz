@@ -35,7 +35,7 @@ def all() -> Exon:
         Variant(30, "C>G", "blue"),
         Variant(80, "G>A", "purple"),
     ]
-    c = Coding(40, 80)
+    c = Coding(start=40, end=80, start_phase=1, end_phase=2)
     return Exon(size=100, coding=c, variants=vars, name="Exon-1")
 
 
@@ -233,6 +233,12 @@ def test_split_exon(all: Exon) -> None:
     assert new.coding.end == 50
     assert all.coding.end == 30
 
+    # Check the coding start/end frames
+    # assert new.coding.start_phase == 1
+    # assert new.coding.end_phase == 0
+
+    # assert all.coding.start_phase == 0
+    # assert all.coding.end_phase == 2
     # Check the name
     assert new.name == "Exon-1"
 
@@ -241,6 +247,27 @@ def test_split_exon(all: Exon) -> None:
     assert new.variants[1].position == 30
 
     assert all.variants[0].position == 30
+
+
+def test_take_full_exon(all: Exon) -> None:
+    new = all.split(size=100)
+
+    assert new.size == 100
+    # assert new.coding.start_phase == 1
+    # assert new.coding.end_phase == 2
+
+    assert not all
+
+
+def test_take_bigger_exon(all: Exon) -> None:
+    new = all.split(size=1000)
+    print()
+    print(new)
+    print(all)
+
+    assert new.size == 100
+    assert all.size == 0
+    assert not all
 
 
 def test_boolean_exon() -> None:

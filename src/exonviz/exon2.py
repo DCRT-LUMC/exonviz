@@ -69,7 +69,7 @@ class Exon:
             self.variants = variants
 
     def __bool__(self) -> bool:
-        return self.size > 0
+        return self.size != 0
 
     def __repr__(self) -> str:
         return (
@@ -230,8 +230,8 @@ class Exon:
 
     def split(self, size: int) -> "Exon":
         # Update the size
-        n_size = size
-        self.size -= size
+        n_size = min(self.size, size)
+        self.size = max(0, self.size - size)
 
         # Update the coding region
         new_coding = self.coding.split(size)
