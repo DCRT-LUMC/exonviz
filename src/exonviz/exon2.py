@@ -68,6 +68,9 @@ class Exon:
         else:
             self.variants = variants
 
+    def __bool__(self) -> bool:
+        return self.size > 0
+
     def __repr__(self) -> str:
         return (
             f"Exon(size={self.size}, "

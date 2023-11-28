@@ -241,3 +241,11 @@ def test_split_exon(all: Exon) -> None:
     assert new.variants[1].position == 30
 
     assert all.variants[0].position == 30
+
+
+def test_boolean_exon() -> None:
+    e = Exon(size=1)
+    assert e
+
+    zero = Exon(size=0)
+    assert not zero
