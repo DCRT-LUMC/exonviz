@@ -78,6 +78,25 @@ def test_draw_exon_offset_coding(center_coding: Exon) -> None:
     assert coding.x == 11 + 40 #  offset + start coding region
     assert coding.y == 13 #  offset
 
+def test_draw_full_coding() -> None:
+    """
+    IF we have an exon that starts with a coding region
+    WHEN we draw this exon
+    THEN the x position of the drawing should be offset to leave space for
+         the start cap
+    """
+    e = Exon(10, Coding(0, 10))
+
+    elements = e.draw(height=20)
+
+    # We shift both the coding and non coding part of the exon
+    non_coding = elements[0]
+    assert non_coding.x == 5 #  height * 0.25
+
+    coding = elements[1]
+    assert coding.x == 5
+
+
 def test_default_coding() -> None:
     c = Coding()
     assert c.start == 0

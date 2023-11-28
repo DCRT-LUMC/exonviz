@@ -29,22 +29,26 @@ class Exon:
         else:
             self.coding = coding
 
-    def draw(self, height: int = 20, x: int=0, y: int=0) -> List[Element]:
+    def draw(self, height: float = 20, x: float=0, y: float=0) -> List[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
         """
         elements = list()
 
+        # If the start of the exon is coding, we have to shift x to leave space
+        # for the cap
+        if self.coding and self.coding.start == 0:
+            x += height*0.25
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += (self._draw_coding(height, x=x, y=y))
 
         return elements
 
-    def _draw_noncoding(self, height: int, x: int, y: int, color: str = "blue") -> Rect:
+    def _draw_noncoding(self, height: float, x: float, y: float, color: str = "blue") -> Rect:
         return Rect(x=x, y=y+height * 0.25, width=self.size, height=height * 0.5, fill=color)
 
-    def _draw_coding(self, height: int, x: int, y: int, color: str ="green") -> List[Element]:
+    def _draw_coding(self, height: float, x: float, y: float, color: str ="green") -> List[Element]:
         # Fixed points for every exon
         elements: List[Element] = list()
 
