@@ -65,8 +65,8 @@ def test_draw_exon_offset_noncoding(default_exon: Exon) -> None:
     assert len(elements) == 1
 
     non_coding = elements[0]
-    assert non_coding.x == 11 #  offset
-    assert non_coding.y == 13+5 #  offset + 0.25 * height
+    assert non_coding.x == 11  #  offset
+    assert non_coding.y == 13 + 5  #  offset + 0.25 * height
 
 
 def test_draw_exon_offset_coding(center_coding: Exon) -> None:
@@ -75,8 +75,9 @@ def test_draw_exon_offset_coding(center_coding: Exon) -> None:
     # If the exon is non coding, there should only be a single element
 
     coding = elements[1]
-    assert coding.x == 11 + 40 #  offset + start coding region
-    assert coding.y == 13 #  offset
+    assert coding.x == 11 + 40  #  offset + start coding region
+    assert coding.y == 13  #  offset
+
 
 def test_draw_full_coding() -> None:
     """
@@ -91,7 +92,7 @@ def test_draw_full_coding() -> None:
 
     # We shift both the coding and non coding part of the exon
     non_coding = elements[0]
-    assert non_coding.x == 5 #  height * 0.25
+    assert non_coding.x == 5  #  height * 0.25
 
     coding = elements[1]
     assert coding.x == 5
@@ -108,16 +109,21 @@ def test_default_coding() -> None:
 
 
 start_end_frame = [
-    #start, end, start_expected, end_expected
+    # start, end, start_expected, end_expected
     (0, 0, None, None),
 ]
 
-@pytest.mark.parametrize("start_frame, end_frame, start_element, end_element", start_end_frame)
-def test_draw_coding_frames(start_frame: int, end_frame: int, start_element: None, end_element:None) -> None:
+
+@pytest.mark.parametrize(
+    "start_frame, end_frame, start_element, end_element", start_end_frame
+)
+def test_draw_coding_frames(
+    start_frame: int, end_frame: int, start_element: None, end_element: None
+) -> None:
     c = Coding(0, 10)
     e = Exon(size=10, coding=c)
     elements = e.draw()
 
     # The coding region frames are the third and fourth element
-    #start = elements[2]
-    #end = elements[3]
+    # start = elements[2]
+    # end = elements[3]

@@ -29,7 +29,7 @@ class Exon:
         else:
             self.coding = coding
 
-    def draw(self, height: float = 20, x: float=0, y: float=0) -> List[Element]:
+    def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
@@ -39,16 +39,22 @@ class Exon:
         # If the start of the exon is coding, we have to shift x to leave space
         # for the cap
         if self.coding and self.coding.start == 0:
-            x += height*0.25
+            x += height * 0.25
         elements.append(self._draw_noncoding(height, x=x, y=y))
-        elements += (self._draw_coding(height, x=x, y=y))
+        elements += self._draw_coding(height, x=x, y=y)
 
         return elements
 
-    def _draw_noncoding(self, height: float, x: float, y: float, color: str = "blue") -> Rect:
-        return Rect(x=x, y=y+height * 0.25, width=self.size, height=height * 0.5, fill=color)
+    def _draw_noncoding(
+        self, height: float, x: float, y: float, color: str = "blue"
+    ) -> Rect:
+        return Rect(
+            x=x, y=y + height * 0.25, width=self.size, height=height * 0.5, fill=color
+        )
 
-    def _draw_coding(self, height: float, x: float, y: float, color: str ="green") -> List[Element]:
+    def _draw_coding(
+        self, height: float, x: float, y: float, color: str = "green"
+    ) -> List[Element]:
         # Fixed points for every exon
         elements: List[Element] = list()
 
@@ -57,10 +63,18 @@ class Exon:
             return elements
 
         # First, we add the coding region block
-        elements.append(Rect(x=x+self.coding.start, y=y, width=self.coding.size, height=height, fill=color))
+        elements.append(
+            Rect(
+                x=x + self.coding.start,
+                y=y,
+                width=self.coding.size,
+                height=height,
+                fill=color,
+            )
+        )
         # Next, we add the starting frame
 
-        #start = Polygon(
+        # start = Polygon(
         #    points = [
         #        0, 0,
         #        0.5*height, 0,
@@ -68,7 +82,7 @@ class Exon:
         #        0, height,
         #        0, 0
         #    ], fill="orange"
-        #)
+        # )
 
-        #elements.append(start)
+        # elements.append(start)
         return elements
