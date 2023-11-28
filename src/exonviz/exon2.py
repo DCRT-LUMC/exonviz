@@ -70,10 +70,10 @@ class Exon:
 
     def __repr__(self) -> str:
         return (
-        f"Exon(size={self.size}, "
-        f"coding={self.coding}, "
-        f"variants={self.variants}, "
-        f"name={self.name})"
+            f"Exon(size={self.size}, "
+            f"coding={self.coding}, "
+            f"variants={self.variants}, "
+            f"name={self.name})"
         )
 
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
@@ -224,10 +224,25 @@ class Exon:
                 text=self.name,
             )
         ]
+
     def split(self, size: int) -> "Exon":
         # Update the size
         n_size = size
         self.size -= size
-        return Exon(size=n_size)
 
-    
+        # Update the coding region
+        new_coding = self.coding.split(size)
+
+        # Update the name
+        new_name = self.name
+
+        # Update the variants
+        new_variants = [v for v in self.variants if v.position <= size]
+        # Get the variants that remain
+        self.variants = [v for v in self.variants if v.position > size]
+        # Update the variant positions
+        for v in self.variants:
+            v.position -= size
+        return Exon(
+            size=n_size, coding=new_coding, name=new_name, variants=new_variants
+        )

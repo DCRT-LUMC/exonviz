@@ -30,9 +30,14 @@ def with_variant() -> Exon:
 @pytest.fixture
 def all() -> Exon:
     """Create an exon with all possible features"""
-    vars = [Variant(10, "A>T", "red"), Variant(30, "C>G", "blue")]
+    vars = [
+        Variant(10, "A>T", "red"),
+        Variant(30, "C>G", "blue"),
+        Variant(80, "G>A", "purple"),
+    ]
     c = Coding(40, 80)
     return Exon(size=100, coding=c, variants=vars, name="Exon-1")
+
 
 def test_default_exon(default_exon: Exon) -> None:
     assert default_exon.size == 100
@@ -199,6 +204,8 @@ split_coding = [
     # The size is bigger than the coding region
     (100, (40, 80), (0, 0)),
 ]
+
+
 @pytest.mark.parametrize("size, new, old", split_coding)
 def test_split_coding(size: int, new: Range, old: Range) -> None:
     c = Coding(40, 80, 1, 2)
@@ -210,6 +217,7 @@ def test_split_coding(size: int, new: Range, old: Range) -> None:
     assert new_range == new
     assert old_range == old
 
+
 def test_split_exon(all: Exon) -> None:
     # Split the exon in half
     new = all.split(size=50)
@@ -217,3 +225,19 @@ def test_split_exon(all: Exon) -> None:
     # Check the size of new and old
     assert new.size == 50
     assert all.size == 50
+
+    # Check the coding region
+    assert new.coding.start == 40
+    assert all.coding.start == 0
+
+    assert new.coding.end == 50
+    assert all.coding.end == 30
+
+    # Check the name
+    assert new.name == "Exon-1"
+
+    # Check the variants
+    assert new.variants[0].position == 10
+    assert new.variants[1].position == 30
+
+    assert all.variants[0].position == 30
