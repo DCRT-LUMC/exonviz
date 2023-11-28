@@ -38,7 +38,6 @@ def test_default_exon(default_exon: Exon) -> None:
 
 
 def test_draw_exon(center_coding: Exon) -> None:
-    height = 20
     elements = center_coding.draw(height=20)
 
     # Get the non coding part of the exon
@@ -166,3 +165,17 @@ def test_draw_variant_coding() -> None:
 
     variant = elements[4]
     assert variant.x == 10 + 5  #  variant.position + drawing offset for the start cap
+
+
+def test_draw_name() -> None:
+    e = Exon(size=100, name="Exon-1")
+
+    elements = e.draw(height=10, x=11, y=23)
+
+    assert len(elements) == 2
+
+    text = elements[1]
+
+    assert text.x == 11 + 50  # offset + half the exon size
+    assert text.y == 23 + 5  # offset + half the height
+    assert text.text == "Exon-1"

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence
 
 from decimal import Decimal
-from svg import Rect, Polygon
+from svg import Rect, Polygon, Text
 
 Element = Any
 
@@ -35,8 +35,10 @@ class Exon:
         size: int,
         coding: Optional[Coding] = None,
         variants: Optional[Sequence[Variant]] = None,
+        name: str = "",
     ) -> None:
         self.size = size
+        self.name = name
 
         if coding is None:
             self.coding = Coding()
@@ -53,7 +55,7 @@ class Exon:
 
         Returns a list of SVG elements
         """
-        elements = list()
+        elements: List[Any] = list()
 
         # If the start of the exon is coding, we have to shift x to leave space
         # for the cap
@@ -63,6 +65,7 @@ class Exon:
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += self._draw_coding(height, x=x, y=y)
         elements += self._draw_variants(height, x=x, y=y)
+        elements += self._draw_name(height, x, y)
 
         return elements
 
@@ -183,3 +186,15 @@ class Exon:
         return Polygon(
             points = end_cap[self.coding.end_phase], fill="orange"
         )
+
+    def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
+        if not self.name:
+            return list()
+        return [
+            Text(
+                x=x + (self.size / 2),
+                y=y + 0.5 * height,
+                class_=["exonnr"],
+                text=self.name,
+            )
+        ]
