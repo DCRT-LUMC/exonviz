@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Any, List, Optional
 
+from decimal import Decimal
 from svg import Rect, Polygon
 
-Element = Rect
+Element =  Any
 
 
 @dataclass()
@@ -58,31 +59,93 @@ class Exon:
         # Fixed points for every exon
         elements: List[Element] = list()
 
-        # Is there a coding region defined?
         if not self.coding:
             return elements
+
+        # Determine x-coordinate for the coding region start
+        cx = x + self.coding.start
 
         # First, we add the coding region block
         elements.append(
             Rect(
-                x=x + self.coding.start,
+                x=cx,
                 y=y,
                 width=self.coding.size,
                 height=height,
                 fill=color,
             )
         )
-        # Next, we add the starting frame
+        elements.append(self._draw_start_cap(height, cx, y))
+        elements.append(self._draw_end_cap(height, cx+self.coding.size, y))
 
-        # start = Polygon(
-        #    points = [
-        #        0, 0,
-        #        0.5*height, 0,
-        #        0.5*height, height,
-        #        0, height,
-        #        0, 0
-        #    ], fill="orange"
-        # )
-
-        # elements.append(start)
         return elements
+
+    def _draw_start_cap(self, height: float, x:float, y: float) -> Polygon:
+        # Square
+        phase0: List[Decimal | float | int]  = [
+           x, y,
+           x-0.5*height, y,
+           x-0.5*height, y+height,
+           x, y+height,
+           x, y
+        ]
+
+        # Arrow
+        phase1: List[Decimal | float | int]  = [
+           x, y,
+           x-0.5*height, y+0.5*height,
+           x, y+height,
+           x, y
+        ]
+
+        # Notch
+        phase2: List[Decimal | float | int]  = [
+           x, y,
+           x-0.5*height, y,
+           x, y+0.5*height,
+           x-0.5*height, y+height,
+           x, y+height,
+           x, y
+        ]
+
+        start_cap = [phase0, phase1, phase2]
+        phase = 0
+
+        return Polygon(
+            points = start_cap[phase], fill="orange"
+        )
+
+    def _draw_end_cap(self, height: float, x:float, y: float) -> Polygon:
+        # Square
+        phase0: List[Decimal | float | int] = [
+           x, y,
+           x+0.5*height, y,
+           x+0.5*height, y+height,
+           x, y+height,
+           x, y
+        ]
+
+        # Arrow
+        phase1: List[Decimal | float | int]  = [
+           x, y,
+           x+0.5*height, y+0.5*height,
+           x, y+height,
+           x, y
+        ]
+
+        # Notch
+        phase2: List[Decimal | float | int]  = [
+           x, y,
+           x+0.5*height, y,
+           x, y+0.5*height,
+           x+0.5*height, y+height,
+           x, y+height,
+           x, y
+        ]
+
+        end_cap = [phase0, phase1, phase2]
+
+        phase = 2 #self.coding.start_phase
+        return Polygon(
+            points = end_cap[phase], fill="orange"
+        )

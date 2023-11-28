@@ -125,5 +125,5 @@ def test_draw_coding_frames(
     elements = e.draw()
 
     # The coding region frames are the third and fourth element
-    # start = elements[2]
-    # end = elements[3]
+    start_cap = elements[2]
+    end_cap = elements[3]
