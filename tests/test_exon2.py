@@ -1,6 +1,8 @@
 import pytest
 
-from exonviz.exon2 import Coding, Exon, Variant
+from typing import List
+
+from exonviz.exon2 import Coding, Exon, Variant, group_exons
 from GTGT.range import Range
 
 
@@ -336,3 +338,28 @@ draw = [
 @pytest.mark.parametrize("exon, draw_size", draw)
 def test_exon_draw_size(exon: Exon, draw_size: int) -> None:
     assert exon.draw_size(height=20) == draw_size
+
+
+to_page = [
+    # Empty list
+    ([], 100, [[]]),
+    # Single exon
+    ([Exon(50)], 100, [[Exon(50)]]),
+    # Single exon that fits exactly
+    #([Exon(100)], 100, [[Exon(100)]]),
+    # Two exons fit on one row
+    #([Exon(50), Exon(50)], 100, [[Exon(50), Exon(50)]]),
+    ## Two exons don't fit on one row
+    #([Exon(50), Exon(50)], 99, [[Exon(50)], [Exon(50)]]),
+    ## Exon is too big, we should split it
+    #([Exon(100)], 99, [[Exon(99)], [Exon(1)]]),
+
+]
+@pytest.mark.parametrize("exons, width, page", to_page)
+def test_exons_on_page(exons: List[Exon], width: int, page: List[List[Exon]]) -> None:
+    new_page = group_exons(exons, height = 20, width = width)
+    print()
+    print(page)
+    print(new_page)
+
+    assert new_page == page

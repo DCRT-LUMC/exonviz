@@ -100,6 +100,11 @@ class Exon:
             f"name={self.name})"
         )
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Exon):
+            raise NotImplementedError
+        return self.size == other.size
+
     def draw_size(self, height: float) -> float:
         """Determine how big the Exon is when drawn"""
         size: float = self.size
@@ -282,3 +287,27 @@ class Exon:
         return Exon(
             size=n_size, coding=new_coding, name=new_name, variants=new_variants
         )
+
+def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
+    """Group exons on a page, so that they do not go over width"""
+    if not exons:
+        return [[]]
+    page = list()
+    row = list()
+
+    x:float = 0
+    for exon in exons:
+        while exon:
+            space_left = width - x
+            new_exon = exon.split(int(space_left))
+
+            e_size = new_exon.draw_size(height)
+            if (x + e_size) < width:
+                row.append(new_exon)
+                x += e_size
+            else:
+                page.append(row)
+                row = [new_exon]
+                x = 0
+    page.append(row)
+    return page
