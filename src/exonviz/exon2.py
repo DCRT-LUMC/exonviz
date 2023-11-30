@@ -37,7 +37,28 @@ class Coding:
         # Update the start/end of self
         self.start = max(0, self.start - size)
         self.end = max(0, self.end - size)
-        return Coding(start=new_start, end=new_end)
+
+        # If the old Coding region is empty
+        if not self.end:
+            # Lift over the old start/end phase to the new
+            new_start_phase = self.start_phase
+            new_end_phase = self.end_phase
+            # Set the old start/end phase to zero
+            self.start_phase = 0
+            self.end_phase = 0
+        # If the old Coding region is not empty, we set the phase of the
+        # split region to 0 on either size
+        else:
+            new_start_phase = self.start_phase
+            new_end_phase = 0
+            self.start_phase = 0
+
+        return Coding(
+            start=new_start,
+            end=new_end,
+            start_phase=new_start_phase,
+            end_phase=new_end_phase,
+        )
 
 
 @dataclass()

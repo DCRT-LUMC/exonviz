@@ -218,6 +218,44 @@ def test_split_coding(size: int, new: Range, old: Range) -> None:
     assert old_range == old
 
 
+def test_split_coding_update_phase() -> None:
+    """
+    IF a Coding region has a start and end phase
+    WHEN the Coding region is split
+    THEN the new Coding should get the start_phase
+         the end_phase of the new Coding should be set to zero
+
+         the old Coding should keep the end_phase
+         the start_phase of the old Coding region should be set to zero
+    """
+    old = Coding(start=40, end=80, start_phase=1, end_phase=2)
+
+    new = old.split(50)
+
+    assert new.start_phase == 1
+    assert new.end_phase == 0
+
+    assert old.start_phase == 0
+    assert old.end_phase == 2
+
+
+def test_split_coding_phase_all() -> None:
+    """
+    IF a Coding region has a start and end phase
+    WHEN the Coding region is 'split' into one big chunk
+    THEN the Coding start/end phase of new should be lifted over
+    """
+    old = Coding(start=40, end=80, start_phase=1, end_phase=2)
+    new = old.split(1000)
+
+    assert new.start_phase == 1
+    assert new.end_phase == 2
+
+    # If the old Coding is empty, the start/end phase should be zero
+    assert old.start_phase == 0
+    assert old.end_phase == 0
+
+
 def test_split_exon(all: Exon) -> None:
     # Split the exon in half
     new = all.split(size=50)
