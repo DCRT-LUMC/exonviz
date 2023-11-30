@@ -156,7 +156,7 @@ class Exon:
     def _draw_start_cap(self, height: float, x: float, y: float) -> Polygon:
         # fmt: off
         # Square
-        phase0: List[Decimal | float | int]  = [
+        phase0 = [
            x, y,
            x-0.5*height, y,
            x-0.5*height, y+height,
@@ -165,7 +165,7 @@ class Exon:
         ]
 
         # Notch
-        phase1: List[Decimal | float | int]  = [
+        phase1 = [
            x, y,
            x-0.5*height, y,
            x, y+0.5*height,
@@ -175,7 +175,7 @@ class Exon:
         ]
 
         # Arrow
-        phase2: List[Decimal | float | int]  = [
+        phase2 = [
            x, y,
            x-0.5*height, y+0.5*height,
            x, y+height,
@@ -185,7 +185,7 @@ class Exon:
 
         start_cap = [phase0, phase1, phase2]
 
-        return Polygon(points=start_cap[self.coding.start_phase], fill="orange")
+        return Polygon(points=list(start_cap[self.coding.start_phase]), fill="orange")
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
@@ -204,7 +204,7 @@ class Exon:
     def _draw_end_cap(self, height: float, x: float, y: float) -> Polygon:
         # fmt: off
         # Square
-        phase0: List[Decimal | float | int] = [
+        phase0 = [
            x, y,
            x+0.5*height, y,
            x+0.5*height, y+height,
@@ -213,7 +213,7 @@ class Exon:
         ]
 
         # Arrow
-        phase1: List[Decimal | float | int]  = [
+        phase1 = [
            x, y,
            x+0.5*height, y+0.5*height,
            x, y+height,
@@ -221,7 +221,7 @@ class Exon:
         ]
 
         # Notch
-        phase2: List[Decimal | float | int]  = [
+        phase2 = [
            x, y,
            x+0.5*height, y,
            x, y+0.5*height,
@@ -234,7 +234,7 @@ class Exon:
         end_cap = [phase0, phase1, phase2]
 
         return Polygon(
-            points = end_cap[self.coding.end_phase], fill="orange"
+            points = list(end_cap[self.coding.end_phase]), fill="orange"
         )
 
     def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
