@@ -100,6 +100,18 @@ class Exon:
             f"name={self.name})"
         )
 
+    def draw_size(self, height: float) -> float:
+        """Determine how big the Exon is when drawn"""
+        size: float = self.size
+
+        if self.coding:
+            cap_size = 0.25 * height
+
+            size += max(cap_size - self.coding.start, 0)
+            size += max(cap_size - (self.size - self.coding.end), 0)
+
+        return size
+
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
 

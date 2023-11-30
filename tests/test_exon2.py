@@ -313,3 +313,26 @@ def test_boolean_exon() -> None:
 
     zero = Exon(size=0)
     assert not zero
+
+
+draw = [
+    # Non coding exon is exactly its own size
+    (Exon(100), 100),
+    # Exon starts coding
+    (Exon(100, Coding(0, 50)), 105),
+    # Exon ends coding
+    (Exon(100, Coding(50, 100)), 105),
+    # Fully coding exon gets 2*0.25*height added for the notches
+    (Exon(100, Coding(0, 100)), 110),
+    # Coding region starts at position 1
+    (Exon(100, Coding(1, 50)), 104),
+    # Coding region ends 4 bp from exon end
+    (Exon(100, Coding(50, 96)), 101),
+    # Coding in the middle, far from the edges
+    (Exon(100, Coding(50, 60)), 100),
+]
+
+
+@pytest.mark.parametrize("exon, draw_size", draw)
+def test_exon_draw_size(exon: Exon, draw_size: int) -> None:
+    assert exon.draw_size(height=20) == draw_size
