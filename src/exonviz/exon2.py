@@ -47,11 +47,11 @@ class Coding:
             self.start_phase = 0
             self.end_phase = 0
         # If the old Coding region is not empty, we set the phase of the
-        # split region to 0 on either size
+        # split region to -1 on either size, so no cap is drawn
         else:
             new_start_phase = self.start_phase
-            new_end_phase = 0
-            self.start_phase = 0
+            new_end_phase = -1
+            self.start_phase = -1
 
         return Coding(
             start=new_start,
@@ -198,11 +198,18 @@ class Exon:
            x, y+height,
            x, y
         ]
+
+        # Phase -1, used for line-breaked coding exons
+        phase3 = None
         # fmt: on
 
-        start_cap = [phase0, phase1, phase2]
+        phases = [phase0, phase1, phase2, phase3]
+        cap = phases[self.coding.start_phase]
 
-        return Polygon(points=list(start_cap[self.coding.start_phase]), fill="orange")
+        if cap:
+            return Polygon(points=list(cap), fill="orange")
+        else:
+            return Polygon(points=None, fill="orange")
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
@@ -246,13 +253,18 @@ class Exon:
            x, y+height,
            x, y
         ]
-        # fmt: off
 
-        end_cap = [phase0, phase1, phase2]
+        # Phase -1, used for line-breaked coding exons
+        phase3 = None
+        # fmt: on
 
-        return Polygon(
-            points = list(end_cap[self.coding.end_phase]), fill="orange"
-        )
+        phases = [phase0, phase1, phase2, phase3]
+        cap = phases[self.coding.end_phase]
+
+        if cap:
+            return Polygon(points=list(cap), fill="orange")
+        else:
+            return Polygon(points=None, fill="orange")
 
     def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
         if not self.name:
@@ -288,26 +300,31 @@ class Exon:
             size=n_size, coding=new_coding, name=new_name, variants=new_variants
         )
 
-def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
+def group_exons(exons: List[Exon], height: int, max_width: int) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
         return [[]]
     page = list()
-    row = list()
+    row: List[Exon] = list()
+
+    width = max_width
+    # Always add space for two caps to the exon size
+    cap_size = 0.5*height
 
     x:float = 0
     for exon in exons:
         while exon:
-            space_left = width - x
-            new_exon = exon.split(int(space_left))
+            # How much space is left on the page
+            space_left = int(width - x - cap_size)
 
-            e_size = new_exon.draw_size(height)
-            if (x + e_size) < width:
-                row.append(new_exon)
-                x += e_size
-            else:
+            # We don't want to have tiny exons
+            if space_left < 2*height:
                 page.append(row)
-                row = [new_exon]
+                row = list()
                 x = 0
+            else:
+                new_exon = exon.split(space_left)
+                row.append(new_exon)
+                x += new_exon.draw_size(height)
     page.append(row)
     return page

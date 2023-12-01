@@ -225,19 +225,21 @@ def test_split_coding_update_phase() -> None:
     IF a Coding region has a start and end phase
     WHEN the Coding region is split
     THEN the new Coding should get the start_phase
-         the end_phase of the new Coding should be set to zero
+         the end_phase of the new Coding should be set to -1,
+         so no cap is drawn
 
          the old Coding should keep the end_phase
-         the start_phase of the old Coding region should be set to zero
+         the start_phase of the old Coding region should be set to -1,
+         so no cap is drawn
     """
     old = Coding(start=40, end=80, start_phase=1, end_phase=2)
 
     new = old.split(50)
 
     assert new.start_phase == 1
-    assert new.end_phase == 0
+    assert new.end_phase == -1
 
-    assert old.start_phase == 0
+    assert old.start_phase == -1
     assert old.end_phase == 2
 
 
@@ -275,9 +277,9 @@ def test_split_exon(all: Exon) -> None:
 
     # Check the coding start/end frames
     assert new.coding.start_phase == 1
-    assert new.coding.end_phase == 0
+    assert new.coding.end_phase == -1
 
-    assert all.coding.start_phase == 0
+    assert all.coding.start_phase == -1
     assert all.coding.end_phase == 2
 
     # Check the name
@@ -357,7 +359,7 @@ to_page = [
 ]
 @pytest.mark.parametrize("exons, width, page", to_page)
 def test_exons_on_page(exons: List[Exon], width: int, page: List[List[Exon]]) -> None:
-    new_page = group_exons(exons, height = 20, width = width)
+    new_page = group_exons(exons, height = 20, max_width = width)
     print()
     print(page)
     print(new_page)
