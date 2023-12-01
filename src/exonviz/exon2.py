@@ -314,6 +314,7 @@ class Exon:
             size=n_size, coding=new_coding, name=new_name, variants=new_variants
         )
 
+
 def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
@@ -321,14 +322,14 @@ def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
     page = list()
     row: List[Exon] = list()
 
-    x:float = 0
+    x: float = 0
     for exon in exons:
         while exon:
             # How much space is left on the page
             space_left = int(width - x)
 
             # We don't want to have tiny exons
-            if space_left < 2*height:
+            if space_left < 2 * height:
                 page.append(row)
                 row = list()
                 x = 0

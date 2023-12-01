@@ -361,11 +361,12 @@ to_page = [
     ([Exon(50), Exon(51)], 100, [[Exon(50), Exon(50)], [Exon(1)]]),
     ## Two exons that almost fit on one row
     ([Exon(50), Exon(50)], 99, [[Exon(50), Exon(49)], [Exon(1)]]),
-
 ]
+
+
 @pytest.mark.parametrize("exons, width, page", to_page)
 def test_exons_on_page(exons: List[Exon], width: int, page: List[List[Exon]]) -> None:
-    new_page = group_exons(exons, height = 20, width = width)
+    new_page = group_exons(exons, height=20, width=width)
     print()
     print(page)
     print(new_page)
