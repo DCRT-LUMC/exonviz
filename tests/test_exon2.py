@@ -351,21 +351,21 @@ def test_exon_draw_size(exon: Exon, draw_size: int) -> None:
 to_page = [
     # Empty list
     ([], 100, [[]]),
-    # Single exon
+    # Single exon that fits on one page
     ([Exon(50)], 100, [[Exon(50)]]),
     # Single exon that fits exactly
-    #([Exon(100)], 100, [[Exon(100)]]),
+    ([Exon(100)], 100, [[Exon(100)]]),
     # Two exons fit on one row
-    #([Exon(50), Exon(50)], 100, [[Exon(50), Exon(50)]]),
+    ([Exon(50), Exon(50)], 100, [[Exon(50), Exon(50)]]),
     ## Two exons don't fit on one row
-    #([Exon(50), Exon(50)], 99, [[Exon(50)], [Exon(50)]]),
-    ## Exon is too big, we should split it
-    #([Exon(100)], 99, [[Exon(99)], [Exon(1)]]),
+    ([Exon(50), Exon(51)], 100, [[Exon(50), Exon(50)], [Exon(1)]]),
+    ## Two exons that almost fit on one row
+    ([Exon(50), Exon(50)], 99, [[Exon(50), Exon(49)], [Exon(1)]]),
 
 ]
 @pytest.mark.parametrize("exons, width, page", to_page)
 def test_exons_on_page(exons: List[Exon], width: int, page: List[List[Exon]]) -> None:
-    new_page = group_exons(exons, height = 20, max_width = width)
+    new_page = group_exons(exons, height = 20, width = width)
     print()
     print(page)
     print(new_page)
