@@ -107,25 +107,25 @@ class Exon:
 
     def draw_size(self, height: float) -> float:
         """Determine how big the Exon is when drawn"""
-        size: float = self.size
+        return self.size + self._total_overhang(height)
 
-        if self.coding:
-            if self.coding.start_phase != -1:
-                size += self._cap_overhang_before(height)
-            if self.coding.end_phase != -1:
-                size += self._cap_overhang_after(height)
-
-        return size
-
-    def _cap_overhang_before(self, height: float) -> float:
+    def _front_overhang(self, height: float) -> float:
         """Determine how much the cap overhangs beyond the start of the exon"""
+        if not self.coding or self.coding.start_phase == -1:
+            return 0
         cap_size = 0.25 * height
         return max(cap_size - self.coding.start, 0)
 
-    def _cap_overhang_after(self, height: float) -> float:
+    def _end_overhang(self, height: float) -> float:
         """Determine how much the cap overhangs beyond the end of the exon"""
+        if not self.coding or self.coding.end_phase == -1:
+            return 0
         cap_size = 0.25 * height
         return max(cap_size - (self.size - self.coding.end), 0)
+
+    def _total_overhang(self, height: float) -> float:
+        """The total overhang due to the caps we draw"""
+        return self._end_overhang(height) + self._front_overhang(height)
 
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
@@ -288,13 +288,17 @@ class Exon:
             )
         ]
 
-    def split(self, size: int) -> "Exon":
-        # Update the size
+    def split(self, size: int, height: int) -> "Exon":
+        """Split the exon to be 'size' pixels big when drawn"""
+        # Account for the overhang of the caps when determining the size to split
+        size = int(size - self._total_overhang(height))
+
+        # Size of the new exon
         n_size = min(self.size, size)
         self.size = max(0, self.size - size)
 
         # Update the coding region
-        new_coding = self.coding.split(size)
+        new_coding = self.coding.split(int(size))
 
         # Update the name
         new_name = self.name
@@ -333,7 +337,7 @@ def group_exons(exons: List[Exon], height: int, max_width: int) -> List[List[Exo
                 row = list()
                 x = 0
             else:
-                new_exon = exon.split(space_left)
+                new_exon = exon.split(space_left, height=height)
                 row.append(new_exon)
                 x += new_exon.draw_size(height)
     page.append(row)

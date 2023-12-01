@@ -262,7 +262,7 @@ def test_split_coding_phase_all() -> None:
 
 def test_split_exon(all: Exon) -> None:
     # Split the exon in half
-    new = all.split(size=50)
+    new = all.split(size=50, height=20)
 
     # Check the size of new and old
     assert new.size == 50
@@ -294,7 +294,7 @@ def test_split_exon(all: Exon) -> None:
 
 
 def test_take_full_exon(all: Exon) -> None:
-    new = all.split(size=100)
+    new = all.split(size=100, height=20)
 
     assert new.size == 100
     assert new.coding.start_phase == 1
@@ -304,7 +304,7 @@ def test_take_full_exon(all: Exon) -> None:
 
 
 def test_take_bigger_exon(all: Exon) -> None:
-    new = all.split(size=1000)
+    new = all.split(size=1000, height=20)
 
     assert new.size == 100
     assert all.size == 0
