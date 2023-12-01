@@ -121,6 +121,24 @@ def test_draw_full_coding() -> None:
     assert coding.x == 5
 
 
+def test_draw_full_coding_no_cap() -> None:
+    """
+    IF we have an exon that is fully coding, but the start phase is -1
+    WHEN we draw this exon
+    THEN the x position of the drawing should not be offset
+    """
+    e = Exon(10, Coding(0, 10, start_phase=-1))
+
+    elements = e.draw(height=20)
+
+    # We shift both the coding and non coding part of the exon
+    non_coding = elements[0]
+    assert non_coding.x == 0
+
+    coding = elements[1]
+    assert coding.x == 0
+
+
 def test_default_coding() -> None:
     c = Coding()
     assert c.start == 0

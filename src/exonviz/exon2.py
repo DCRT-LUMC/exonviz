@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict
 
+from _io import TextIOWrapper
 from decimal import Decimal
 from svg import Rect, Polygon, Text
 
@@ -146,8 +147,7 @@ class Exon:
 
         # If the start of the exon is coding, we have to shift x to leave space
         # for the cap
-        if self.coding and self.coding.start == 0:
-            x += height * 0.25
+        x += self._front_overhang(height)
 
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += self._draw_coding(height, x=x, y=y)
@@ -379,7 +379,7 @@ def parse_coding_region(exon_dict: Dict[Any, Any]) -> None:
     coding_dict["start"] = coding_dict.pop("coding_start")
     coding_dict["end"] = coding_dict.pop("coding_end")
 
-    exon_dict["coding"] = Coding(**coding_dict)
+    exon_dict["coding"] = Coding(**{k: int(v) for k, v in coding_dict.items()})
 
 
 def parse_variants(exon_dict: Dict[Any, Any]) -> None:
@@ -399,7 +399,7 @@ def parse_variants(exon_dict: Dict[Any, Any]) -> None:
         raise ValueError(error_msg)
 
     for pos, name, color in zip(positions, names, colors):
-        variants.append(Variant(int(pos), name=name, color=color))
+        variants.append(Variant(int(pos) if pos else 0, name=name, color=color))
     exon_dict["variants"] = variants
 
 
@@ -411,3 +411,17 @@ def exon_from_dict(d: Dict[str, str]) -> Exon:
     # Convert exon size to int
     exon_dict["size"] = int(exon_dict["size"])
     return Exon(**exon_dict)
+
+
+def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
+    header = next(fin).strip('\n').split('\t')
+    expected = ['size', 'name', 'color', 'coding_start', 'coding_end', 'start_phase', 'end_phase', 'variant_pos', 'variant_name', 'variant_color']
+    if not header == expected:
+        raise RuntimeError("Unexpected header in TSV file")
+
+    exons: List[Exon] = list()
+    for line in fin:
+        d = {k:v for k, v in zip(header, line.strip('\n').split('\t')) if v}
+        exons.append(exon_from_dict(d))
+
+    return exons
