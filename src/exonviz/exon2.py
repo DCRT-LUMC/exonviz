@@ -110,14 +110,22 @@ class Exon:
         size: float = self.size
 
         if self.coding:
-            cap_size = 0.25 * height
-
             if self.coding.start_phase != -1:
-                size += max(cap_size - self.coding.start, 0)
+                size += self._cap_overhang_before(height)
             if self.coding.end_phase != -1:
-                size += max(cap_size - (self.size - self.coding.end), 0)
+                size += self._cap_overhang_after(height)
 
         return size
+
+    def _cap_overhang_before(self, height: float) -> float:
+        """Determine how much the cap overhangs beyond the start of the exon"""
+        cap_size = 0.25 * height
+        return max(cap_size - self.coding.start, 0)
+
+    def _cap_overhang_after(self, height: float) -> float:
+        """Determine how much the cap overhangs beyond the end of the exon"""
+        cap_size = 0.25 * height
+        return max(cap_size - (self.size - self.coding.end), 0)
 
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
