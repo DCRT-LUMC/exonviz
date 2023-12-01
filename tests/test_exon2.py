@@ -334,6 +334,12 @@ draw = [
     (Exon(100, Coding(50, 96)), 101),
     # Coding in the middle, far from the edges
     (Exon(100, Coding(50, 60)), 100),
+    # Coding, but the start phase is -1
+    (Exon(100, Coding(0, 100, start_phase=-1)), 105),
+    # Coding, but the end phase is -1
+    (Exon(100, Coding(0, 100, start_phase=0, end_phase=-1)), 105),
+    # Coding, but both start and end phase are -1
+    (Exon(100, Coding(0, 100, start_phase=-1, end_phase=-1)), 100),
 ]
 
 

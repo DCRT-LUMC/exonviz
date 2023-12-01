@@ -112,8 +112,10 @@ class Exon:
         if self.coding:
             cap_size = 0.25 * height
 
-            size += max(cap_size - self.coding.start, 0)
-            size += max(cap_size - (self.size - self.coding.end), 0)
+            if self.coding.start_phase != -1:
+                size += max(cap_size - self.coding.start, 0)
+            if self.coding.end_phase != -1:
+                size += max(cap_size - (self.size - self.coding.end), 0)
 
         return size
 
