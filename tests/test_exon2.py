@@ -321,6 +321,14 @@ def test_take_full_exon(all: Exon) -> None:
     assert not all
 
 
+def test_take_full_non_coding() -> None:
+    """Test taking a full, non coding exon"""
+    e = Exon(100)
+    new = e.split(100, height=20)
+
+    assert new.size == 100
+
+
 def test_take_bigger_exon(all: Exon) -> None:
     new = all.split(size=1000, height=20)
 
@@ -374,6 +382,8 @@ to_page = [
     ([Exon(50)], 100, 0, [[Exon(50)]]),
     # Single exon that fits exactly
     ([Exon(100)], 100, 0, [[Exon(100)]]),
+    # Single exon that doesn't fit
+    ([Exon(100)], 99, 0, [[Exon(99)], [Exon(1)]]),
     # Two exons fit on one row
     ([Exon(50), Exon(50)], 100, 0, [[Exon(50), Exon(50)]]),
     ## Two exons don't fit on one row
@@ -382,6 +392,37 @@ to_page = [
     ([Exon(50), Exon(50)], 99, 0, [[Exon(50), Exon(49)], [Exon(1)]]),
     # Two exons fit on one row, but not with a gap
     ([Exon(50), Exon(50)], 100, 1, [[Exon(50), Exon(49)], [Exon(1)]]),
+    # One exon that fits with a giant gap, since we dont include a gap for one exon
+    ([Exon(100)], 100, 9999, [[Exon(100)]]),
+    # Giant gap, exon doesn't fit
+    ([Exon(100)], 99, 9999, [[Exon(99)], [Exon(1)]]),
+    # Fits exactly, with gap of 10
+    ([Exon(45), Exon(45)], 100, 10, [[Exon(45), Exon(45)]]),
+    # Off by one, so it doesn't fit, with gap of 10
+    ([Exon(46), Exon(45)], 100, 10, [[Exon(46), Exon(44)], [Exon(1)]]),
+    # fmt: off
+    # One exon that fits, including gap of 10
+    (
+        [Exon(100) for _ in range(1)],
+        100,
+        10,
+        [[Exon(100) for _ in range(1)]]
+    ),
+    # Two exons that fit, including gap of 10
+    (
+        [Exon(100) for _ in range(2)],
+        210,
+        10,
+        [[Exon(100) for _ in range(2)]]
+    ),
+    # Ten exons that fit, with gap 10
+    # (
+    #     [Exon(100) for _ in range(10)],
+    #     1090,
+    #     10,
+    #     [[Exon(100) for _ in range(10)]]
+    # ),
+    # fmt: on
 ]
 
 
@@ -390,6 +431,9 @@ def test_exons_on_page(
     exons: List[Exon], width: int, gap: int, page: List[List[Exon]]
 ) -> None:
     new_page = group_exons(exons, height=20, gap=gap, width=width)
+    print()
+    print(exons)
+    print(new_page)
 
     assert new_page == page
 

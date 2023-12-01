@@ -339,6 +339,8 @@ def group_exons(
         while exon:
             # How much space is left on the page
             space_left = int(width - x)
+            # If there is at least one exon, we have to make space for the gap
+            space_left -= gap if len(row) > 1 else 0
 
             # We don't want to have tiny exons
             if space_left < 2 * height:
@@ -348,7 +350,7 @@ def group_exons(
             else:
                 new_exon = exon.split(space_left, height=height)
                 row.append(new_exon)
-                x += new_exon.draw_size(height) + gap
+                x += gap + new_exon.draw_size(height)
     page.append(row)
     return page
 
@@ -414,14 +416,25 @@ def exon_from_dict(d: Dict[str, str]) -> Exon:
 
 
 def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
-    header = next(fin).strip('\n').split('\t')
-    expected = ['size', 'name', 'color', 'coding_start', 'coding_end', 'start_phase', 'end_phase', 'variant_pos', 'variant_name', 'variant_color']
+    header = next(fin).strip("\n").split("\t")
+    expected = [
+        "size",
+        "name",
+        "color",
+        "coding_start",
+        "coding_end",
+        "start_phase",
+        "end_phase",
+        "variant_pos",
+        "variant_name",
+        "variant_color",
+    ]
     if not header == expected:
         raise RuntimeError("Unexpected header in TSV file")
 
     exons: List[Exon] = list()
     for line in fin:
-        d = {k:v for k, v in zip(header, line.strip('\n').split('\t')) if v}
+        d = {k: v for k, v in zip(header, line.strip("\n").split("\t")) if v}
         exons.append(exon_from_dict(d))
 
     return exons
