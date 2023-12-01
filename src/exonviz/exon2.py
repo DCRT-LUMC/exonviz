@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Iterator
+from typing import Any, List, Optional, Sequence, Dict
 
 from decimal import Decimal
 from svg import Rect, Polygon, Text
@@ -75,9 +75,11 @@ class Exon:
         coding: Optional[Coding] = None,
         variants: Optional[Sequence[Variant]] = None,
         name: str = "",
+        color: str = "#4C72B7",
     ) -> None:
         self.size = size
         self.name = name
+        self.color = color
 
         if coding is None:
             self.coding = Coding()
@@ -103,7 +105,15 @@ class Exon:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Exon):
             raise NotImplementedError
-        return self.size == other.size
+        return all(
+            (
+                self.size == other.size,
+                self.name == other.name,
+                self.color == other.color,
+                self.coding == other.coding,
+                self.variants == other.variants,
+            )
+        )
 
     def draw_size(self, height: float) -> float:
         """Determine how big the Exon is when drawn"""
@@ -315,7 +325,9 @@ class Exon:
         )
 
 
-def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
+def group_exons(
+    exons: List[Exon], height: int, gap: int, width: int
+) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
         return [[]]
@@ -336,6 +348,66 @@ def group_exons(exons: List[Exon], height: int, width: int) -> List[List[Exon]]:
             else:
                 new_exon = exon.split(space_left, height=height)
                 row.append(new_exon)
-                x += new_exon.draw_size(height)
+                x += new_exon.draw_size(height) + gap
     page.append(row)
     return page
+
+
+def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Element]:
+    x = 0.0
+    y = 0.0
+    elements = list()
+    for row in group_exons(exons, width=width, height=height, gap=gap):
+        for exon in row:
+            elements.append(exon.draw(height=height, x=x, y=y))
+            x += exon.draw_size(height) + gap
+        y += 2 * height
+        x = 0
+    return elements
+
+
+def parse_coding_region(exon_dict: Dict[Any, Any]) -> None:
+    """Extract the coding fields into a Coding object, rewrites exon_dict"""
+    # Get the coding values out of the exon dictionary
+    coding_dict = dict()
+    for coding_field in "coding_start coding_end start_phase end_phase".split():
+        if coding_field in exon_dict:
+            coding_dict[coding_field] = exon_dict.pop(coding_field)
+        else:
+            coding_dict[coding_field] = 0
+    # Rename start and end
+    coding_dict["start"] = coding_dict.pop("coding_start")
+    coding_dict["end"] = coding_dict.pop("coding_end")
+
+    exon_dict["coding"] = Coding(**coding_dict)
+
+
+def parse_variants(exon_dict: Dict[Any, Any]) -> None:
+    """Extract the variant fields into a list of Variants, rewrites exon_dict"""
+    variants: List[Variant] = list()
+
+    if "variant_pos" not in exon_dict:
+        exon_dict["variants"] = variants
+        return
+
+    positions = exon_dict.pop("variant_pos").split(",")
+    names = exon_dict.pop("variant_name").split(",")
+    colors = exon_dict.pop("variant_color").split(",")
+
+    if not len(names) == len(positions) and len(names) == len(colors):
+        error_msg = "Please specify an equal number of items for each variant_field"
+        raise ValueError(error_msg)
+
+    for pos, name, color in zip(positions, names, colors):
+        variants.append(Variant(int(pos), name=name, color=color))
+    exon_dict["variants"] = variants
+
+
+def exon_from_dict(d: Dict[str, str]) -> Exon:
+    """Create an Exon from a dictionary"""
+    exon_dict: Dict[Any, Any] = d.copy()
+    parse_coding_region(exon_dict)
+    parse_variants(exon_dict)
+    # Convert exon size to int
+    exon_dict["size"] = int(exon_dict["size"])
+    return Exon(**exon_dict)

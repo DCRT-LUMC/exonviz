@@ -1,8 +1,8 @@
 import pytest
 
-from typing import List
+from typing import List, Dict
 
-from exonviz.exon2 import Coding, Exon, Variant, group_exons
+from exonviz.exon2 import Coding, Exon, Variant, group_exons, exon_from_dict
 from GTGT.range import Range
 
 
@@ -349,26 +349,69 @@ def test_exon_draw_size(exon: Exon, draw_size: int) -> None:
 
 
 to_page = [
+    # Exon list, page size, gap, result
     # Empty list
-    ([], 100, [[]]),
+    ([], 100, 0, [[]]),
     # Single exon that fits on one page
-    ([Exon(50)], 100, [[Exon(50)]]),
+    ([Exon(50)], 100, 0, [[Exon(50)]]),
     # Single exon that fits exactly
-    ([Exon(100)], 100, [[Exon(100)]]),
+    ([Exon(100)], 100, 0, [[Exon(100)]]),
     # Two exons fit on one row
-    ([Exon(50), Exon(50)], 100, [[Exon(50), Exon(50)]]),
+    ([Exon(50), Exon(50)], 100, 0, [[Exon(50), Exon(50)]]),
     ## Two exons don't fit on one row
-    ([Exon(50), Exon(51)], 100, [[Exon(50), Exon(50)], [Exon(1)]]),
+    ([Exon(50), Exon(51)], 100, 0, [[Exon(50), Exon(50)], [Exon(1)]]),
     ## Two exons that almost fit on one row
-    ([Exon(50), Exon(50)], 99, [[Exon(50), Exon(49)], [Exon(1)]]),
+    ([Exon(50), Exon(50)], 99, 0, [[Exon(50), Exon(49)], [Exon(1)]]),
+    # Two exons fit on one row, but not with a gap
+    ([Exon(50), Exon(50)], 100, 1, [[Exon(50), Exon(49)], [Exon(1)]]),
 ]
 
 
-@pytest.mark.parametrize("exons, width, page", to_page)
-def test_exons_on_page(exons: List[Exon], width: int, page: List[List[Exon]]) -> None:
-    new_page = group_exons(exons, height=20, width=width)
-    print()
-    print(page)
-    print(new_page)
+@pytest.mark.parametrize("exons, width, gap, page", to_page)
+def test_exons_on_page(
+    exons: List[Exon], width: int, gap: int, page: List[List[Exon]]
+) -> None:
+    new_page = group_exons(exons, height=20, gap=gap, width=width)
 
     assert new_page == page
+
+
+exon_dict = [
+    ({"size": "100"}, Exon(100)),
+    ({"size": "100", "name": "Exon-1"}, Exon(100, name="Exon-1")),
+    ({"size": "100", "color": "blue"}, Exon(100, color="blue")),
+    ({"size": "100", "coding_start": 5}, Exon(100, coding=Coding(start=5))),
+    ({"size": "100", "coding_end": 5}, Exon(100, coding=Coding(end=5))),
+    ({"size": "100", "start_phase": 1}, Exon(100, coding=Coding(start_phase=1))),
+    ({"size": "100", "end_phase": 1}, Exon(100, coding=Coding(end_phase=1))),
+    ({"size": "100", "end_phase": 1}, Exon(100, coding=Coding(end_phase=1))),
+    (
+        {
+            "size": "100",
+            "variant_pos": "10",
+            "variant_name": "A>T",
+            "variant_color": "red",
+        },
+        Exon(size=100, variants=[Variant(position=10, name="A>T", color="red")]),
+    ),
+    (
+        {
+            "size": "100",
+            "variant_pos": "10,22",
+            "variant_name": "A>T,stop codon",
+            "variant_color": "red,purple",
+        },
+        Exon(
+            size=100,
+            variants=[
+                Variant(position=10, name="A>T", color="red"),
+                Variant(position=22, name="stop codon", color="purple"),
+            ],
+        ),
+    ),
+]
+
+
+@pytest.mark.parametrize("d, exon", exon_dict)
+def test_exon_from_dict(d: Dict[str, str], exon: Exon) -> None:
+    assert exon_from_dict(d) == exon
