@@ -2,11 +2,13 @@ from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict
 
 from _io import TextIOWrapper
-from decimal import Decimal
 from svg import Rect, Polygon, Text
 
 from GTGT.range import intersect
 
+import logging
+logging.basicConfig(level="DEBUG")
+log = logging.getLogger(__name__)
 Element = Any
 
 
@@ -124,14 +126,14 @@ class Exon:
         """Determine how much the cap overhangs beyond the start of the exon"""
         if not self.coding or self.coding.start_phase == -1:
             return 0
-        cap_size = 0.25 * height
+        cap_size = 0.5 * height
         return max(cap_size - self.coding.start, 0)
 
     def _end_overhang(self, height: float) -> float:
         """Determine how much the cap overhangs beyond the end of the exon"""
         if not self.coding or self.coding.end_phase == -1:
             return 0
-        cap_size = 0.25 * height
+        cap_size = 0.5 * height
         return max(cap_size - (self.size - self.coding.end), 0)
 
     def _total_overhang(self, height: float) -> float:
@@ -148,6 +150,8 @@ class Exon:
         # If the start of the exon is coding, we have to shift x to leave space
         # for the cap
         x += self._front_overhang(height)
+
+        log.debug(f"Start drawing exon '{self.name}' at postion {x}")
 
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += self._draw_coding(height, x=x, y=y)

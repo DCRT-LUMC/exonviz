@@ -115,10 +115,10 @@ def test_draw_full_coding() -> None:
 
     # We shift both the coding and non coding part of the exon
     non_coding = elements[0]
-    assert non_coding.x == 5  #  height * 0.25
+    assert non_coding.x == 10  #  height * 0.5
 
     coding = elements[1]
-    assert coding.x == 5
+    assert coding.x == 10
 
 
 def test_draw_full_coding_no_cap() -> None:
@@ -197,7 +197,7 @@ def test_draw_variant_coding() -> None:
     assert len(elements) == 5
 
     variant = elements[4]
-    assert variant.x == 10 + 5  #  variant.position + drawing offset for the start cap
+    assert variant.x == 10 + 10  #  variant.position + drawing offset for the start cap
 
 
 def test_draw_name() -> None:
@@ -349,21 +349,21 @@ draw = [
     # Non coding exon is exactly its own size
     (Exon(100), 100),
     # Exon starts coding
-    (Exon(100, Coding(0, 50)), 105),
+    (Exon(100, Coding(0, 50)), 110),
     # Exon ends coding
-    (Exon(100, Coding(50, 100)), 105),
-    # Fully coding exon gets 2*0.25*height added for the notches
-    (Exon(100, Coding(0, 100)), 110),
+    (Exon(100, Coding(50, 100)), 110),
+    # Fully coding exon gets 2*0.5*height added for the notches
+    (Exon(100, Coding(0, 100)), 120),
     # Coding region starts at position 1
-    (Exon(100, Coding(1, 50)), 104),
+    (Exon(100, Coding(1, 50)), 109),
     # Coding region ends 4 bp from exon end
-    (Exon(100, Coding(50, 96)), 101),
+    (Exon(100, Coding(50, 96)), 106),
     # Coding in the middle, far from the edges
     (Exon(100, Coding(50, 60)), 100),
     # Coding, but the start phase is -1
-    (Exon(100, Coding(0, 100, start_phase=-1)), 105),
+    (Exon(100, Coding(0, 100, start_phase=-1)), 110),
     # Coding, but the end phase is -1
-    (Exon(100, Coding(0, 100, start_phase=0, end_phase=-1)), 105),
+    (Exon(100, Coding(0, 100, start_phase=0, end_phase=-1)), 110),
     # Coding, but both start and end phase are -1
     (Exon(100, Coding(0, 100, start_phase=-1, end_phase=-1)), 100),
 ]
