@@ -2,8 +2,9 @@ import pytest
 
 from typing import List, Dict
 
-from exonviz.exon2 import Coding, Exon, Variant, group_exons, exon_from_dict
+from exonviz.exon2 import Coding, Exon, Variant, group_exons, exon_from_dict, element_xy, Element
 from GTGT.range import Range
+from svg import Rect, Text, Polygon
 
 
 @pytest.fixture
@@ -481,3 +482,18 @@ exon_dict = [
 @pytest.mark.parametrize("d, exon", exon_dict)
 def test_exon_from_dict(d: Dict[str, str], exon: Exon) -> None:
     assert exon_from_dict(d) == exon
+
+
+elements = [
+    #element, max_x, max_y
+    (Rect(x=1, y=2, width=11.0, height=23), 12, 25),
+    (Text(x=1, y=1, text="text"), 1, 1),
+    (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25)
+]
+@pytest.mark.parametrize("element, max_x, max_y", elements)
+def test_element_size(element: Element, max_x: float, max_y: float) -> None:
+    """Determine the size of various SVG elements"""
+    x, y = element_xy(element)
+
+    assert x == max_x
+    assert y == max_y

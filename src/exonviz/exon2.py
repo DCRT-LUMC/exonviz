@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Dict
+from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
+from decimal import Decimal
 
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text
@@ -438,3 +439,19 @@ def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
         exons.append(exon_from_dict(d))
 
     return exons
+
+@no_type_check
+def element_xy(element:Element) -> Tuple[float, float]:
+    """Determine the furthest x,y coordinates for various svg objects"""
+    if isinstance(element, Rect):
+        x = element.x + element.width
+        y = element.y + element.height
+    elif isinstance(element, Text):
+        x = element.x
+        y = element.y
+    elif isinstance(element, Polygon):
+        x = max((element.points[i] for i in range(len(element.points)) if not i%2))
+        y = max((element.points[i] for i in range(len(element.points)) if i%2))
+    else:
+        raise ValueError(element)
+    return x, y
