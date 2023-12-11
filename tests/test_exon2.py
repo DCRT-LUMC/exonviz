@@ -51,6 +51,9 @@ def test_default_exon(default_exon: Exon) -> None:
     # Test that we made variants into a list
     assert default_exon.variants == list()
 
+    # Test that we set the default color
+    assert default_exon.color == "#4C72B7"
+
 
 def test_draw_exon(center_coding: Exon) -> None:
     elements = center_coding.draw(height=20)
@@ -79,6 +82,10 @@ def test_draw_exon(center_coding: Exon) -> None:
     # Check that the start and end are correct
     assert coding.x == 40
     assert coding.y == 0
+
+    # Test that every element is drawn in the correct color
+    for e in elements:
+        assert e.fill == "#4C72B7"
 
 
 def test_draw_exon_offset_noncoding(default_exon: Exon) -> None:

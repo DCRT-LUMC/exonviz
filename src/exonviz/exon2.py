@@ -161,15 +161,13 @@ class Exon:
         return elements
 
     def _draw_noncoding(
-        self, height: float, x: float, y: float, color: str = "blue"
-    ) -> Rect:
+        self, height: float, x: float, y: float) -> Rect:
         return Rect(
-            x=x, y=y + height * 0.25, width=self.size, height=height * 0.5, fill=color
+            x=x, y=y + height * 0.25, width=self.size, height=height * 0.5, fill=self.color
         )
 
     def _draw_coding(
-        self, height: float, x: float, y: float, color: str = "green"
-    ) -> List[Element]:
+        self, height: float, x: float, y: float) -> List[Element]:
         # Fixed points for every exon
         elements: List[Element] = list()
 
@@ -186,7 +184,7 @@ class Exon:
                 y=y,
                 width=self.coding.size,
                 height=height,
-                fill=color,
+                fill=self.color,
             )
         )
         elements.append(self._draw_start_cap(height, cx, y))
@@ -231,9 +229,9 @@ class Exon:
         cap = phases[self.coding.start_phase]
 
         if cap:
-            return Polygon(points=list(cap), fill="orange")
+            return Polygon(points=list(cap), fill=self.color)
         else:
-            return Polygon(points=None, fill="orange")
+            return Polygon(points=None, fill=self.color)
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
@@ -286,9 +284,9 @@ class Exon:
         cap = phases[self.coding.end_phase]
 
         if cap:
-            return Polygon(points=list(cap), fill="orange")
+            return Polygon(points=list(cap), fill=self.color)
         else:
-            return Polygon(points=None, fill="orange")
+            return Polygon(points=None, fill=self.color)
 
     def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
         if not self.name:
