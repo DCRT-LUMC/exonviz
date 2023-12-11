@@ -299,10 +299,10 @@ class Exon:
         ]
 
     def split(self, size: int, height: int) -> "Exon":
-        """Split the exon to be 'size' pixels big when drawn"""
-        # Account for the overhang of the caps when determining the size to split
-        size = int(size - self._total_overhang(height))
+        """Split an new exon of size off from self
 
+        Not that this does not take the drawn_size() into account
+        """
         # Size of the new exon
         n_size = min(self.size, size)
         self.size = max(0, self.size - size)
@@ -339,11 +339,9 @@ def group_exons(
         while exon:
             # How much space is left on the page
             space_left = int(width - x)
-            # If there is at least one exon, we have to make space for the gap
-            space_left -= gap if len(row) > 1 else 0
 
-            # We don't want to have tiny exons
-            if space_left < 2 * height:
+            # Leave some space to account for the coding caps, if needed
+            if space_left <2 * height:
                 page.append(row)
                 row = list()
                 x = 0

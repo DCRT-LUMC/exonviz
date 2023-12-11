@@ -401,27 +401,27 @@ to_page = [
     # Off by one, so it doesn't fit, with gap of 10
     ([Exon(46), Exon(45)], 100, 10, [[Exon(46), Exon(44)], [Exon(1)]]),
     # fmt: off
-    # One exon that fits, including gap of 10
+    # One exon that fits, including a gap of 10
     (
         [Exon(100) for _ in range(1)],
         100,
         10,
         [[Exon(100) for _ in range(1)]]
     ),
-    # Two exons that fit, including gap of 10
+    # Two exons that fit, including gaps of size 10
     (
         [Exon(100) for _ in range(2)],
         210,
         10,
         [[Exon(100) for _ in range(2)]]
     ),
-    # Ten exons that fit, with gap 10
-    # (
-    #     [Exon(100) for _ in range(10)],
-    #     1090,
-    #     10,
-    #     [[Exon(100) for _ in range(10)]]
-    # ),
+    # Ten exons that fit, including gaps of size 10
+    (
+        [Exon(100) for _ in range(10)],
+        1090,
+        10,
+        [[Exon(100) for _ in range(10)]]
+    ),
     # fmt: on
 ]
 
@@ -431,9 +431,6 @@ def test_exons_on_page(
     exons: List[Exon], width: int, gap: int, page: List[List[Exon]]
 ) -> None:
     new_page = group_exons(exons, height=20, gap=gap, width=width)
-    print()
-    print(exons)
-    print(new_page)
 
     assert new_page == page
 
