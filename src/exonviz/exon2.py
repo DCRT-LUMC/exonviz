@@ -10,7 +10,7 @@ from GTGT.range import intersect
 import logging
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element = Any
+Element = Rect | Polygon | Text
 
 
 @dataclass()
@@ -362,7 +362,7 @@ def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Ele
     elements = list()
     for row in group_exons(exons, width=width, height=height, gap=gap):
         for exon in row:
-            elements.append(exon.draw(height=height, x=x, y=y))
+            elements += exon.draw(height=height, x=x, y=y)
             x += exon.draw_size(height) + gap
         y += 2 * height
         x = 0

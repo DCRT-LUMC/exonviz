@@ -1,6 +1,6 @@
 import pytest
 
-from typing import List, Dict
+from typing import List, Dict, cast
 
 from exonviz.exon2 import Coding, Exon, Variant, group_exons, exon_from_dict, element_xy, Element
 from GTGT.range import Range
@@ -60,7 +60,7 @@ def test_draw_exon(center_coding: Exon) -> None:
     elements = center_coding.draw(height=20)
 
     # Get the non coding part of the exon
-    non_coding = elements[0]
+    non_coding = cast(Rect,elements[0])
 
     # Check the height and width
     assert non_coding.width == center_coding.size
@@ -74,7 +74,7 @@ def test_draw_exon(center_coding: Exon) -> None:
     assert non_coding.y == 5
 
     # Get the coding part of the exon
-    coding = elements[1]
+    coding = cast(Rect, elements[1])
 
     # Check the height and width
     assert coding.width == center_coding.coding.size
@@ -95,7 +95,7 @@ def test_draw_exon_offset_noncoding(default_exon: Exon) -> None:
     # If the exon is non coding, there should only be a single element
     assert len(elements) == 1
 
-    non_coding = elements[0]
+    non_coding = cast(Rect, elements[0])
     assert non_coding.x == 11  #  offset
     assert non_coding.y == 13 + 5  #  offset + 0.25 * height
 
@@ -105,7 +105,7 @@ def test_draw_exon_offset_coding(center_coding: Exon) -> None:
     elements = center_coding.draw(x=11, y=13, height=20)
     # If the exon is non coding, there should only be a single element
 
-    coding = elements[1]
+    coding = cast(Rect, elements[1])
     assert coding.x == 11 + 40  #  offset + start coding region
     assert coding.y == 13  #  offset
 
@@ -122,10 +122,10 @@ def test_draw_full_coding() -> None:
     elements = e.draw(height=20)
 
     # We shift both the coding and non coding part of the exon
-    non_coding = elements[0]
+    non_coding = cast(Rect, elements[0])
     assert non_coding.x == 10  #  height * 0.5
 
-    coding = elements[1]
+    coding = cast(Rect, elements[1])
     assert coding.x == 10
 
 
@@ -140,10 +140,10 @@ def test_draw_full_coding_no_cap() -> None:
     elements = e.draw(height=20)
 
     # We shift both the coding and non coding part of the exon
-    non_coding = elements[0]
+    non_coding = cast(Rect,elements[0])
     assert non_coding.x == 0
 
-    coding = elements[1]
+    coding = cast(Rect, elements[1])
     assert coding.x == 0
 
 
@@ -182,18 +182,18 @@ def test_draw_variants(with_variant: Exon) -> None:
     elements = with_variant.draw(height=20)
     assert len(elements) == 3
 
-    var1 = elements[1]
+    var1 = cast(Rect, elements[1])
     assert var1.x == 10
     assert var1.fill == "red"
 
-    var2 = elements[2]
+    var2 = cast(Rect, elements[2])
     assert var2.x == 30
     assert var2.fill == "blue"
 
 
 def test_draw_variants_offset(with_variant: Exon) -> None:
     elements = with_variant.draw(height=20, x=11)
-    var1 = elements[1]
+    var1 = cast(Rect, elements[1])
     assert var1.x == 10 + 11  #  variant.position + offset
 
 
@@ -204,7 +204,7 @@ def test_draw_variant_coding() -> None:
 
     assert len(elements) == 5
 
-    variant = elements[4]
+    variant = cast(Rect, elements[4])
     assert variant.x == 10 + 10  #  variant.position + drawing offset for the start cap
 
 
@@ -215,7 +215,7 @@ def test_draw_name() -> None:
 
     assert len(elements) == 2
 
-    text = elements[1]
+    text = cast(Text, elements[1])
 
     assert text.x == 11 + 50  # offset + half the exon size
     assert text.y == 23 + 5  # offset + half the height
