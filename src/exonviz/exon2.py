@@ -450,8 +450,12 @@ def element_xy(element:Element) -> Tuple[float, float]:
         x = element.x
         y = element.y
     elif isinstance(element, Polygon):
-        x = max((element.points[i] for i in range(len(element.points)) if not i%2))
-        y = max((element.points[i] for i in range(len(element.points)) if i%2))
+        if not element.points:
+            x = 0
+            y = 0
+        else:
+            x = max((element.points[i] for i in range(len(element.points)) if not i%2))
+            y = max((element.points[i] for i in range(len(element.points)) if i%2))
     else:
         raise ValueError(element)
     return x, y

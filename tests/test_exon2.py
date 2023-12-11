@@ -488,7 +488,9 @@ elements = [
     #element, max_x, max_y
     (Rect(x=1, y=2, width=11.0, height=23), 12, 25),
     (Text(x=1, y=1, text="text"), 1, 1),
-    (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25)
+    (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25),
+    # Empty polygon
+    (Polygon(fill="yellow"), 0, 0),
 ]
 @pytest.mark.parametrize("element, max_x, max_y", elements)
 def test_element_size(element: Element, max_x: float, max_y: float) -> None:
