@@ -115,12 +115,12 @@ variants = [
 def test_exon_variants(exon: Range, variants: List[Dict[str, Any]], expected: List[Variant]) -> None:
     assert exon_variants(exon, variants) == expected
 
-variants = [
+inside_exon_variants = [
     ({"start": 0}, True),
     ({"start": 10}, False),
     ({"start": -1}, False),
 ]
-@pytest.mark.parametrize("variant, expected", variants)
+@pytest.mark.parametrize("variant, expected", inside_exon_variants)
 def test_variant_inside_exon(variant: Dict[str, Any], expected: bool) -> None:
     exon = (0, 10)
     assert inside(exon, variant) == expected
