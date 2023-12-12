@@ -2,7 +2,15 @@ import pytest
 
 from typing import List, Dict, cast
 
-from exonviz.exon2 import Coding, Exon, Variant, group_exons, exon_from_dict, element_xy, Element
+from exonviz.exon2 import (
+    Coding,
+    Exon,
+    Variant,
+    group_exons,
+    exon_from_dict,
+    element_xy,
+    Element,
+)
 from GTGT.range import Range
 from svg import Rect, Text, Polygon
 
@@ -60,7 +68,7 @@ def test_draw_exon(center_coding: Exon) -> None:
     elements = center_coding.draw(height=20)
 
     # Get the non coding part of the exon
-    non_coding = cast(Rect,elements[0])
+    non_coding = cast(Rect, elements[0])
 
     # Check the height and width
     assert non_coding.width == center_coding.size
@@ -140,7 +148,7 @@ def test_draw_full_coding_no_cap() -> None:
     elements = e.draw(height=20)
 
     # We shift both the coding and non coding part of the exon
-    non_coding = cast(Rect,elements[0])
+    non_coding = cast(Rect, elements[0])
     assert non_coding.x == 0
 
     coding = cast(Rect, elements[1])
@@ -485,13 +493,15 @@ def test_exon_from_dict(d: Dict[str, str], exon: Exon) -> None:
 
 
 elements = [
-    #element, max_x, max_y
+    # element, max_x, max_y
     (Rect(x=1, y=2, width=11.0, height=23), 12, 25),
     (Text(x=1, y=1, text="text"), 1, 1),
     (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25),
     # Empty polygon
     (Polygon(fill="yellow"), 0, 0),
 ]
+
+
 @pytest.mark.parametrize("element, max_x, max_y", elements)
 def test_element_size(element: Element, max_x: float, max_y: float) -> None:
     """Determine the size of various SVG elements"""

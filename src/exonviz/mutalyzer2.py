@@ -28,6 +28,7 @@ def fetch_exons(transcript: str) -> Optional[Dict[str, Any]]:
     selector: Dict[str, Any] = js["selector_short"]
     return selector
 
+
 def fetch_variants(transcript: str) -> Optional[Dict[str, Any]]:
     """Fetch variant view from mutalyzer"""
 
@@ -41,6 +42,7 @@ def fetch_variants(transcript: str) -> Optional[Dict[str, Any]]:
     else:
         js: Dict[str, Any] = json.loads(response.read())
     return js
+
 
 def convert_coding_positions(positions: List[List[str]]) -> Range:
     start = int(positions[0][0])
@@ -67,7 +69,7 @@ def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
     This function also accounts for reverse transcripts
     """
     converted = list()
-    
+
     reversed = is_reverse(positions)
     for mutalyzer_start, mutalyzer_end in positions:
         start = int(mutalyzer_start)
@@ -84,6 +86,7 @@ def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
     else:
         return converted
 
+
 def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     """Create the coding region"""
     c = intersect(exon, coding_region)
@@ -93,13 +96,8 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     assert len(c) == 1
     start, end = c[0]
 
-    end_phase = (start_phase + (end - start))%3
-    return Coding(
-        start=start,
-        end = end,
-        start_phase = start_phase,
-        end_phase = end_phase
-    )
+    end_phase = (start_phase + (end - start)) % 3
+    return Coding(start=start, end=end, start_phase=start_phase, end_phase=end_phase)
 
 
 def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -111,6 +109,7 @@ def inside(exon: Range, variant: Dict[str, Any]) -> bool:
     pos = variant["start"]
     return cast(bool, pos >= exon[0] and pos < exon[1])
 
+
 def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
     """Create a list of Variants that fall within the exon
 
@@ -120,11 +119,13 @@ def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
     for var in variants:
         if inside(exon, var):
             relative_position = var["start"] - exon[0]
-            vars.append(Variant(relative_position, var["description"], 'red'))
+            vars.append(Variant(relative_position, var["description"], "red"))
     return vars
 
 
-def extract_exons(mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]) -> List[Exon]:
+def extract_exons(
+    mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]
+) -> List[Exon]:
     """Extract Exons from mutalyzer payload"""
     exons: List[Exon] = list()
 
@@ -145,11 +146,6 @@ def extract_exons(mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]) -> L
         start_phase = coding.end_phase
         vars = exon_variants(range, variants)
         index += 1
-        E = Exon(
-            size=size,
-            coding=coding,
-            variants=vars,
-            name=str(index)
-        )
+        E = Exon(size=size, coding=coding, variants=vars, name=str(index))
         exons.append(E)
     return exons

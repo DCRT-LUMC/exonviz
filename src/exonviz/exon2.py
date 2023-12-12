@@ -8,6 +8,7 @@ from svg import Rect, Polygon, Text
 from GTGT.range import intersect
 
 import logging
+
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
 Element = Rect | Polygon | Text
@@ -161,14 +162,16 @@ class Exon:
 
         return elements
 
-    def _draw_noncoding(
-        self, height: float, x: float, y: float) -> Rect:
+    def _draw_noncoding(self, height: float, x: float, y: float) -> Rect:
         return Rect(
-            x=x, y=y + height * 0.25, width=self.size, height=height * 0.5, fill=self.color
+            x=x,
+            y=y + height * 0.25,
+            width=self.size,
+            height=height * 0.5,
+            fill=self.color,
         )
 
-    def _draw_coding(
-        self, height: float, x: float, y: float) -> List[Element]:
+    def _draw_coding(self, height: float, x: float, y: float) -> List[Element]:
         # Fixed points for every exon
         elements: List[Element] = list()
 
@@ -344,7 +347,7 @@ def group_exons(
             space_left = int(width - x)
 
             # Leave some space to account for the coding caps, if needed
-            if space_left <2 * height:
+            if space_left < 2 * height:
                 page.append(row)
                 row = list()
                 x = 0
@@ -440,8 +443,9 @@ def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
 
     return exons
 
+
 @no_type_check
-def element_xy(element:Element) -> Tuple[float, float]:
+def element_xy(element: Element) -> Tuple[float, float]:
     """Determine the furthest x,y coordinates for various svg objects"""
     if isinstance(element, Rect):
         x = element.x + element.width
@@ -454,8 +458,10 @@ def element_xy(element:Element) -> Tuple[float, float]:
             x = 0
             y = 0
         else:
-            x = max((element.points[i] for i in range(len(element.points)) if not i%2))
-            y = max((element.points[i] for i in range(len(element.points)) if i%2))
+            x = max(
+                (element.points[i] for i in range(len(element.points)) if not i % 2)
+            )
+            y = max((element.points[i] for i in range(len(element.points)) if i % 2))
     else:
         raise ValueError(element)
     return x, y
