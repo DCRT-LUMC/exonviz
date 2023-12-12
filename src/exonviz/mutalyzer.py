@@ -1,15 +1,18 @@
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, List, Tuple, cast
 import urllib.request
 from urllib.error import HTTPError
 import json
 
-from .exon import Exon, Region
+from .exon import Exon, Coding, Variant
+from GTGT.range import intersect
+
+Range = Tuple[int, int]
 
 
-def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
+def fetch_exons(transcript: str) -> Dict[str, Any]:
     """Fetch variant information from mutalyzer"""
 
-    url = f"https://mutalyzer.nl/api/normalize/{variant}"
+    url = f"https://mutalyzer.nl/api/normalize/{transcript}"
 
     try:
         response = urllib.request.urlopen(url)
@@ -20,13 +23,28 @@ def mutalyzer(variant: str) -> Optional[Dict[str, Any]]:
         js = json.loads(response.read())
 
     if "selector_short" not in js:
-        msg = f"No exons found for {variant} (is it a genomic variant?)"
+        msg = f"No exons found for {transcript} (is it a genomic variant?)"
         raise RuntimeError(msg)
     selector: Dict[str, Any] = js["selector_short"]
     return selector
 
 
-def convert_coding_positions(positions: List[List[str]]) -> Tuple[int, int]:
+def fetch_variants(transcript: str) -> Dict[str, Any]:
+    """Fetch variant view from mutalyzer"""
+
+    url = f"https://mutalyzer.nl/api/view_variants/{transcript}"
+
+    try:
+        response = urllib.request.urlopen(url)
+    except HTTPError as e:
+        msg = f"Fetching '{url}' returned {e}"
+        raise RuntimeError(msg)
+    else:
+        js: Dict[str, Any] = json.loads(response.read())
+    return js
+
+
+def convert_coding_positions(positions: List[List[str]]) -> Range:
     start = int(positions[0][0])
     end = int(positions[0][1])
 
@@ -46,7 +64,13 @@ def is_reverse(positions: List[List[str]]) -> bool:
 
 
 def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
+    """Convert exon positions from Mutalyzer to a list of Ranges
+
+    This function also accounts for reverse transcripts
+    """
     converted = list()
+
+    reversed = is_reverse(positions)
     for mutalyzer_start, mutalyzer_end in positions:
         start = int(mutalyzer_start)
         end = int(mutalyzer_end)
@@ -57,25 +81,74 @@ def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
 
         start = start - 1
         converted.append((start, end))
-    return converted
+    if reversed:
+        return converted[::-1]
+    else:
+        return converted
 
 
-def extract_exons(mutalyzer: Dict[str, Any]) -> Tuple[List[Exon], bool]:
+def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
+    """Create the coding region"""
+    c = intersect(exon, coding_region)
+    if not c:
+        return Coding()
+
+    assert len(c) == 1
+    # Determine the coding start and end, relative to the exon start
+    coding_start, coding_end = c[0]
+    coding_start -= exon[0]
+    coding_end -= exon[0]
+
+    end_phase = (start_phase + (coding_end - coding_start)) % 3
+    return Coding(start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase)
+
+
+def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Extract only the variants from the mutalyzer view_variants API payload"""
+    return [x for x in payload if x["type"] == "variant"]
+
+
+def inside(exon: Range, variant: Dict[str, Any]) -> bool:
+    pos = variant["start"]
+    return cast(bool, pos >= exon[0] and pos < exon[1])
+
+
+def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
+    """Create a list of Variants that fall within the exon
+
+    The position of the variants is relative to the Exon start position
+    """
+    vars = list()
+    for var in variants:
+        if inside(exon, var):
+            relative_position = var["start"] - exon[0]
+            vars.append(Variant(relative_position, var["description"], "red"))
+    return vars
+
+
+def extract_exons(
+    mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]
+) -> List[Exon]:
     """Extract Exons from mutalyzer payload"""
     exons: List[Exon] = list()
 
-    # Is the mutalyzer code in reverse
-    reverse = is_reverse(mutalyzer["cds"]["g"])
-
     # Get the coding region
-    coding = Region(*convert_coding_positions(mutalyzer["cds"]["g"]))
+    coding_region = convert_coding_positions(mutalyzer["cds"]["g"])
+
+    # Get the variants
+    variants = parse_view_variants(view_variants["views"])
 
     # The first exon starts in frame by definition
-    frame = 0
+    start_phase = 0
 
-    for start, end in convert_exon_positions(mutalyzer["exon"]["g"]):
-        E = Exon(start, end, frame, coding)
-        frame = E.end_frame
+    # Used for the exon name
+    index = 0
+    for range in convert_exon_positions(mutalyzer["exon"]["g"]):
+        size = range[1] - range[0]
+        coding = make_coding(range, coding_region, start_phase)
+        start_phase = coding.end_phase
+        vars = exon_variants(range, variants)
+        index += 1
+        E = Exon(size=size, coding=coding, variants=vars, name=str(index))
         exons.append(E)
-
-    return exons, reverse
+    return exons

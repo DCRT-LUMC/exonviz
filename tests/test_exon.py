@@ -2,7 +2,7 @@ import pytest
 
 from typing import List, Dict, cast
 
-from exonviz.exon2 import (
+from exonviz.exon import (
     Coding,
     Exon,
     Variant,

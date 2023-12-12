@@ -1,7 +1,7 @@
 from typing import List, Union, Tuple, Any, Dict, no_type_check
 import svg
-from .exon2 import element_xy, Element, Exon
-import exonviz.exon2
+from .exon import element_xy, Element, Exon
+import exonviz.exon
 import math
 import textwrap
 
@@ -44,7 +44,7 @@ def draw_exons(
     config: Dict[str, Any],
 ) -> svg.SVG:
 
-    elements = exonviz.exon2.draw_exons(exons, width=config["width"], height=config["height"], gap=config["gap"])
+    elements = exonviz.exon.draw_exons(exons, width=config["width"], height=config["height"], gap=config["gap"])
 
     # Set style for exonnumber, even if we don't need it
     elements.append(

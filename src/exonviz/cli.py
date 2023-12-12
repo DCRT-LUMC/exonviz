@@ -9,10 +9,10 @@ import sys
 import gzip
 from importlib import resources
 
-from typing import List, Tuple, Dict
+from typing import List, Dict
 from .draw import draw_exons
-from .exon2 import Exon
-from .mutalyzer2 import fetch_exons, fetch_variants, extract_exons
+from .exon import Exon
+from .mutalyzer import fetch_exons, fetch_variants, extract_exons
 
 from .draw import _config
 
