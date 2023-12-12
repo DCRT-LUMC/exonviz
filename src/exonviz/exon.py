@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
 
-try:
+import sys
+if sys.version_info > (3, 9):
     from typing import TypeAlias
-except ImportError:
+else:
     from typing_extensions import TypeAlias
 
 from _io import TextIOWrapper
