@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
+from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, TypeAlias
 
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style
@@ -10,7 +10,7 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element = Rect | Polygon | Text | Style
+Element: TypeAlias = Rect | Polygon | Text | Style
 
 
 @dataclass()
