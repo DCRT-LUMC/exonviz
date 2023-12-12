@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
 
 import sys
+
 if sys.version_info > (3, 9):
     from typing import TypeAlias
 else:
