@@ -2,6 +2,7 @@ from typing import List
 
 from exonviz.draw import shift
 
+
 def test_no_shift() -> None:
     points: List[float] = [0, 0, 0, 0, 10]
     assert shift(points, 0, 0) == [0, 0, 0, 0, 10]

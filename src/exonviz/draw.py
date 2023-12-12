@@ -43,8 +43,9 @@ def draw_exons(
     exons: List[Exon],
     config: Dict[str, Any],
 ) -> svg.SVG:
-
-    elements = exonviz.exon.draw_exons(exons, width=config["width"], height=config["height"], gap=config["gap"])
+    elements = exonviz.exon.draw_exons(
+        exons, width=config["width"], height=config["height"], gap=config["gap"]
+    )
 
     # Set style for exonnumber, even if we don't need it
     elements.append(
@@ -59,8 +60,4 @@ def draw_exons(
     # The maximum width we have reached for this picture
     canvas_width, canvas_height = bottom_right(elements)
 
-    return svg.SVG(
-        width = canvas_width,
-        height = canvas_height,
-        elements = elements
-    )
+    return svg.SVG(width=canvas_width, height=canvas_height, elements=elements)

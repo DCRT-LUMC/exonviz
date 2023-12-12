@@ -100,7 +100,9 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     coding_end -= exon[0]
 
     end_phase = (start_phase + (coding_end - coding_start)) % 3
-    return Coding(start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase)
+    return Coding(
+        start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase
+    )
 
 
 def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
