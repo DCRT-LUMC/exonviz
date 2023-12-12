@@ -9,7 +9,7 @@ from GTGT.range import intersect
 Range = Tuple[int, int]
 
 
-def fetch_exons(transcript: str) -> Optional[Dict[str, Any]]:
+def fetch_exons(transcript: str) -> Dict[str, Any]:
     """Fetch variant information from mutalyzer"""
 
     url = f"https://mutalyzer.nl/api/normalize/{transcript}"
@@ -29,7 +29,7 @@ def fetch_exons(transcript: str) -> Optional[Dict[str, Any]]:
     return selector
 
 
-def fetch_variants(transcript: str) -> Optional[Dict[str, Any]]:
+def fetch_variants(transcript: str) -> Dict[str, Any]:
     """Fetch variant view from mutalyzer"""
 
     url = f"https://mutalyzer.nl/api/view_variants/{transcript}"
@@ -94,10 +94,13 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
         return Coding()
 
     assert len(c) == 1
-    start, end = c[0]
+    # Determine the coding start and end, relative to the exon start
+    coding_start, coding_end = c[0]
+    coding_start -= exon[0]
+    coding_end -= exon[0]
 
-    end_phase = (start_phase + (end - start)) % 3
-    return Coding(start=start, end=end, start_phase=start_phase, end_phase=end_phase)
+    end_phase = (start_phase + (coding_end - coding_start)) % 3
+    return Coding(start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase)
 
 
 def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

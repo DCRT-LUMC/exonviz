@@ -12,7 +12,7 @@ from exonviz.exon2 import (
     Element,
 )
 from GTGT.range import Range
-from svg import Rect, Text, Polygon
+from svg import Rect, Text, Polygon, Style
 
 
 @pytest.fixture
@@ -94,7 +94,8 @@ def test_draw_exon(center_coding: Exon) -> None:
 
     # Test that every element is drawn in the correct color
     for e in elements:
-        assert e.fill == "#4C72B7"
+        if not isinstance(e, Style):
+            assert e.fill == "#4C72B7"
 
 
 def test_draw_exon_offset_noncoding(default_exon: Exon) -> None:
@@ -499,6 +500,8 @@ elements = [
     (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25),
     # Empty polygon
     (Polygon(fill="yellow"), 0, 0),
+    # Style for exon number
+    (Style(), 0, 0),
 ]
 
 

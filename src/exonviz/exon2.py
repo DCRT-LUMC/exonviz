@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
 from decimal import Decimal
 
 from _io import TextIOWrapper
-from svg import Rect, Polygon, Text
+from svg import Rect, Polygon, Text, Style
 
 from GTGT.range import intersect
 
@@ -11,7 +11,7 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element = Rect | Polygon | Text
+Element = Rect | Polygon | Text | Style
 
 
 @dataclass()
@@ -462,6 +462,9 @@ def element_xy(element: Element) -> Tuple[float, float]:
                 (element.points[i] for i in range(len(element.points)) if not i % 2)
             )
             y = max((element.points[i] for i in range(len(element.points)) if i % 2))
+    elif isinstance(element, Style):
+        x = 0
+        y = 0
     else:
         raise ValueError(element)
     return x, y

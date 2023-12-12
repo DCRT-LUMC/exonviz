@@ -1,6 +1,7 @@
-from typing import List, Union, Tuple, Optional, Any, Dict
+from typing import List, Union, Tuple, Any, Dict, no_type_check
 import svg
-from .exon import Exon, Region
+from .exon2 import element_xy, Element, Exon
+import exonviz.exon2
 import math
 import textwrap
 
@@ -27,13 +28,23 @@ def shift(
     return [x + y_offset if i % 2 else x + x_offset for i, x in enumerate(points)]
 
 
+def bottom_right(elements: List[Element]) -> Tuple[int, int]:
+    x = 0
+    y = 0
+    for e in elements:
+        e_x, e_y = element_xy(e)
+        x = max(x, e_x)
+        y = max(y, e_y)
+    return x, y
+
+
+@no_type_check
 def draw_exons(
     exons: List[Exon],
-    reverse: bool,
     config: Dict[str, Any],
-    scale: int = 1,
 ) -> svg.SVG:
-    elements: List[Union[svg.Style, svg.Text]] = list()
+
+    elements = exonviz.exon2.draw_exons(exons, width=config["width"], height=config["height"], gap=config["gap"])
 
     # Set style for exonnumber, even if we don't need it
     elements.append(
@@ -46,174 +57,10 @@ def draw_exons(
         )
     )
     # The maximum width we have reached for this picture
-    canvas_width: float = 0
+    canvas_width, canvas_height = bottom_right(elements)
 
-    # These values will be updated as we draw the figure
-    x_position: float = 10
-    y_position: float = 0
-
-    # Get the first and last exon to draw
-    first = config["firstexon"]
-    last = int(min(config["lastexon"], len(exons)))
-    for i, exon in enumerate(exons[first - 1 : last], start=first):
-        # The visual size of the exon depends on wether or not we draw the non-coding
-        # regions
-        if config["noncoding"]:
-            exon_size = exon.size
-        else:
-            exon_size = exon.coding.size
-
-        # If there is nothing to draw, skip
-        if not exon_size:
-            continue
-        # If we overflow the width, go to a new line
-        if x_position + exon_size + config["height"] > config["width"] / scale:
-            # If we are still at the start position for x, we dont start a new line
-            # (this happens when the exon we want to draw is larger than
-            # config["width"])
-            if x_position == 10:
-                continue
-            x_position = 10
-            y_position += 2 * config["height"]
-
-        for section in draw_exon(exon, config["height"], reverse, config["noncoding"]):
-            # Don't draw the empty sections
-            if not section:
-                continue
-            # Shift the points
-            section = shift(section, x_position, y_position)
-
-            # Scale the points
-            section = [x * scale for x in section]
-
-            elements.append(
-                svg.Polygon(
-                    points=section, stroke="red", fill=config["color"], stroke_width=0  # type: ignore
-                )
-            )
-        # Put in the exon number
-        if config["exonnumber"]:
-            elements.append(
-                svg.Text(
-                    x=x_position + (exon_size / 2),
-                    y=y_position + 0.5 * config["height"],
-                    class_=["exonnr"],
-                    text=str(i),
-                )
-            )
-        x_position = x_position + exon_size + config["gap"]
-        canvas_width = max(x_position, canvas_width)
-
-    return svg.SVG(width=canvas_width, height=y_position + config["height"], elements=elements)  # type: ignore
-
-
-def draw_non_coding(region: Region, height: float) -> List[float]:
-    """Draw a non coding region"""
-    if not region:
-        return list()
-
-    top_left = (0, 0.25 * height)
-    top_right = (region.size, 0.25 * height)
-    bottom_right = (region.size, 0.75 * height)
-    bottom_left = (0, 0.75 * height)
-
-    # We need to end top-right, to draw the next thing
-    return [*top_right, *bottom_right, *bottom_left, *top_left, *top_right]
-
-
-def draw_coding(exon: Exon, height: float) -> List[float]:
-    # Fixed points for every exon
-    top_left = (0, 0)
-    top_right = (exon.coding.size, 0)
-    bottom_right = (exon.coding.size, height)
-    bottom_left = (0, height)
-
-    # Pre-calculate the ends for the 6 possible frames
-    # Use the frame to fetch the index
-    # fmt: off
-    left_end = [
-        tuple(), #  Straigt line, we don't need to draw anything
-        (0.5*height, 0.5*height), #  point
-        (-0.5*height, 0.5*height), #  notch
-    ]
-
-    right_end = [
-        tuple(), #  straight line, we don't need to draw anything
-        (exon.coding.size+0.5*height, 0.5*height), #  point
-        (exon.coding.size-0.5*height, 0.5*height), #  notch
-
-    ]
-    # fmt: on
-
-    return [
-        *top_left,
-        *top_right,
-        *right_end[exon.end_frame],
-        *bottom_right,
-        *bottom_left,
-        *left_end[exon.frame],
-        *top_left,
-    ]
-
-
-Section = List[float]
-
-
-def draw_exon(
-    exon: Exon, height: float, reverse: bool, non_coding: bool
-) -> Tuple[Section, Section, Section]:
-    """Draw the specified exon by calculating all the points that have to be connected
-
-    We draw clockwise, starting from the top left
-
-    """
-
-    # Get the non coding regions
-    if non_coding:
-        before_coding, after_coding = exon.non_coding
-    else:
-        before_coding = after_coding = Region(0, 0)
-
-    x_offset: float
-
-    if not reverse:
-        before = draw_non_coding(before_coding, height)
-        coding = shift(
-            draw_coding(exon, height), x_offset=before_coding.size, y_offset=0
-        )
-
-        # Depending on the end of the coding part (notch or point), we have to shift the
-        # non-coding part so it matches
-        x_offset = before_coding.size + exon.coding.size
-        if exon.end_frame == 1:
-            x_offset += 0.5 * height
-        elif exon.end_frame == 2:
-            x_offset -= 0.5 * height
-
-        after = shift(
-            draw_non_coding(after_coding, height), x_offset=x_offset, y_offset=0
-        )
-
-        # We need to draw the coding region last, so it overlaps properly
-    else:
-        after = draw_non_coding(after_coding, height)
-        coding = shift(
-            draw_coding(exon, height), x_offset=after_coding.size, y_offset=0
-        )
-
-        # Depending on the end of the coding part (notch or point), we have to shift the
-        # non-coding part so it matches
-        x_offset = after_coding.size + exon.coding.size
-        if exon.end_frame == 1:
-            x_offset += 0.5 * height
-        elif exon.end_frame == 2:
-            x_offset -= 0.5 * height
-
-        before = shift(
-            draw_non_coding(before_coding, height), x_offset=x_offset, y_offset=0
-        )
-
-    if exon.coding:
-        return (before, after, coding)
-    else:
-        return (before, after, list())
+    return svg.SVG(
+        width = canvas_width,
+        height = canvas_height,
+        elements = elements
+    )

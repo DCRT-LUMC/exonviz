@@ -11,8 +11,8 @@ from importlib import resources
 
 from typing import List, Tuple, Dict
 from .draw import draw_exons
-from .exon import Exon
-from .mutalyzer import mutalyzer, extract_exons
+from .exon2 import Exon
+from .mutalyzer2 import fetch_exons, fetch_variants, extract_exons
 
 from .draw import _config
 
@@ -41,7 +41,7 @@ def check_input(transcript: str) -> str:
     return transcript
 
 
-def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
+def make_exons(transcript: str) -> List[Exon]:
     """Make or fetch the requested exons"""
 
     # If the transcript is actually the gene name, substitute the MANE transcript
@@ -53,11 +53,9 @@ def fetch_exons(transcript: str) -> Tuple[List[Exon], bool]:
         # Does the transcript format make sense?
         transcript = check_input(transcript)
 
-    payload = mutalyzer(transcript)
-    if payload:
-        return extract_exons(payload)
-    else:
-        return list(), False
+    exons = fetch_exons(transcript)
+    variants = fetch_variants(transcript)
+    return extract_exons(exons, variants)
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -96,7 +94,7 @@ def main() -> None:
 
     # Try to talk to mutalyzer
     try:
-        exons, reverse = fetch_exons(args.transcript)
+        exons = make_exons(args.transcript)
     except RuntimeError as e:
         print(e, file=sys.stderr)
         exit(1)
@@ -106,7 +104,6 @@ def main() -> None:
 
     plot = draw_exons(
         exons,
-        reverse,
         config=config,
     )
     print(plot)

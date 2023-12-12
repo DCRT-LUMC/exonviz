@@ -84,6 +84,7 @@ coding = [
     ((0, 10), (0, 10), 0, Coding(0, 10, end_phase=1)),
     ((0, 10), (5, 12), 0, Coding(5, 10, end_phase=2)),
     ((0, 10), (-5, 12), 2, Coding(0, 10, start_phase=2, end_phase=0)),
+    ((100, 110), (100, 200), 0, Coding(0, 10, end_phase=1))
 ]
 
 
