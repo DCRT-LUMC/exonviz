@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
+from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, Union
 
 import sys
 
@@ -17,7 +17,7 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element: TypeAlias = Rect | Polygon | Text | Style
+Element: TypeAlias = Union[Rect, Polygon, Text, Style]
 
 
 @dataclass()
