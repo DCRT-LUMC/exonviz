@@ -23,7 +23,7 @@ def fetch_exons(transcript: str) -> Optional[Dict[str, Any]]:
         js = json.loads(response.read())
 
     if "selector_short" not in js:
-        msg = f"No exons found for {variant} (is it a genomic variant?)"
+        msg = f"No exons found for {transcript} (is it a genomic variant?)"
         raise RuntimeError(msg)
     selector: Dict[str, Any] = js["selector_short"]
     return selector
@@ -39,7 +39,7 @@ def fetch_variants(transcript: str) -> Optional[Dict[str, Any]]:
         msg = f"Fetching '{url}' returned {e}"
         raise RuntimeError(msg)
     else:
-        js = json.loads(response.read())
+        js: Dict[str, Any] = json.loads(response.read())
     return js
 
 def convert_coding_positions(positions: List[List[str]]) -> Range:
