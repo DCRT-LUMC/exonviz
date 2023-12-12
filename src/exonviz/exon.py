@@ -1,5 +1,10 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, TypeAlias
+from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check
+
+try:
+    from typing import TypeAlias
+except ImportError:
+    from typing_extensions import TypeAlias
 
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style
