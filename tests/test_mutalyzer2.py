@@ -5,9 +5,14 @@ from exonviz.mutalyzer2 import (
     convert_coding_positions,
     is_reverse,
     make_coding,
+    parse_view_variants,
+    exon_variants,
+    inside,
     Range
 )
-from exonviz.exon2 import Coding
+from exonviz.exon2 import Coding, Variant
+
+from typing import Any, Dict, List, Tuple
 
 # Example mutalyzer payload
 mutalyzer = {
@@ -84,3 +89,38 @@ coding = [
 def test_make_coding(exon: Range, coding_region: Range, start_phase: int, expected: Coding) -> None:
     c = make_coding(exon, coding_region, start_phase) 
     assert c == expected
+
+view_variants: Any = [
+    ([{"type": "outside"}], list()),
+    ([
+        {"type": "outside"},
+        {"type": "variant", "description": "274G>T", "start": 433423},
+    ],
+    [
+        {"type": "variant", "description": "274G>T", "start": 433423},
+
+    ]),
+]
+@pytest.mark.parametrize("payload, expected", view_variants)
+def test_parse_view_variants(payload: List[Dict[str, Any]], expected: List[Any]) -> None:
+    assert parse_view_variants(payload) == expected
+
+variants = [
+    # exon: Range, variants, expected
+    ((0, 10), [{"start": 100}], list()),
+    ((0, 10), [{"start": 0, "description": "274G>T"}], [Variant(0,"274G>T", color="red")]),
+    ((100, 110), [{"start": 105, "description": "274G>T"}], [Variant(5,"274G>T", color="red")]),
+]
+@pytest.mark.parametrize("exon, variants, expected", variants)
+def test_exon_variants(exon: Range, variants: List[Dict[str, Any]], expected: List[Variant]) -> None:
+    assert exon_variants(exon, variants) == expected
+
+variants = [
+    ({"start": 0}, True),
+    ({"start": 10}, False),
+    ({"start": -1}, False),
+]
+@pytest.mark.parametrize("variant, expected", variants)
+def test_variant_inside_exon(variant: Dict[str, Any], expected: bool) -> None:
+    exon = (0, 10)
+    assert inside(exon, variant) == expected

@@ -3,7 +3,7 @@ import urllib.request
 from urllib.error import HTTPError
 import json
 
-from .exon2 import Exon, Coding
+from .exon2 import Exon, Coding, Variant
 from GTGT.range import intersect
 
 Range = Tuple[int, int]
@@ -87,12 +87,38 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
         end_phase = end_phase
     )
 
-def extract_exons(mutalyzer: Dict[str, Any]) -> List[Exon]:
+
+def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Extract only the variants from the mutalyzer view_variants API payload"""
+    return [x for x in payload if x["type"] == "variant"]
+
+
+def inside(exon: Range, variant: Dict[str, Any]) -> bool:
+    pos = variant["start"]
+    return pos >= exon[0] and pos < exon[1]
+
+def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
+    """Create a list of Variants that fall within the exon
+
+    The position of the variants is relative to the Exon start position
+    """
+    vars = list()
+    for var in variants:
+        if inside(exon, var):
+            relative_position = var["start"] - exon[0]
+            vars.append(Variant(relative_position, var["description"], 'red'))
+    return vars
+
+
+def extract_exons(mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]) -> List[Exon]:
     """Extract Exons from mutalyzer payload"""
     exons: List[Exon] = list()
 
     # Get the coding region
     coding_region = convert_coding_positions(mutalyzer["cds"]["g"])
+
+    # Get the variants
+    variants = parse_view_variants(view_variants["views"])
 
     # The first exon starts in frame by definition
     start_phase = 0
@@ -100,6 +126,7 @@ def extract_exons(mutalyzer: Dict[str, Any]) -> List[Exon]:
     for range in convert_exon_positions(mutalyzer["exon"]["g"]):
         coding = make_coding(range, coding_region, start_phase)
         start_phase = coding.end_phase
+        vars = exon_variants(range, variants)
         #E = Exon(range[0], range[1], frame, coding)
         #frame = E.end_frame
         #exons.append(E)
