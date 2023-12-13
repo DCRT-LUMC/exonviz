@@ -366,15 +366,15 @@ def group_exons(
 
 
 def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Element]:
-    x = 0.0
-    y = 0.0
+    x:float = height
+    y:float = height
     elements = list()
     for row in group_exons(exons, width=width, height=height, gap=gap):
         for exon in row:
             elements += exon.draw(height=height, x=x, y=y)
             x += exon.draw_size(height) + gap
         y += 2 * height
-        x = 0
+        x = height
     return elements
 
 

@@ -9,10 +9,10 @@ import sys
 import gzip
 from importlib import resources
 
-from typing import List, Dict
+from typing import List, Dict, Any
 from .draw import draw_exons
 from .exon import Exon
-from .mutalyzer import fetch_exons, fetch_variants, extract_exons
+from .mutalyzer import fetch_exons, fetch_variants, build_exons
 
 from .draw import _config
 
@@ -41,7 +41,7 @@ def check_input(transcript: str) -> str:
     return transcript
 
 
-def make_exons(transcript: str) -> List[Exon]:
+def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     """Make or fetch the requested exons"""
 
     # If the transcript is actually the gene name, substitute the MANE transcript
@@ -55,7 +55,7 @@ def make_exons(transcript: str) -> List[Exon]:
 
     exons = fetch_exons(transcript)
     variants = fetch_variants(transcript)
-    return extract_exons(exons, variants)
+    return build_exons(exons, variants, config)
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -94,7 +94,7 @@ def main() -> None:
 
     # Try to talk to mutalyzer
     try:
-        exons = make_exons(args.transcript)
+        exons = make_exons(args.transcript, config)
     except RuntimeError as e:
         print(e, file=sys.stderr)
         exit(1)

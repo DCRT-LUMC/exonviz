@@ -128,11 +128,12 @@ def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
     return vars
 
 
-def extract_exons(
+def build_exons(
     mutalyzer: Dict[str, Any], view_variants: Dict[str, Any]
-) -> List[Exon]:
-    """Extract Exons from mutalyzer payload"""
+        , config: Dict[str, Any]) -> List[Exon]:
+    """Build Exons from the mutalyzer payload"""
     exons: List[Exon] = list()
+    #print(config)
 
     # Get the coding region
     coding_region = convert_coding_positions(mutalyzer["cds"]["g"])
@@ -146,11 +147,12 @@ def extract_exons(
     # Used for the exon name
     index = 0
     for range in convert_exon_positions(mutalyzer["exon"]["g"]):
+        name = f"{index}" if config["exonnumber"] else ""
         size = range[1] - range[0]
         coding = make_coding(range, coding_region, start_phase)
         start_phase = coding.end_phase
         vars = exon_variants(range, variants)
         index += 1
-        E = Exon(size=size, coding=coding, variants=vars, name=str(index))
+        E = Exon(size=size, coding=coding, variants=vars, name=name)
         exons.append(E)
     return exons
