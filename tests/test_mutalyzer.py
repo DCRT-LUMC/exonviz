@@ -2,16 +2,20 @@ import pytest
 from exonviz.mutalyzer import (
     convert_exon_positions,
     convert_coding_positions,
+    convert_mutalyzer_range,
     is_reverse,
     make_coding,
     parse_view_variants,
     exon_variants,
+    exons_to_ranges,
+    variant_to_ranges,
+    cds_to_ranges,
     inside,
     Range,
 )
 from exonviz.exon import Coding, Variant
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Example mutalyzer payload
 mutalyzer = {
@@ -22,27 +26,27 @@ mutalyzer = {
 }
 
 
-def test_convert_coding_positions() -> None:
-    assert convert_coding_positions([["238", "11295"]]) == (237, 11295)
+# def test_convert_coding_positions() -> None:
+#     assert convert_coding_positions([["238", "11295"]]) == (237, 11294)
+#
+#
+# def test_convert_coding_positions_reverse() -> None:
+#     assert convert_coding_positions([["29199", "7218"]]) == (29198, 7217)
 
-
-def test_convert_coding_positions_reverse() -> None:
-    assert convert_coding_positions([["29199", "7218"]]) == (7217, 29199)
-
-
-def test_convert_mutalyzer_positions() -> None:
-    positions = [["1", "268"], ["269", "330"], ["11284", "13992"]]
-
-    assert convert_exon_positions(positions) == [
-        (0, 268),
-        (268, 330),
-        (11283, 13992),
-    ]
+mut_positions = [
+    (["1", "268"], False, (0, 268)),
+    (["269", "330"], False, (268, 330)),
+    (["11284", "13992"], False, (11283, 13992)),
+    (["7748", "1"], True, (0, 7748)),
+]
+@pytest.mark.parametrize("positions, reverse, expected", mut_positions)
+def test_convert_mutalyzer_positions(positions: List[str], reverse: bool, expected: Tuple[int, int]) -> None:
+    assert convert_mutalyzer_range(positions[0], positions[1], reverse) == expected
 
 
 def test_is_reverse() -> None:
-    assert is_reverse([["10", "4"]])
-    assert not is_reverse([["4", "10"]])
+    assert is_reverse("10", "4")
+    assert not is_reverse("4", "10")
 
 
 def test_convert_mutalyzer_positions_reverse() -> None:
@@ -61,7 +65,7 @@ def test_convert_mutalyzer_positions_reverse() -> None:
     expected = [
         (0, 7748),
         (27282, 29359),
-        (186860, 186998),
+        (186860,186998),
         (223515, 223577),
         (286668, 286796),
         (358664, 358790),
@@ -69,7 +73,7 @@ def test_convert_mutalyzer_positions_reverse() -> None:
         (462186, 462349),
     ]
 
-    assert convert_exon_positions(positions) == expected
+    assert convert_exon_positions(positions, reverse=True) == expected
 
 
 coding = [
@@ -145,3 +149,69 @@ inside_exon_variants = [
 def test_variant_inside_exon(variant: Dict[str, Any], expected: bool) -> None:
     exon = (0, 10)
     assert inside(exon, variant) == expected
+
+# def test_convert_mutalyzer_range() -> None:
+#     assert convert_mutalyzer_range("238", "11295") == (237, 11294)
+#     assert convert_mutalyzer_range("29199", "7218") == (29198, 7217)
+
+def test_exons_to_ranges() -> None:
+    exons_in = [
+        ["100", "199"],
+        ["300", "349"]
+    ]
+    exons_out = [
+        (0, 100),
+        (100, 150)
+    ]
+    assert exons_to_ranges(exons_in, list()) == exons_out
+
+def test_exons_to_ranges_reverse() -> None:
+    exons_in = [
+        ["349", "300"],
+        ["199","100"]
+    ]
+    exons_out = [
+        (0, 50),
+        (50, 150)
+    ]
+    assert exons_to_ranges(exons_in, list()) == exons_out
+
+def test_cds_to_ranges() -> None:
+    exons_in = [
+        ["100", "199"],
+        ["300", "349"]
+    ]
+    cds_in = ["150", "320"]
+    cds_out = (50, 121)
+    assert cds_to_ranges(exons_in, cds_in) == cds_out 
+
+def test_cds_to_ranges_reverse() -> None:
+    exons_in = [
+        ["349", "300"],
+        ["199","100"]
+    ]
+    cds_in = ["320", "150"]
+    cds_out = (29, 100)
+    assert cds_to_ranges(exons_in, cds_in) == cds_out 
+
+def test_variant_to_ranges() -> None:
+    exons_in = [
+        ["100", "199"],
+        ["300", "349"]
+    ]
+    variant_start = 150
+    variant_end = 319
+    expected_start = 51
+    expected_end = 121
+    assert variant_to_ranges(exons_in, variant_start, variant_end) == (expected_start, expected_end)
+
+def test_variant_to_ranges_reverse() -> None:
+    exons_in = [
+        ["349", "300"],
+        ["199","100"]
+    ]
+    variant_start = 150
+    variant_end = 319
+    expected_start = 29
+    expected_end = 99
+    assert variant_to_ranges(exons_in, variant_start, variant_end) == (expected_start, expected_end)

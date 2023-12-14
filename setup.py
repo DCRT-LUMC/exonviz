@@ -71,6 +71,7 @@ setup(
     install_requires=[
         "svg.py",
         "GTGT",
+        "mutalyzer_crossmapper",
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
