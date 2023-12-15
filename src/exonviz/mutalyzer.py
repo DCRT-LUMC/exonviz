@@ -34,6 +34,7 @@ def fetch_exons(transcript: str) -> Dict[str, Any]:
     selector: Dict[str, Any] = js["selector_short"]
     return selector
 
+
 def fetch_variants(transcript: str) -> Dict[str, Any]:
     """Fetch variant view from mutalyzer"""
 
@@ -113,11 +114,16 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
     x = NonCoding(convert_exon_positions(exons, reverse), reverse)
     g = Genomic()
 
-    position, exon_offset, transcript_offset = x.coordinate_to_noncoding(variant["start"])
+    position, exon_offset, transcript_offset = x.coordinate_to_noncoding(
+        variant["start"]
+    )
 
     return not exon_offset
 
-def parse_view_variants(exons: List[List[str]], payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+
+def parse_view_variants(
+    exons: List[List[str]], payload: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
     """Extract only the exonic variants from the mutalyzer view_variants API payload"""
     # Exclude the regions that flank the variants
     variants = [x for x in payload if x["type"] == "variant"]
@@ -205,6 +211,7 @@ def rewrite_reverse_variants(view_variants: Dict[str, Any]) -> None:
     for view in view_variants["views"]:
         view["start"] = seq_length - view["start"] - 1
         view["end"] = seq_length - view["end"] - 1
+
 
 def build_exons(
     mutalyzer: Dict[str, Any], view_variants: Dict[str, Any], config: Dict[str, Any]

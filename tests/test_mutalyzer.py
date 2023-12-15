@@ -107,7 +107,7 @@ view_variants: Any = [
             {"type": "outside"},
             {"type": "variant", "description": "130del", "start": 3615, "end": 3614},
         ],
-        [[ "4952", "4794" ], [ "3616", "2954"]],
+        [["4952", "4794"], ["3616", "2954"]],
         [
             {"type": "variant", "description": "130del", "start": 160, "end": 159},
         ],
@@ -150,7 +150,7 @@ view_variants: Any = [
 def test_parse_view_variants(
     payload: List[Dict[str, Any]], exons: List[List[str]], expected: List[Any]
 ) -> None:
-    #exons = [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]]
+    # exons = [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]]
     assert parse_view_variants(exons, payload) == expected
 
 
@@ -244,10 +244,11 @@ def test_variant_to_ranges_reverse() -> None:
         expected_end,
     )
 
+
 variants_exons = [
     (
         # Exons
-        [[ "4952", "4794" ], [ "3616", "2954"]],
+        [["4952", "4794"], ["3616", "2954"]],
         # Variant
         {"type": "variant", "description": "130del", "start": 3615, "end": 3614},
         # is exonic
@@ -261,7 +262,7 @@ variants_exons = [
     (
         [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
         {"type": "variant", "description": "53del", "start": 6010, "end": 6011},
-        True
+        True,
     ),
     # Intronic variant in NG_012337.3(NM_003002.4), before the exon
     (
@@ -288,9 +289,14 @@ variants_exons = [
         True,
     ),
 ]
+
+
 @pytest.mark.parametrize("exons, variant, expected", variants_exons)
-def test_detect_exon_variant(exons: List[List[str]], variant: Dict[str, Any], expected: bool) -> None:
+def test_detect_exon_variant(
+    exons: List[List[str]], variant: Dict[str, Any], expected: bool
+) -> None:
     assert exon_variant(exons, variant) == expected
+
 
 rewrite_rev_vars = [
     # view_variant, after_rewrite
@@ -301,24 +307,32 @@ rewrite_rev_vars = [
     ),
     # Reverse, we update the view postions
     (
-        {"seq_length": 15948, "inverted": True,
-         "views": [
-             {"start": 0, "end": 12332},
-             {"start": 12332, "end": 12333},
-             {"start": 12333, "end": 15948},
-         ]
-         },
-        {"seq_length": 15948, "inverted": True,
-         "views": [
-             {"start": 15947, "end": 3615},
-             {"start": 3615, "end": 3614},
-             {"start": 3614, "end": -1},
-         ]
-         },
+        {
+            "seq_length": 15948,
+            "inverted": True,
+            "views": [
+                {"start": 0, "end": 12332},
+                {"start": 12332, "end": 12333},
+                {"start": 12333, "end": 15948},
+            ],
+        },
+        {
+            "seq_length": 15948,
+            "inverted": True,
+            "views": [
+                {"start": 15947, "end": 3615},
+                {"start": 3615, "end": 3614},
+                {"start": 3614, "end": -1},
+            ],
+        },
     ),
 ]
+
+
 @pytest.mark.parametrize("view_variants, expected", rewrite_rev_vars)
-def test_rewrite_reverse_variants(view_variants: Dict[str, Any], expected: Dict[str, Any]) -> None:
+def test_rewrite_reverse_variants(
+    view_variants: Dict[str, Any], expected: Dict[str, Any]
+) -> None:
     """Test rewriting variant payload on the reverse strand"""
     rewrite_reverse_variants(view_variants)
     assert view_variants == expected

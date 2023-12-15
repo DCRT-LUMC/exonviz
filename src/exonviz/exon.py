@@ -159,7 +159,7 @@ class Exon:
         # for the cap
         x += self._front_overhang(height)
 
-        #log.debug(f"Start drawing exon '{self.name}' at postion {x}")
+        # log.debug(f"Start drawing exon '{self.name}' at postion {x}")
 
         elements.append(self._draw_noncoding(height, x=x, y=y))
         elements += self._draw_coding(height, x=x, y=y)
