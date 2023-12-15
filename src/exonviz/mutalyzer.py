@@ -119,10 +119,11 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
 
 def parse_view_variants(exons: List[List[str]], payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Extract only the exonic variants from the mutalyzer view_variants API payload"""
-    # Get the variants
+    # Exclude the regions that flank the variants
     variants = [x for x in payload if x["type"] == "variant"]
 
     for var in variants:
+        # Exclude variants that do not fall inside an exon
         if not exon_variant(exons, var):
             continue
         var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
@@ -196,6 +197,15 @@ def variant_to_ranges(
         return (new_start, new_end)
 
 
+def rewrite_reverse_variants(view_variants: Dict[str, Any]) -> None:
+    if not view_variants.get("inverted"):
+        return
+
+    seq_length = view_variants["seq_length"]
+    for view in view_variants["views"]:
+        view["start"] = seq_length - view["start"] - 1
+        view["end"] = seq_length - view["end"] - 1
+
 def build_exons(
     mutalyzer: Dict[str, Any], view_variants: Dict[str, Any], config: Dict[str, Any]
 ) -> List[Exon]:
@@ -205,6 +215,7 @@ def build_exons(
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
+    rewrite_reverse_variants(view_variants)
     vars = view_variants["views"]
 
     # Convert to ranges
@@ -219,7 +230,6 @@ def build_exons(
 
     # Get the variants
     variants = parse_view_variants(exons, vars)
-    exit()
 
     for exon in exon_ranges:
         # Determine the name of this exon
