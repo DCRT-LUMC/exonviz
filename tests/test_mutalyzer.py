@@ -10,6 +10,7 @@ from exonviz.mutalyzer import (
     exons_to_ranges,
     variant_to_ranges,
     cds_to_ranges,
+    exon_variant,
     inside,
     Range,
 )
@@ -130,39 +131,6 @@ view_variants: Any = [
             {"type": "variant", "description": "53del", "start": 87, "end": 88},
         ],
     ),
-    # Intronic variant in NG_012337.3(NM_003002.4), before the exon
-    # (
-    #     [
-    #         {"type": "outside"},
-    #         {"type": "variant", "description": "53-10del", "start": 6000, "end": 6001},
-    #     ],
-    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
-    #     [
-    #         {"type": "variant", "description": "53del-10del", "start": 87, "end": 88},
-    #     ],
-    # ),
-    # Intronic variant in NG_012337.3(NM_003002.4), after the exon
-    # (
-    #     [
-    #         {"type": "outside"},
-    #         {"type": "variant", "description": "52+10del", "start": 5122, "end": 5123},
-    #     ],
-    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
-    #     [
-    #         {"type": "variant", "description": "52+10del", "start": 87, "end": 88},
-    #     ],
-    # ),
-    # Variant before the transcript start of NG_012337.3(NM_003002.4)
-    # (
-    #     [
-    #         {"type": "outside"},
-    #         {"type": "variant", "description": "-50del", "start": 5011, "end": 5012},
-    #     ],
-    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
-    #     [
-    #         {"type": "variant", "description": "52+10del", "start": 87, "end": 88},
-    #     ],
-    # ),
     # Non-coding variant in NG_012337.3(NM_003002.4), inside an exon
     (
         [
@@ -274,3 +242,51 @@ def test_variant_to_ranges_reverse() -> None:
         expected_start,
         expected_end,
     )
+
+variants_exons = [
+    (
+        # Exons
+        [[ "4952", "4794" ], [ "3616", "2954"]],
+        # Variant
+        {"type": "variant", "description": "130del", "start": 3615, "end": 3614},
+        # is exonic
+        True,
+    ),
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "274G>T", "start": 7124, "end": 7125},
+        True,
+    ),
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "53del", "start": 6010, "end": 6011},
+        True
+    ),
+    # Intronic variant in NG_012337.3(NM_003002.4), before the exon
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "53-10del", "start": 6000, "end": 6001},
+        False,
+    ),
+    # Intronic variant in NG_012337.3(NM_003002.4), after the exon
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "52+10del", "start": 5122, "end": 5123},
+        False,
+    ),
+    # Variant before the transcript start of NG_012337.3(NM_003002.4)
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "-50del", "start": 5011, "end": 5012},
+        False,
+    ),
+    # Non-coding variant in NG_012337.3(NM_003002.4), inside an exon
+    (
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        {"type": "variant", "description": "-10del", "start": 5051, "end": 5052},
+        True,
+    ),
+]
+@pytest.mark.parametrize("exons, variant, expected", variants_exons)
+def test_detect_exon_variant(exons: List[List[str]], variant: Dict[str, Any], expected: bool) -> None:
+    assert exon_variant(exons, variant) == expected

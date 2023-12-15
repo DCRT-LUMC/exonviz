@@ -106,12 +106,25 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     )
 
 
+def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
+    """Determine if a given variant falls in an exon"""
+    reverse = is_reverse(exons[0][0], exons[0][1])
+
+    x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    g = Genomic()
+
+    position, exon_offset, transcript_offset = x.coordinate_to_noncoding(variant["start"])
+
+    return not exon_offset
+
 def parse_view_variants(exons: List[List[str]], payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Extract only the variants from the mutalyzer view_variants API payload"""
+    """Extract only the exonic variants from the mutalyzer view_variants API payload"""
     # Get the variants
     variants = [x for x in payload if x["type"] == "variant"]
 
     for var in variants:
+        if not exon_variant(exons, var):
+            continue
         var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
 
     return variants
