@@ -34,7 +34,6 @@ def fetch_exons(transcript: str) -> Dict[str, Any]:
     selector: Dict[str, Any] = js["selector_short"]
     return selector
 
-
 def fetch_variants(transcript: str) -> Dict[str, Any]:
     """Fetch variant view from mutalyzer"""
 
@@ -107,9 +106,15 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     )
 
 
-def parse_view_variants(payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def parse_view_variants(exons: List[List[str]], payload: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Extract only the variants from the mutalyzer view_variants API payload"""
-    return [x for x in payload if x["type"] == "variant"]
+    # Get the variants
+    variants = [x for x in payload if x["type"] == "variant"]
+
+    for var in variants:
+        var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
+
+    return variants
 
 
 def inside(exon: Range, variant: Dict[str, Any]) -> bool:
@@ -168,13 +173,14 @@ def variant_to_ranges(
     reverse = is_reverse(exons[0][0], exons[0][1])
 
     x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    g = Genomic()
 
-    new_start = x.coordinate_to_noncoding(var_start)[0]
-    new_end = x.coordinate_to_noncoding(var_end)[0]
+    new_start = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_start)[0])
+    new_end = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_end)[0])
     if reverse:
-        return (new_end - 1, new_start)
+        return (new_end, new_start)
     else:
-        return (new_start - 1, new_end)
+        return (new_start, new_end)
 
 
 def build_exons(
@@ -186,10 +192,12 @@ def build_exons(
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
+    vars = view_variants["views"]
 
     # Convert to ranges
     exon_ranges = exons_to_ranges(exons, cds)
     cds_ranges = cds_to_ranges(exons, cds)
+    log.debug(exon_ranges)
 
     start_phase = 0
 
@@ -197,7 +205,8 @@ def build_exons(
     index = 0
 
     # Get the variants
-    variants = parse_view_variants(view_variants["views"])
+    variants = parse_view_variants(exons, vars)
+    exit()
 
     for exon in exon_ranges:
         # Determine the name of this exon

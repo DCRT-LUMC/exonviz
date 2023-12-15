@@ -99,24 +99,90 @@ def test_make_coding(
 
 
 view_variants: Any = [
-    ([{"type": "outside"}], list()),
+    ([{"type": "outside"}], list(), list()),
     (
         [
             {"type": "outside"},
-            {"type": "variant", "description": "274G>T", "start": 433423},
+            {"type": "variant", "description": "130del", "start": 3615, "end": 3614},
         ],
+        [[ "4952", "4794" ], [ "3616", "2954"]],
         [
-            {"type": "variant", "description": "274G>T", "start": 433423},
+            {"type": "variant", "description": "130del", "start": 160, "end": 159},
+        ],
+    ),
+    (
+        [
+            {"type": "outside"},
+            {"type": "variant", "description": "274G>T", "start": 7124, "end": 7125},
+        ],
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        [
+            {"type": "variant", "description": "274G>T", "start": 308, "end": 309},
+        ],
+    ),
+    (
+        [
+            {"type": "outside"},
+            {"type": "variant", "description": "53del", "start": 6010, "end": 6011},
+        ],
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        [
+            {"type": "variant", "description": "53del", "start": 87, "end": 88},
+        ],
+    ),
+    # Intronic variant in NG_012337.3(NM_003002.4), before the exon
+    # (
+    #     [
+    #         {"type": "outside"},
+    #         {"type": "variant", "description": "53-10del", "start": 6000, "end": 6001},
+    #     ],
+    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+    #     [
+    #         {"type": "variant", "description": "53del-10del", "start": 87, "end": 88},
+    #     ],
+    # ),
+    # Intronic variant in NG_012337.3(NM_003002.4), after the exon
+    # (
+    #     [
+    #         {"type": "outside"},
+    #         {"type": "variant", "description": "52+10del", "start": 5122, "end": 5123},
+    #     ],
+    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+    #     [
+    #         {"type": "variant", "description": "52+10del", "start": 87, "end": 88},
+    #     ],
+    # ),
+    # Variant before the transcript start of NG_012337.3(NM_003002.4)
+    # (
+    #     [
+    #         {"type": "outside"},
+    #         {"type": "variant", "description": "-50del", "start": 5011, "end": 5012},
+    #     ],
+    #     [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+    #     [
+    #         {"type": "variant", "description": "52+10del", "start": 87, "end": 88},
+    #     ],
+    # ),
+    # Non-coding variant in NG_012337.3(NM_003002.4), inside an exon
+    (
+        [
+            {"type": "outside"},
+            {"type": "variant", "description": "-10del", "start": 5051, "end": 5052},
+        ],
+        [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]],
+        [
+            {"type": "variant", "description": "-10del", "start": 25, "end": 26},
         ],
     ),
 ]
 
 
-@pytest.mark.parametrize("payload, expected", view_variants)
+@pytest.mark.parametrize("payload, exons, expected", view_variants)
 def test_parse_view_variants(
-    payload: List[Dict[str, Any]], expected: List[Any]
+    payload: List[Dict[str, Any]], exons: List[List[str]], expected: List[Any]
 ) -> None:
-    assert parse_view_variants(payload) == expected
+    #exons = [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]]
+    assert parse_view_variants(exons, payload) == expected
 
 
 variants = [
@@ -191,7 +257,7 @@ def test_variant_to_ranges() -> None:
     variant_start = 150
     variant_end = 319
     expected_start = 51
-    expected_end = 121
+    expected_end = 120
     assert variant_to_ranges(exons_in, variant_start, variant_end) == (
         expected_start,
         expected_end,
@@ -203,7 +269,7 @@ def test_variant_to_ranges_reverse() -> None:
     variant_start = 150
     variant_end = 319
     expected_start = 29
-    expected_end = 99
+    expected_end = 98
     assert variant_to_ranges(exons_in, variant_start, variant_end) == (
         expected_start,
         expected_end,
