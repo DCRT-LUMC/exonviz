@@ -2,20 +2,19 @@ from typing import List, Union, Tuple, Any, Dict, no_type_check
 import svg
 from .exon import element_xy, Element, Exon
 import exonviz.exon
-import math
 import textwrap
 
 
 # Options for drawing the figure. Used to create the cli parser and default dict
 _config = [
-    ("width", math.inf, "Maximum width of the figure"),
+    ("width", 9999999, "Maximum width of the figure"),
     ("height", 20, "Exon height"),
     ("noncoding", False, "Show non coding regions"),
     ("gap", 5, "Gap between the exons"),
     ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
     ("exonnumber", False, "Show exon number"),
     ("firstexon", 1, "The first exon to draw"),
-    ("lastexon", math.inf, "The last exon to draw"),
+    ("lastexon", 9999, "The last exon to draw"),
 ]
 
 config = {key: value for key, value, description in _config}
