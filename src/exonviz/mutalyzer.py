@@ -259,6 +259,9 @@ def build_exons(
 
         # Set the start phase for the next exon
         start_phase = coding.end_phase
+
+        if not config["noncoding"]:
+            E.remove_noncoding()
         Exons.append(E)
 
     return Exons
