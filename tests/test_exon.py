@@ -355,6 +355,48 @@ class TestExon:
         """
         assert exon_from_dict(d) == exon
 
+    def test_remove_noncoding_noncoding_exon(self, default_exon: Exon) -> None:
+        """
+        GIVEN an exon that is non coding
+        WHEN the non coding part is removed
+        THEN the entire exon should be empty
+        """
+        default_exon.remove_noncoding()
+        assert default_exon.size == 0
+
+    def test_remove_noncoding_region(self, center_coding: Exon) -> None:
+        """
+        GIVEN an exon that is coding in the center
+        WHEN the non coding part is removed
+        THEN the entire exon should match the coding region
+        """
+        center_coding.remove_noncoding()
+        assert center_coding.size == 40
+        assert center_coding.coding.start == 0
+        assert center_coding.coding.end == 40
+
+    def test_remove_noncoding_variants(self) -> None:
+        """
+        GIVEN an exon with variants inside and outside the coding region
+        WHEN the coding region is removed
+        THEN the non-coding variants should be removed
+        THEN the variant positions should be updated
+        """
+        c = Coding(40, 80)
+        vars = [
+            # Before coding
+            Variant(10, "A>T", "red"),
+            # In coding
+            Variant(50, "C>T", "blue"),
+            # After coding
+            Variant(90, "A>T", "green"),
+        ]
+        e = Exon(size=100, coding=c, variants=vars)
+        e.remove_noncoding()
+        # Test that the non coding variants were removed
+        # Test that the variant position has been updated from 50 to 10
+        assert e.variants == [Variant(10, "C>T", "blue")]
+
 
 class TestCoding:
     def test_default_coding(self) -> None:

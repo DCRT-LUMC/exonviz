@@ -149,6 +149,28 @@ class Exon:
         """The total overhang due to the caps we draw"""
         return self._end_overhang(height) + self._front_overhang(height)
 
+    def remove_noncoding(self) -> None:
+        """Update an exon to remove the non coding region"""
+        if not self.coding:
+            self.size = 0
+
+        # The new size is the coding size
+        self.size = self.coding.size
+
+        # Remove variants outside coding region
+        self.variants = [
+            v
+            for v in self.variants
+            if v.position >= self.coding.start and v.position < self.coding.end
+        ]
+        # Update variant positions
+        for v in self.variants:
+            v.position -= self.coding.start
+
+        # The coding region starts at 0, and ends at coding size
+        self.coding.end = self.coding.end - self.coding.start
+        self.coding.start = 0
+
     def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
         """Draw the Exon, in SVG format
 
