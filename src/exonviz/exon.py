@@ -110,7 +110,8 @@ class Exon:
             f"Exon(size={self.size}, "
             f"coding={self.coding}, "
             f"variants={self.variants}, "
-            f"name={self.name})"
+            f"name={self.name}, "
+            f"color={self.color})"
         )
 
     def __eq__(self, other: object) -> bool:
@@ -325,6 +326,9 @@ class Exon:
         # Update the name
         new_name = self.name
 
+        # Update the color
+        new_color = self.color
+
         # Update the variants
         new_variants = [v for v in self.variants if v.position <= size]
         # Get the variants that remain
@@ -333,7 +337,11 @@ class Exon:
         for v in self.variants:
             v.position -= size
         return Exon(
-            size=n_size, coding=new_coding, name=new_name, variants=new_variants
+            size=n_size,
+            coding=new_coding,
+            name=new_name,
+            color=new_color,
+            variants=new_variants,
         )
 
 

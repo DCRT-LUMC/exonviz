@@ -40,7 +40,7 @@ class TestExon:
             Variant(80, "G>A", "purple"),
         ]
         c = Coding(start=40, end=80, start_phase=1, end_phase=2)
-        return Exon(size=100, coding=c, variants=vars, name="Exon-1")
+        return Exon(size=100, coding=c, variants=vars, name="Exon-1", color="yellow")
 
     def test_default_exon(self, default_exon: Exon) -> None:
         """
@@ -76,6 +76,14 @@ class TestExon:
         """
         zero = Exon(size=0)
         assert not zero
+
+    def test_exon_color(self) -> None:
+        """
+        GIVEN we create an exon with a set color
+        THEN that color must be stored in the object
+        """
+        e = Exon(size=100, color="red")
+        assert e.color == "red"
 
     def test_draw_exon_non_coding(self, center_coding: Exon) -> None:
         """
@@ -271,6 +279,17 @@ class TestExon:
 
         # THEN the left over exon should be false
         assert not all
+
+    def test_split_exon_color(self, all: Exon) -> None:
+        """
+        GIVEN an exon with all features enabled
+        WHEN we 'split' the exon in half
+        THEN both exons should keep the color
+        """
+        new = all.split(size=1000, height=20)
+
+        assert new.color == "yellow"
+        assert all.color == "yellow"
 
     def test_draw_name(self) -> None:
         """

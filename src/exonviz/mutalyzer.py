@@ -251,8 +251,10 @@ def build_exons(
         vars = exon_variants(exon, variants)
         # Determine the size for this exon
         e_size = e_end - e_start
+        # Get the color from the configuration
+        color = config["color"]
 
-        E = Exon(size=e_size, coding=coding, variants=vars, name=name)
+        E = Exon(size=e_size, coding=coding, variants=vars, name=name, color=color)
         log.debug(f"Create exon: {E}")
 
         # Set the start phase for the next exon
