@@ -237,6 +237,29 @@ class TestExon:
 
             assert coding == Polygon(points=list(points), fill="blue")
 
+        def test_draw_variants_scale(self, all: Exon) -> None:
+            """
+            GIVEN an exon with variant
+            WHEN the variants are drawn with a scale
+            THEN the variant positions should be shifted to match
+            """
+            variants = all._draw_variants(scale=1.2)
+
+            assert variants[0].x == 12
+            assert variants[1].x == 36
+            assert variants[2].x == 96
+
+        def test_draw_name_scale(self, all: Exon) -> None:
+            """
+            GIVEN an exon with a name
+            WHEN the name is drawn with a scale
+            THEN the name position should be shifted to match the new center of the exon
+            """
+            text = cast(Text, all._draw_name(height=20, scale=1.2, x=11, y=23)[0])
+            # THEN the name must be centered in the middle of the exon
+            assert text.x == 11 + 60  # offset + half the exon size
+            assert text.y == 23 + 10  # offset + half the height
+
     def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
         GIVEN an exon where the center region is coding

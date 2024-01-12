@@ -160,11 +160,11 @@ class Exon:
         """
         elements: List[Any] = list()
 
-        elements.append(self._draw_noncoding(height, x=x, y=y))
+        elements.append(self._draw_noncoding(height=height, x=x, y=y))
         if self.coding:
-            elements.append(self._draw_coding(height, x=x, y=y))
-        elements += self._draw_variants(height, x=x, y=y)
-        elements += self._draw_name(height, x, y)
+            elements.append(self._draw_coding(height=height, x=x, y=y))
+        elements += self._draw_variants(height=height, x=x, y=y)
+        elements += self._draw_name(height=height, x=x, y=y)
 
         return elements
 
@@ -261,12 +261,14 @@ class Exon:
             points=list(start[start_phase] + end[end_phase]), fill=self.color
         )
 
-    def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
+    def _draw_variants(
+        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+    ) -> Sequence[Rect]:
         elements = list()
         for variant in self.variants:
             elements.append(
                 Rect(
-                    x=x + variant.position,
+                    x=x + variant.position * scale,
                     y=y,
                     width=height / 20,
                     height=height,
@@ -275,12 +277,14 @@ class Exon:
             )
         return elements
 
-    def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
+    def _draw_name(
+        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+    ) -> List[Element]:
         if not self.name:
             return list()
         return [
             Text(
-                x=x + (self.size / 2),
+                x=x + (self.size * scale / 2),
                 y=y + 0.5 * height,
                 class_=["exonnr"],
                 text=self.name,
