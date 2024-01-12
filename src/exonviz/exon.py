@@ -210,61 +210,50 @@ class Exon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
-        # First, we add the coding region block
-        elements.append(
-            Rect(
-                x=cx,
-                y=y,
-                width=self.coding.size,
-                height=height,
-                fill=self.color,
-            )
-        )
-        elements.append(self._draw_start_cap(height, cx, y))
-        elements.append(self._draw_end_cap(height, cx + self.coding.size, y))
+        cap_size = height*0.25
+        size = self.coding.size
 
-        return elements
-
-    def _draw_start_cap(self, height: float, x: float, y: float) -> Polygon:
         # fmt: off
-        # Square
-        phase0 = [
-           x, y,
-           x-0.5*height, y,
-           x-0.5*height, y+height,
-           x, y+height,
-           x, y
+        start: List[List[float]] = [
+            [ # Square
+                cx, y + height,
+                cx, y
+            ],
+            [ # Notch
+                cx, y + height,
+                cx + cap_size, y + height/2,
+                cx, y
+            ],
+            [ # Arrow
+                cx + cap_size, y + height,
+                cx, y + height/2,
+                cx + cap_size, y
+            ]
         ]
 
-        # Notch
-        phase1 = [
-           x, y,
-           x-0.5*height, y,
-           x, y+0.5*height,
-           x-0.5*height, y+height,
-           x, y+height,
-           x, y
+        end: List[List[float]] = [
+            [ # Square
+                cx + size - cap_size, y,
+                cx + size, y,
+                cx + size, y + height,
+                cx + size - cap_size, y + height
+            ],
+            [ # Arrow
+                cx + size - cap_size, y,
+                cx + size, y + height/2,
+                cx + size - cap_size, y + height
+            ],
+            [ # Notch
+                cx + size - cap_size, y,
+                cx + size, y,
+                cx + size - cap_size, y + height/2,
+                cx + size, y + height
+            ]
         ]
-
-        # Arrow
-        phase2 = [
-           x, y,
-           x-0.5*height, y+0.5*height,
-           x, y+height,
-           x, y
-        ]
-
-        # Phase -1, used for line-breaked coding exons
-        phase3 = None
         # fmt: on
-
-        phases = [phase0, phase1, phase2, phase3]
-        cap = phases[self.coding.start_phase]
-
-        if cap:
-            return Polygon(points=list(cap), fill=self.color)
-        else:
-            return Polygon(points=None, fill=self.color)
+        start_phase = self.coding.start_phase
+        end_phase = self.coding.end_phase
+        return [Polygon(points=list(start[start_phase] + end[end_phase]), fill=self.color)]
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
@@ -279,47 +268,6 @@ class Exon:
                 )
             )
         return elements
-
-    def _draw_end_cap(self, height: float, x: float, y: float) -> Polygon:
-        # fmt: off
-        # Square
-        phase0 = [
-           x, y,
-           x+0.5*height, y,
-           x+0.5*height, y+height,
-           x, y+height,
-           x, y
-        ]
-
-        # Arrow
-        phase1 = [
-           x, y,
-           x+0.5*height, y+0.5*height,
-           x, y+height,
-           x, y
-        ]
-
-        # Notch
-        phase2 = [
-           x, y,
-           x+0.5*height, y,
-           x, y+0.5*height,
-           x+0.5*height, y+height,
-           x, y+height,
-           x, y
-        ]
-
-        # Phase -1, used for line-breaked coding exons
-        phase3 = None
-        # fmt: on
-
-        phases = [phase0, phase1, phase2, phase3]
-        cap = phases[self.coding.end_phase]
-
-        if cap:
-            return Polygon(points=list(cap), fill=self.color)
-        else:
-            return Polygon(points=None, fill=self.color)
 
     def _draw_name(self, height: float, x: float, y: float) -> List[Element]:
         if not self.name:

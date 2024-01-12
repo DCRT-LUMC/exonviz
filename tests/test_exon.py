@@ -104,29 +104,134 @@ class TestExon:
         # bigger coding region
         assert non_coding.y == 5
 
-    def test_draw_exon_coding(self, center_coding: Exon) -> None:
+    def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
         GIVEN an exon where the center region is coding
-        WHEN we get the coding part of the drawing
+        WHEN we draw the coding region
+        THEN the color should match
         """
-        elements = center_coding.draw(height=20)
-        coding = cast(Rect, elements[1])
+        elements = center_coding._draw_coding(height=20, x=0, y=0)
+        coding = cast(Polygon, elements[0])
+        assert coding.fill ==  "#4C72B7"
 
-        # THEN the width of the coding drawing should be the size of the coding region
-        assert coding.width == center_coding.coding.size
-        # THEN the height of the drawing should be the specified height
-        assert coding.height == 20
+    # fmt: off
+    coding_region_frames = [
+        # Format is start_phase, end_phase, list of polygon points
+        # (x and y are interleaved)
+        # ||||
+        (0, 0, [
+            0, 20,
+            0, 0,
+            95.0, 0,
+            100, 0,
+            100, 20,
+            95.0, 20
+        ]),
+        # |||>
+        (0, 1, [
+            0, 20,
+            0, 0,
+            95, 0,
+            100, 10,
+            95, 20
+        ]),
+        # |||<
+        (0, 2, [
+            0, 20,
+            0, 0,
+            95, 0,
+            100, 0,
+            95, 10,
+            100, 20
+        ]),
+        # >|||
+        (1, 0, [
+            0, 20,
+            5, 10,
+            0, 0,
+            95, 0,
+            100, 0,
+            100, 20,
+            95, 20
+        ]),
+        # >||>
+        (1, 1, [
+            0, 20,
+            5, 10,
+            0, 0,
+            95, 0,
+            100, 10,
+            95, 20
+        ]),
+        # >||<
+        (1, 2, [
+            0, 20,
+            5, 10,
+            0, 0,
+            95, 0,
+            100, 0,
+            95, 10,
+            100, 20
+        ]),
+        # <|||
+        (2, 0, [
+            5, 20,
+            0, 10,
+            5, 0,
+            95, 0,
+            100, 0,
+            100, 20,
+            95, 20
+         ]),
+        # <||>
+        (2, 1, [
+            5, 20,
+            0, 10,
+            5, 0,
+            95, 0,
+            100, 10,
+            95, 20
+        ]),
+        # <||<
+        (2, 2, [
+            5, 20,
+            0, 10,
+            5, 0,
+            95, 0,
+            100, 0,
+            95, 10,
+            100, 20
+        ])
+    ]
+    @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
+    def test_draw_coding(self, start_phase: int, end_phase: int, points: List[int]):
+        height = 20
+        E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
+        e = E._draw_coding(height, x=0, y=0)[0]
 
-        # THEN the x position where the drawing start should be the start of
-        # the coding region
-        assert coding.x == 40
-        # THEN the y position where the drawing starts should be zero
-        assert coding.y == 0
+        assert e == Polygon(points=list(points), fill="blue")
 
-        # THEN each element is drawn in the correct color
-        for e in elements:
-            if not isinstance(e, Style):
-                assert e.fill == "#4C72B7"
+    @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
+    def test_draw_coding_offset(self, start_phase: int, end_phase: int, points: List[int]):
+        height = 20
+        E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
+        # Test setting x or y offset
+        x_offset = 8
+        y_offset = 13
+
+        e = E._draw_coding(height, x=x_offset, y=y_offset)[0]
+
+        # Shift the points (x and y are interleaved)
+        shifted = list()
+        for i, number in enumerate(points):
+            if i % 2 == 0:
+                shifted.append(number + x_offset)
+            else:
+                shifted.append(number + y_offset)
+
+        e = E._draw_coding(height, x=x_offset, y=y_offset)[0]
+
+        assert e == Polygon(points=list(shifted), fill="blue")
 
     def test_draw_exon_offset_noncoding(self, default_exon: Exon) -> None:
         """
@@ -144,56 +249,6 @@ class TestExon:
         # THEN the drawing should start at the specified y offset, plus a factor to
         # account for height
         assert non_coding.y == 13 + 5  #  offset + 0.25 * height
-
-    def test_draw_exon_offset_coding(self, center_coding: Exon) -> None:
-        """
-        GIVEN an exon where the center is coding
-        WHEN we draw this exon with an x and y offset
-        """
-        elements = center_coding.draw(x=11, y=13, height=20)
-
-        # THEN the second element should be a drawing of the coding region
-        coding = cast(Rect, elements[1])
-        # THEN the x position should be the x offset, plus the start of the coding region
-        assert coding.x == 11 + 40  #  offset
-        # THEN the y positino should be the y offset
-        assert coding.y == 13  #  offset
-
-    def test_draw_full_coding(self) -> None:
-        """
-        GIVEN an exon that starts with a coding region
-        WHEN we draw this exon
-        THEN the x position of the drawing should be offset to leave space for
-             the start cap
-        """
-        e = Exon(10, Coding(0, 10))
-        elements = e.draw(height=20)
-
-        # The first element is the non coding part of the drawing
-        non_coding = cast(Rect, elements[0])
-        # THEN the x position must be shifted to account for the start cap
-        assert non_coding.x == 10  #  height * 0.5
-
-        # The second element is the coding part of the drawing
-        coding = cast(Rect, elements[1])
-        # THEN the x position must be shifted to account for the start cap
-        assert coding.x == 10
-
-    def test_draw_full_coding_no_cap(self) -> None:
-        """
-        IF we have an exon that is fully coding, but the start phase is -1
-        WHEN we draw this exon
-        THEN the x position of the drawing should not be offset
-        """
-        e = Exon(10, Coding(0, 10, start_phase=-1))
-        elements = e.draw(height=20)
-
-        # We shift both the coding and non coding part of the exon
-        non_coding = cast(Rect, elements[0])
-        assert non_coding.x == 0
-
-        coding = cast(Rect, elements[1])
-        assert coding.x == 0
 
     def test_split_exon(self, all: Exon) -> None:
         """
@@ -556,9 +611,9 @@ class TestVariant:
 
         elements = e.draw()
 
-        assert len(elements) == 5
+        assert len(elements) == 3
 
-        variant = cast(Rect, elements[4])
+        variant = cast(Rect, elements[2])
         # THEN the x position must have an offset for the start cap
         assert variant.x == 10 + 10  #  variant.position + start cap offset
 
