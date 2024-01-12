@@ -143,6 +143,59 @@ class TestExon:
         assert non_coding.x == 0
         assert non_coding.width == 81
 
+    class TestDrawingScale:
+        """Test drawing an Exon whith non-default scale"""
+
+        def test_draw_fully_noncoding_scale(self) -> None:
+            """
+            GIVEN a noncoding exon of size 100
+            WHEN we draw the non coding region with scale 1.2
+            THEN the drawing width should be 120
+            """
+            e = Exon(size=100)
+
+            non_coding = e._draw_noncoding(scale=1.2)
+            assert non_coding.x == 0
+            assert non_coding.width == 120
+
+        def test_draw_non_coding_start_coding(self) -> None:
+            """
+            GIVEN an exon where the start is coding
+            WHEN we draw the non coding region with scale 1.2
+            THEN the drawing should start 1 pixel into the coding region
+            THEN the drawing should extend to the end of the exon
+            """
+            e = Exon(size=100, coding=Coding(start=0, end=20))
+
+            non_coding = e._draw_noncoding(scale=1.2)
+            assert non_coding.x == 23
+            assert non_coding.width == 97
+
+        def test_draw_non_coding_center_coding(self) -> None:
+            """
+            GIVEN an exon that is coding in the center
+            WHEN we draw the non coding region with scale 1.2
+            THEN it should be the width of the exon (since we will draw the coding
+                 region on top of it)
+            """
+            e = Exon(size=100, coding=Coding(start=30, end=70))
+
+            non_coding = e._draw_noncoding(scale=1.2)
+            assert non_coding.width == 120
+
+        def test_draw_non_coding_end_coding(self) -> None:
+            """
+            GIVEN an exon where the end is coding
+            WHEN we draw the non coding region with scale 1.2
+            THEN the drawing should start at the start of the exon
+            THEN the drawing should extend 1 pixel into the coding region
+            """
+            e = Exon(size=100, coding=Coding(start=80, end=100))
+
+            non_coding = e._draw_noncoding(scale=1.2)
+            assert non_coding.x == 0
+            assert non_coding.width == 97
+
     def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
         GIVEN an exon where the center region is coding

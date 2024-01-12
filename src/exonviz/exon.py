@@ -168,7 +168,9 @@ class Exon:
 
         return elements
 
-    def _draw_noncoding(self, height: float = 20, x: float = 0, y: float = 0) -> Rect:
+    def _draw_noncoding(
+        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+    ) -> Rect:
         """
         Draw the non coding region of the Exon
 
@@ -179,17 +181,18 @@ class Exon:
         # Constant values for the drawing
         draw_height = height * 0.5
         y_pos = y + height * 0.25
+
         # By default, we draw the non coding region the full size of the exon.
         x_pos = x
-        width = self.size
+        width = self.size * scale
 
         # If only the start of the exon is coding
         start_coding = (
             self.coding and self.coding.start == 0 and self.coding.end < self.size
         )
         if start_coding:
-            x_pos = self.coding.end - 1
-            width = self.size - self.coding.size + 1
+            x_pos = self.coding.end * scale - 1
+            width = (self.size - self.coding.size) * scale + 1
 
         # If only the end of the exon is coding
         end_coding = (
@@ -197,7 +200,7 @@ class Exon:
         )
         if end_coding:
             x_pos = x
-            width = self.size - self.coding.size + 1
+            width = (self.size - self.coding.size) * scale + 1
 
         return Rect(x=x_pos, y=y_pos, width=width, height=draw_height, fill=self.color)
 
