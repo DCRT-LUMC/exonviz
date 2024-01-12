@@ -274,6 +274,20 @@ class TestExon:
 
         assert coding == Polygon(points=list(shifted), fill="blue")
 
+    def test_draw_coding_too_small(self) -> None:
+        """
+        GIVEN an exon with a (too) small coding region
+        WHEN we try to draw it
+        THEN we should get a ValueError
+        """
+        too_small = Exon(size=100, coding=Coding(start=0, end=9))
+        big_enough = Exon(size=100, coding=Coding(start=0, end=10))
+
+        with pytest.raises(ValueError):
+            too_small._draw_coding(height=20, x=0, y=0)
+
+        assert big_enough._draw_coding(height=20, x=0, y=0)
+
     def test_draw_exon_offset_noncoding(self, default_exon: Exon) -> None:
         """
         GIVEN a default exon of size 100

@@ -232,6 +232,9 @@ class Exon:
         cap_size = height * 0.25
         size = self.coding.size
 
+        if size < cap_size * 2:
+            raise ValueError(f"Coding region {self.coding} is to small to draw")
+
         # fmt: off
         start: List[List[float]] = [
             [ # Square
