@@ -315,11 +315,13 @@ class TestExon:
 
         # THEN the start phase of the new exon should be 1
         assert new.coding.start_phase == 1
-        # THEN the end phase of new exon should be -1, to indicate the line break
-        assert new.coding.end_phase == -1
+        # THEN the end phase of new exon should be 0, since we don't want to
+        # draw a notch or arrow
+        assert new.coding.end_phase == 0
 
-        # THEN the start of the old exon should be -1, to indicate the line break
-        assert all.coding.start_phase == -1
+        # THEN the start of the old exon should be 0, since we don't want to
+        # draw a notch or arrow
+        assert all.coding.start_phase == 0
         # THEN the end of the old exon should be 2
         assert all.coding.end_phase == 2
 
@@ -548,9 +550,9 @@ class TestCoding:
         new = old.split(50)
 
         assert new.start_phase == 1
-        assert new.end_phase == -1
+        assert new.end_phase == 0
 
-        assert old.start_phase == -1
+        assert old.start_phase == 0
         assert old.end_phase == 2
 
     def test_split_coding_phase_all(self) -> None:

@@ -61,8 +61,8 @@ class Coding:
         # split region to -1 on either size, so no cap is drawn
         else:
             new_start_phase = self.start_phase
-            new_end_phase = -1
-            self.start_phase = -1
+            new_end_phase = 0
+            self.start_phase = 0
 
         return Coding(
             start=new_start,
