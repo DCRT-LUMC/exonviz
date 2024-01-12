@@ -91,7 +91,7 @@ class TestExon:
         WHEN we draw the exon
         THEN the color should be set
         """
-        non_coding = all._draw_noncoding(height=20, x=0, y=0)
+        non_coding = all._draw_noncoding()
         assert non_coding.fill == "yellow"
 
     def test_draw_fully_non_coding(self) -> None:
@@ -102,7 +102,7 @@ class TestExon:
         """
         e = Exon(size=100)
 
-        non_coding = e._draw_noncoding(height=20, x=0, y=0)
+        non_coding = e._draw_noncoding()
         assert non_coding.width == 100
 
     def test_draw_non_coding_start_coding(self) -> None:
@@ -114,7 +114,7 @@ class TestExon:
         """
         e = Exon(size=100, coding=Coding(start=0, end=20))
 
-        non_coding = e._draw_noncoding(height=20, x=0, y=0)
+        non_coding = e._draw_noncoding()
         assert non_coding.x == 19
         assert non_coding.width == 81
 
@@ -127,7 +127,7 @@ class TestExon:
         """
         e = Exon(size=100, coding=Coding(start=30, end=70))
 
-        non_coding = e._draw_noncoding(height=20, x=0, y=0)
+        non_coding = e._draw_noncoding()
         assert non_coding.width == 100
 
     def test_draw_non_coding_end_coding(self) -> None:
@@ -139,7 +139,7 @@ class TestExon:
         """
         e = Exon(size=100, coding=Coding(start=80, end=100))
 
-        non_coding = e._draw_noncoding(height=20, x=0, y=0)
+        non_coding = e._draw_noncoding()
         assert non_coding.x == 0
         assert non_coding.width == 81
 
@@ -149,7 +149,7 @@ class TestExon:
         WHEN we draw the coding region
         THEN the color should match
         """
-        coding = center_coding._draw_coding(height=20, x=0, y=0)
+        coding = center_coding._draw_coding()
         assert coding.fill == "#4C72B7"
 
     # fmt: off
@@ -246,9 +246,8 @@ class TestExon:
     def test_draw_coding(
         self, start_phase: int, end_phase: int, points: List[int]
     ) -> None:
-        height = 20
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
-        coding = E._draw_coding(height, x=0, y=0)
+        coding = E._draw_coding()
 
         assert coding == Polygon(points=list(points), fill="blue")
 
@@ -256,13 +255,12 @@ class TestExon:
     def test_draw_coding_offset(
         self, start_phase: int, end_phase: int, points: List[int]
     ) -> None:
-        height = 20
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         # Test setting x or y offset
         x_offset = 8
         y_offset = 13
 
-        coding = E._draw_coding(height, x=x_offset, y=y_offset)
+        coding = E._draw_coding(x=x_offset, y=y_offset)
 
         # Shift the expected points (x and y are interleaved)
         shifted = list()
@@ -284,16 +282,16 @@ class TestExon:
         big_enough = Exon(size=100, coding=Coding(start=0, end=10))
 
         with pytest.raises(ValueError):
-            too_small._draw_coding(height=20, x=0, y=0)
+            too_small._draw_coding()
 
-        assert big_enough._draw_coding(height=20, x=0, y=0)
+        assert big_enough._draw_coding()
 
     def test_draw_exon_offset_noncoding(self, default_exon: Exon) -> None:
         """
         GIVEN a default exon of size 100
         WHEN we draw this exon with an x and y offset
         """
-        elements = default_exon.draw(x=11, y=13, height=20)
+        elements = default_exon.draw(x=11, y=13)
         # THEN there should only be a single element, since the exon is non coding
         assert len(elements) == 1
 
@@ -311,7 +309,7 @@ class TestExon:
         WHEN we split this exon in half
         """
         # Split the exon in half
-        new = all.split(size=50, height=20)
+        new = all.split(size=50)
 
         # THEN the new and old size should both be 50
         assert new.size == 50
@@ -356,7 +354,7 @@ class TestExon:
         WHEN we 'split' the exon but take the whole region
         """
 
-        new = all.split(size=100, height=20)
+        new = all.split(size=100)
 
         # THEN the new size should be the total size
         assert new.size == 100
@@ -372,7 +370,7 @@ class TestExon:
         GIVEN a default, non coding exon with size 100
         WHEN we 'split' the exon but take the whole region
         """
-        new = default_exon.split(100, height=20)
+        new = default_exon.split(100)
 
         # THEN the size of the new exon should be unchanged
         assert new.size == 100
@@ -382,7 +380,7 @@ class TestExon:
         GIVEN an exon with all features enabled
         WHEN we 'split' the exon but take a region bigger than the exon itself
         """
-        new = all.split(size=1000, height=20)
+        new = all.split(size=1000)
 
         # THEN the new size should be the original size
         assert new.size == 100
@@ -398,7 +396,7 @@ class TestExon:
         WHEN we 'split' the exon in half
         THEN both exons should keep the color
         """
-        new = all.split(size=1000, height=20)
+        new = all.split(size=1000)
 
         assert new.color == "yellow"
         assert all.color == "yellow"

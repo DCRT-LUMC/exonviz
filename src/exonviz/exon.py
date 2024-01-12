@@ -192,7 +192,7 @@ class Exon:
 
         return elements
 
-    def _draw_noncoding(self, height: float, x: float, y: float) -> Rect:
+    def _draw_noncoding(self, height: float = 20, x: float = 0, y: float = 0) -> Rect:
         """
         Draw the non coding region of the Exon
 
@@ -225,7 +225,7 @@ class Exon:
 
         return Rect(x=x_pos, y=y_pos, width=width, height=draw_height, fill=self.color)
 
-    def _draw_coding(self, height: float, x: float, y: float) -> Polygon:
+    def _draw_coding(self, height: float = 20, x: float = 0, y: float = 0) -> Polygon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
@@ -305,7 +305,7 @@ class Exon:
             )
         ]
 
-    def split(self, size: int, height: int) -> "Exon":
+    def split(self, size: int) -> "Exon":
         """Split an new exon of size off from self
 
         Not that this does not take the drawn_size() into account
@@ -360,7 +360,7 @@ def group_exons(
                 row = list()
                 x = 0
             else:
-                new_exon = exon.split(space_left, height=height)
+                new_exon = exon.split(space_left)
                 row.append(new_exon)
                 x += gap + new_exon.draw_size(height)
     page.append(row)
