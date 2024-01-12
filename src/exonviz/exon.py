@@ -153,18 +153,21 @@ class Exon:
         self.coding.end = self.coding.end - self.coding.start
         self.coding.start = 0
 
-    def draw(self, height: float = 20, x: float = 0, y: float = 0) -> List[Element]:
+    def draw(
+        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+    ) -> List[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
         """
         elements: List[Any] = list()
 
-        elements.append(self._draw_noncoding(height=height, x=x, y=y))
+        elements.append(self._draw_noncoding(height=height, scale=scale, x=x, y=y))
         if self.coding:
-            elements.append(self._draw_coding(height=height, x=x, y=y))
-        elements += self._draw_variants(height=height, x=x, y=y)
-        elements += self._draw_name(height=height, x=x, y=y)
+            elements.append(self._draw_coding(height=height, scale=scale, x=x, y=y))
+        elements += self._draw_variants(height=height, scale=scale, x=x, y=y)
+        if self.name:
+            elements.append(self._draw_name(height=height, scale=scale, x=x, y=y))
 
         return elements
 
@@ -279,17 +282,13 @@ class Exon:
 
     def _draw_name(
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
-    ) -> List[Element]:
-        if not self.name:
-            return list()
-        return [
-            Text(
-                x=x + (self.size * scale / 2),
-                y=y + 0.5 * height,
-                class_=["exonnr"],
-                text=self.name,
-            )
-        ]
+    ) -> Text:
+        return Text(
+            x=x + (self.size * scale / 2),
+            y=y + 0.5 * height,
+            class_=["exonnr"],
+            text=self.name,
+        )
 
     def split(self, size: int) -> "Exon":
         """Split an new exon of size off from self

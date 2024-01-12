@@ -255,7 +255,7 @@ class TestExon:
             WHEN the name is drawn with a scale
             THEN the name position should be shifted to match the new center of the exon
             """
-            text = cast(Text, all._draw_name(height=20, scale=1.2, x=11, y=23)[0])
+            text = all._draw_name(height=20, scale=1.2, x=11, y=23)
             # THEN the name must be centered in the middle of the exon
             assert text.x == 11 + 60  # offset + half the exon size
             assert text.y == 23 + 10  # offset + half the height
