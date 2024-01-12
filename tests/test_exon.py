@@ -111,7 +111,7 @@ class TestExon:
         THEN the color should match
         """
         coding = center_coding._draw_coding(height=20, x=0, y=0)
-        assert coding.fill ==  "#4C72B7"
+        assert coding.fill == "#4C72B7"
 
     # fmt: off
     coding_region_frames = [
@@ -202,6 +202,7 @@ class TestExon:
             100, 20
         ])
     ]
+    # fmt: on
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding(self, start_phase: int, end_phase: int, points: List[int]):
         height = 20
@@ -211,7 +212,9 @@ class TestExon:
         assert coding == Polygon(points=list(points), fill="blue")
 
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
-    def test_draw_coding_offset(self, start_phase: int, end_phase: int, points: List[int]):
+    def test_draw_coding_offset(
+        self, start_phase: int, end_phase: int, points: List[int]
+    ):
         height = 20
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         # Test setting x or y offset
@@ -227,7 +230,6 @@ class TestExon:
                 shifted.append(number + x_offset)
             else:
                 shifted.append(number + y_offset)
-
 
         assert coding == Polygon(points=list(shifted), fill="blue")
 

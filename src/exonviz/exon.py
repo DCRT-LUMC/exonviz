@@ -205,7 +205,7 @@ class Exon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
-        cap_size = height*0.25
+        cap_size = height * 0.25
         size = self.coding.size
 
         # fmt: off
@@ -248,7 +248,9 @@ class Exon:
         # fmt: on
         start_phase = self.coding.start_phase
         end_phase = self.coding.end_phase
-        return Polygon(points=list(start[start_phase] + end[end_phase]), fill=self.color)
+        return Polygon(
+            points=list(start[start_phase] + end[end_phase]), fill=self.color
+        )
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
