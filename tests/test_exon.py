@@ -196,6 +196,47 @@ class TestExon:
             assert non_coding.x == 0
             assert non_coding.width == 97
 
+        # fmt: off
+        coding_region_frames = [
+            # start phase, points
+            (0, [
+                0, 20,
+                0, 0,
+                115, 0,
+                120, 0,
+                120, 20,
+                115, 20
+            ]),
+            (1, [
+                0, 20,
+                0, 0,
+                115, 0,
+                120, 10,
+                115, 20
+            ]),
+            (2, [
+                0, 20,
+                0, 0,
+                115.0, 0,
+                120.0, 0,
+                115.0, 10.0,
+                120.0, 20,
+                115, 20
+            ])
+        ]
+        # fmt: on
+        @pytest.mark.parametrize("end_phase, points", coding_region_frames)
+        def test_draw_coding(self, end_phase: int, points: List[int]) -> None:
+            """
+            Test drawing the coding region with scale 1.2
+            Since the start_phase will be drawn the same, we only vary the end phase
+            """
+            c = Coding(0, 100, start_phase=0, end_phase=end_phase)
+            E = Exon(size=100, coding=c, color="blue")
+            coding = E._draw_coding(scale=1.2)
+
+            assert coding == Polygon(points=list(points), fill="blue")
+
     def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
         GIVEN an exon where the center region is coding
@@ -233,7 +274,8 @@ class TestExon:
             95, 0,
             100, 0,
             95, 10,
-            100, 20
+            100, 20,
+            95, 20
         ]),
         # >|||
         (1, 0, [
@@ -262,7 +304,8 @@ class TestExon:
             95, 0,
             100, 0,
             95, 10,
-            100, 20
+            100, 20,
+            95, 20
         ]),
         # <|||
         (2, 0, [
@@ -291,7 +334,8 @@ class TestExon:
             95, 0,
             100, 0,
             95, 10,
-            100, 20
+            100, 20,
+            95, 20
         ])
     ]
     # fmt: on

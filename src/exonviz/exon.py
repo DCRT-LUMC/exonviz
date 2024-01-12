@@ -204,12 +204,14 @@ class Exon:
 
         return Rect(x=x_pos, y=y_pos, width=width, height=draw_height, fill=self.color)
 
-    def _draw_coding(self, height: float = 20, x: float = 0, y: float = 0) -> Polygon:
+    def _draw_coding(
+        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+    ) -> Polygon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
         cap_size = height * 0.25
-        size = self.coding.size
+        size = self.coding.size * scale
 
         if size < cap_size * 2:
             raise ValueError(f"Coding region {self.coding} is to small to draw")
@@ -248,7 +250,8 @@ class Exon:
                 cx + size - cap_size, y,
                 cx + size, y,
                 cx + size - cap_size, y + height/2,
-                cx + size, y + height
+                cx + size, y + height,
+                cx + size - cap_size, y + height,
             ]
         ]
         # fmt: on
