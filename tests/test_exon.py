@@ -583,39 +583,6 @@ class TestCoding:
         assert old.start_phase == 0
         assert old.end_phase == 0
 
-    draw = [
-        # Non coding exon is exactly its own size
-        (Exon(100), 100),
-        # Exon starts coding
-        (Exon(100, Coding(0, 50)), 110),
-        # Exon ends coding
-        (Exon(100, Coding(50, 100)), 110),
-        # Fully coding exon gets 2*0.5*height added for the notches
-        (Exon(100, Coding(0, 100)), 120),
-        # Coding region starts at position 1
-        (Exon(100, Coding(1, 50)), 109),
-        # Coding region ends 4 bp from exon end
-        (Exon(100, Coding(50, 96)), 106),
-        # Coding in the middle, far from the edges
-        (Exon(100, Coding(50, 60)), 100),
-        # Coding, but the start phase is -1
-        (Exon(100, Coding(0, 100, start_phase=-1)), 110),
-        # Coding, but the end phase is -1
-        (Exon(100, Coding(0, 100, start_phase=0, end_phase=-1)), 110),
-        # Coding, but both start and end phase are -1
-        (Exon(100, Coding(0, 100, start_phase=-1, end_phase=-1)), 100),
-    ]
-
-    @pytest.mark.parametrize("exon, draw_size", draw)
-    def test_exon_draw_size(self, exon: Exon, draw_size: int) -> None:
-        """
-        GIVEN an exon with a coding region
-        WHEN it is drawn
-        THEN it should be the specified size, based on the properties of
-             the coding region
-        """
-        assert exon.draw_size(height=20) == draw_size
-
 
 class TestVariant:
     @pytest.fixture
@@ -656,21 +623,6 @@ class TestVariant:
         # THEN the x position of the first variant must include
         # the offset
         assert var1.x == 10 + 11  #  variant.position + offset
-
-    def test_draw_variant_coding(self) -> None:
-        """
-        GIVEN a coding exon with a variant in the coding region
-        WHEN the exon is drawn
-        """
-        e = Exon(size=100, coding=Coding(0, 100), variants=[Variant(10, "A>T", "blue")])
-
-        elements = e.draw()
-
-        assert len(elements) == 3
-
-        variant = cast(Rect, elements[2])
-        # THEN the x position must have an offset for the start cap
-        assert variant.x == 10 + 10  #  variant.position + start cap offset
 
 
 class TestDrawing:

@@ -127,27 +127,9 @@ class Exon:
             )
         )
 
-    def draw_size(self, height: float) -> float:
+    def draw_size(self) -> float:
         """Determine how big the Exon is when drawn"""
-        return self.size + self._total_overhang(height)
-
-    def _front_overhang(self, height: float) -> float:
-        """Determine how much the cap overhangs beyond the start of the exon"""
-        if not self.coding or self.coding.start_phase == -1:
-            return 0
-        cap_size = 0.5 * height
-        return max(cap_size - self.coding.start, 0)
-
-    def _end_overhang(self, height: float) -> float:
-        """Determine how much the cap overhangs beyond the end of the exon"""
-        if not self.coding or self.coding.end_phase == -1:
-            return 0
-        cap_size = 0.5 * height
-        return max(cap_size - (self.size - self.coding.end), 0)
-
-    def _total_overhang(self, height: float) -> float:
-        """The total overhang due to the caps we draw"""
-        return self._end_overhang(height) + self._front_overhang(height)
+        return self.size
 
     def remove_noncoding(self) -> None:
         """Update an exon to remove the non coding region"""
@@ -177,12 +159,6 @@ class Exon:
         Returns a list of SVG elements
         """
         elements: List[Any] = list()
-
-        # If the start of the exon is coding, we have to shift x to leave space
-        # for the cap
-        x += self._front_overhang(height)
-
-        # log.debug(f"Start drawing exon '{self.name}' at postion {x}")
 
         elements.append(self._draw_noncoding(height, x=x, y=y))
         if self.coding:
@@ -362,7 +338,7 @@ def group_exons(
             else:
                 new_exon = exon.split(space_left)
                 row.append(new_exon)
-                x += gap + new_exon.draw_size(height)
+                x += gap + new_exon.draw_size()
     page.append(row)
     return page
 
@@ -374,7 +350,7 @@ def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Ele
     for row in group_exons(exons, width=width, height=height, gap=gap):
         for exon in row:
             elements += exon.draw(height=height, x=x, y=y)
-            x += exon.draw_size(height) + gap
+            x += exon.draw_size() + gap
         y += 2 * height
         x = height
     return elements
