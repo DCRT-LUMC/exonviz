@@ -193,13 +193,37 @@ class Exon:
         return elements
 
     def _draw_noncoding(self, height: float, x: float, y: float) -> Rect:
-        return Rect(
-            x=x,
-            y=y + height * 0.25,
-            width=self.size,
-            height=height * 0.5,
-            fill=self.color,
+        """
+        Draw the non coding region of the Exon
+
+        If the coding region only overlaps the start or end of the exon, we
+        have to draw the non-coding region smaller, so it doesn't stick
+        out beyond the arrow/notches
+        """
+        # Constant values for the drawing
+        draw_height = height * 0.5
+        y_pos = y + height * 0.25
+        # By default, we draw the non coding region the full size of the exon.
+        x_pos = x
+        width = self.size
+
+        # If only the start of the exon is coding
+        start_coding = (
+            self.coding and self.coding.start == 0 and self.coding.end < self.size
         )
+        if start_coding:
+            x_pos = self.coding.end - 1
+            width = self.size - self.coding.size + 1
+
+        # If only the end of the exon is coding
+        end_coding = (
+            self.coding and self.coding.start > 0 and self.coding.end == self.size
+        )
+        if end_coding:
+            x_pos = x
+            width = self.size - self.coding.size + 1
+
+        return Rect(x=x_pos, y=y_pos, width=width, height=draw_height, fill=self.color)
 
     def _draw_coding(self, height: float, x: float, y: float) -> Polygon:
         # Determine x-coordinate for the coding region start
