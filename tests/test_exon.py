@@ -110,8 +110,7 @@ class TestExon:
         WHEN we draw the coding region
         THEN the color should match
         """
-        elements = center_coding._draw_coding(height=20, x=0, y=0)
-        coding = cast(Polygon, elements[0])
+        coding = center_coding._draw_coding(height=20, x=0, y=0)
         assert coding.fill ==  "#4C72B7"
 
     # fmt: off
@@ -207,9 +206,9 @@ class TestExon:
     def test_draw_coding(self, start_phase: int, end_phase: int, points: List[int]):
         height = 20
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
-        e = E._draw_coding(height, x=0, y=0)[0]
+        coding = E._draw_coding(height, x=0, y=0)
 
-        assert e == Polygon(points=list(points), fill="blue")
+        assert coding == Polygon(points=list(points), fill="blue")
 
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding_offset(self, start_phase: int, end_phase: int, points: List[int]):
@@ -219,9 +218,9 @@ class TestExon:
         x_offset = 8
         y_offset = 13
 
-        e = E._draw_coding(height, x=x_offset, y=y_offset)[0]
+        coding = E._draw_coding(height, x=x_offset, y=y_offset)
 
-        # Shift the points (x and y are interleaved)
+        # Shift the expected points (x and y are interleaved)
         shifted = list()
         for i, number in enumerate(points):
             if i % 2 == 0:
@@ -229,9 +228,8 @@ class TestExon:
             else:
                 shifted.append(number + y_offset)
 
-        e = E._draw_coding(height, x=x_offset, y=y_offset)[0]
 
-        assert e == Polygon(points=list(shifted), fill="blue")
+        assert coding == Polygon(points=list(shifted), fill="blue")
 
     def test_draw_exon_offset_noncoding(self, default_exon: Exon) -> None:
         """

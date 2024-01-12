@@ -185,7 +185,8 @@ class Exon:
         # log.debug(f"Start drawing exon '{self.name}' at postion {x}")
 
         elements.append(self._draw_noncoding(height, x=x, y=y))
-        elements += self._draw_coding(height, x=x, y=y)
+        if self.coding:
+            elements.append(self._draw_coding(height, x=x, y=y))
         elements += self._draw_variants(height, x=x, y=y)
         elements += self._draw_name(height, x, y)
 
@@ -200,13 +201,7 @@ class Exon:
             fill=self.color,
         )
 
-    def _draw_coding(self, height: float, x: float, y: float) -> List[Element]:
-        # Fixed points for every exon
-        elements: List[Element] = list()
-
-        if not self.coding:
-            return elements
-
+    def _draw_coding(self, height: float, x: float, y: float) -> Polygon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
@@ -253,7 +248,7 @@ class Exon:
         # fmt: on
         start_phase = self.coding.start_phase
         end_phase = self.coding.end_phase
-        return [Polygon(points=list(start[start_phase] + end[end_phase]), fill=self.color)]
+        return Polygon(points=list(start[start_phase] + end[end_phase]), fill=self.color)
 
     def _draw_variants(self, height: float, x: float, y: float) -> Sequence[Rect]:
         elements = list()
