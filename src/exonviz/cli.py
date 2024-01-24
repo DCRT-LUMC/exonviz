@@ -84,8 +84,47 @@ def make_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def dump_exons(exons: List[Exon], fname: str) -> None:
+    """Write the exons to the specified file"""
+    header = [
+        "size",
+        "name",
+        "color",
+        "coding_start",
+        "coding_end",
+        "start_phase",
+        "end_phase",
+    ]
+    with open(fname, "wt") as fout:
+        print(*header, sep="\t", file=fout)
+        for exon in exons:
+            print(exon.tsv(sep="\t"), file=fout)
+
+
+def dump_variants(exons: List[Exon], fname: str) -> None:
+    """Write the variants to the specified file"""
+    header = [
+        "exon",
+        "position",
+        "name",
+        "color",
+    ]
+    with open(fname, "wt") as fout:
+        print(*header, sep="\t", file=fout)
+        for i, exon in enumerate(exons, 1):
+            for variant in exon.variants:
+                print(i, end="\t", file=fout)
+                print(variant.tsv(sep="\t"), file=fout)
+
+
 def main() -> None:
     parser = make_parser()
+    parser.add_argument(
+        "--dump-exons", type=str, help="Write exons to the specified file"
+    )
+    parser.add_argument(
+        "--dump-variants", type=str, help="Write variants to the specified file"
+    )
     args = parser.parse_args()
 
     # Make the configuration for the drawing
@@ -100,15 +139,17 @@ def main() -> None:
         print(e, file=sys.stderr)
         exit(1)
 
-    for exon in exons:
-        print(exon, file=sys.stderr)
+    if args.dump_exons:
+        dump_exons(exons, args.dump_exons)
+    if args.dump_variants:
+        dump_variants(exons, args.dump_variants)
 
-    plot = draw_exons(
-        exons,
-        config=config,
-    )
-    print(plot)
+    else:
+        plot = draw_exons(
+            exons,
+            config=config,
+        )
+        print(plot)
 
-
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()

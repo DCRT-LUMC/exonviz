@@ -78,6 +78,15 @@ class Variant:
     name: str
     color: str
 
+    def tsv(self, sep: str = "\t") -> str:
+        """Dump an exon as tsv"""
+        records = [
+            self.position,
+            self.name,
+            self.color,
+        ]
+        return sep.join(map(str, records))
+
 
 class Exon:
     def __init__(
@@ -322,6 +331,19 @@ class Exon:
             color=new_color,
             variants=new_variants,
         )
+
+    def tsv(self, sep: str = "\t") -> str:
+        """Dump an exon as tsv"""
+        records = [
+            self.size,
+            self.name,
+            self.color,
+            self.coding.start,
+            self.coding.end,
+            self.coding.start_phase,
+            self.coding.end_phase,
+        ]
+        return sep.join(map(str, records))
 
 
 def group_exons(
