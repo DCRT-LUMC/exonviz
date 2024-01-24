@@ -143,6 +143,16 @@ class TestExon:
         assert non_coding.x == 0
         assert non_coding.width == 81
 
+    def test_draw_non_coding_fully_coding(self) -> None:
+        """
+        GIVEN an exon that is fully coding
+        WHEN we draw the exon
+        THEN we should not draw the non coding region
+        """
+        e = Exon(size=100, coding=Coding(start=0, end=100))
+        elements = e.draw()
+        assert len(elements) == 1
+
     class TestDrawingScale:
         """Test drawing an Exon whith non-default scale"""
 

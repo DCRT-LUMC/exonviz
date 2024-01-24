@@ -171,7 +171,9 @@ class Exon:
         """
         elements: List[Any] = list()
 
-        elements.append(self._draw_noncoding(height=height, scale=scale, x=x, y=y))
+        # If the coding size is not the entire exon
+        if self.coding.size != self.size:
+            elements.append(self._draw_noncoding(height=height, scale=scale, x=x, y=y))
         if self.coding:
             elements.append(self._draw_coding(height=height, scale=scale, x=x, y=y))
         elements += self._draw_variants(height=height, scale=scale, x=x, y=y)
