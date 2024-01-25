@@ -59,12 +59,9 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     return build_exons(exons, variants, config)
 
 
-def make_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        description="Description of command.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    parser.add_argument("transcript", help="Transcript (with version) to visualise")
+def make_option_parser() -> argparse.ArgumentParser:
+    """Create a parser for the drawing options"""
+    parser = argparse.ArgumentParser(add_help=False)
 
     for key, value, description in _config:
         # Booleans are a special case
@@ -118,15 +115,23 @@ def dump_variants(exons: List[Exon], fname: str) -> None:
 
 
 def main() -> None:
-    parser = make_parser()
+    option_parser = make_option_parser()
+
+    parser = argparse.ArgumentParser(
+        description="Run ExonViz using the Mutalyzer API",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[option_parser],
+    )
+    parser.add_argument("transcript", help="Transcript (with version) to visualise")
+
     parser.add_argument(
         "--dump-exons", type=str, help="Write exons to the specified file"
     )
     parser.add_argument(
         "--dump-variants", type=str, help="Write variants to the specified file"
     )
-    args = parser.parse_args()
 
+    args = parser.parse_args()
     # Make the configuration for the drawing
     config = dict()
     for key, *_ in _config:
