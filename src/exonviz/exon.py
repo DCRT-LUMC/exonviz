@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, Union
+import copy
 
 import sys
 
@@ -380,7 +381,10 @@ def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Ele
     x: float = height
     y: float = height
     elements = list()
-    for row in group_exons(exons, width=width, height=height, gap=gap):
+    # The exons will be modified by grouping them, so we make a copy here
+    tmp_exons = copy.deepcopy(exons)
+
+    for row in group_exons(tmp_exons, width=width, height=height, gap=gap):
         for exon in row:
             elements += exon.draw(height=height, x=x, y=y)
             x += exon.draw_size() + gap

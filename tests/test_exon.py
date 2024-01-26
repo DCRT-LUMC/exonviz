@@ -1,6 +1,7 @@
 import pytest
 
 from typing import List, Dict, cast
+import copy
 
 from exonviz.exon import (
     Coding,
@@ -10,6 +11,7 @@ from exonviz.exon import (
     exon_from_dict,
     element_xy,
     Element,
+    draw_exons,
 )
 from GTGT.range import Range
 from svg import Rect, Text, Polygon, Style
@@ -636,6 +638,18 @@ class TestExon:
         # Test that the non coding variants were removed
         # Test that the variant position has been updated from 50 to 10
         assert e.variants == [Variant(10, "C>T", "blue")]
+
+    def test_group_exons_with_variants(self, all: Exon) -> None:
+        """
+        GIVEN a list of Exons
+        WHEN we draw the exons
+        THEN the list of exons should be unchanged
+        """
+        exons = [Exon(100), Exon(200)]
+        before = copy.deepcopy(exons)
+        # Draw the exons, and discard the drawing
+        draw_exons(exons, height=20, gap=10, width=1_000_000)
+        assert exons == before
 
 
 class TestCoding:
