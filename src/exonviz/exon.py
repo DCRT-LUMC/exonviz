@@ -446,9 +446,6 @@ def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
         "coding_end",
         "start_phase",
         "end_phase",
-        "variant_pos",
-        "variant_name",
-        "variant_color",
     ]
     if not header == expected:
         raise RuntimeError("Unexpected header in TSV file")

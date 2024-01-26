@@ -11,7 +11,7 @@ from importlib import resources
 
 from typing import List, Dict, Any
 from .draw import draw_exons
-from .exon import Exon
+from .exon import Exon, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons
 
 from .draw import _config
@@ -148,8 +148,10 @@ def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
         exit(1)
     return exons
 
-def exons_from_tsv(fname: str) -> List[Exon]:
-    raise NotImplementedError
+def exons_from_tsv_file(fname: str) -> List[Exon]:
+    """Read Exons from a tsv file"""
+    with open(fname) as fin:
+        return exons_from_tsv(fin)
 
 def main() -> None:
     parser = make_parser()
@@ -162,7 +164,7 @@ def main() -> None:
     if args.transcript:
         exons = exons_from_mutalyzer(args.transcript, config)
     elif args.exon_tsv:
-        exons = exons_from_tsv(args.exon_tsv)
+        exons = exons_from_tsv_file(args.exon_tsv)
 
     if args.dump_exons:
         dump_exons(exons, args.dump_exons)
