@@ -8,10 +8,11 @@ import re
 import sys
 import gzip
 from importlib import resources
+from collections import defaultdict
 
 from typing import List, Dict, Any
 from .draw import draw_exons
-from .exon import Exon, exons_from_tsv
+from .exon import Exon, Variant, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons
 
 from .draw import _config
@@ -99,6 +100,7 @@ def make_parser() -> argparse.ArgumentParser:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--transcript", help="Transcript (with version) to visualise")
     group.add_argument("--exon-tsv", help="TSV file containing exons")
+    parser.add_argument("--variant-tsv", help="TSV file containing variants")
 
     return parser
 
@@ -152,6 +154,18 @@ def exons_from_tsv_file(fname: str) -> List[Exon]:
         return exons_from_tsv(fin)
 
 
+def variants_from_tsv_file(fname: str) -> Dict[int, List[Variant]]:
+    """Read Variants from a tsv file"""
+    variants = defaultdict(list)
+    with open(fname) as fin:
+        header = next(fin).strip("\n").split("\t")
+        assert header == ["exon", "position", "name", "color"]
+        for line in fin:
+            exon, pos, name, color = line.strip("\n").split("\t")
+            variants[int(exon)].append(Variant(int(pos), name, color))
+    return variants
+
+
 def main() -> None:
     parser = make_parser()
     args = parser.parse_args()
@@ -160,10 +174,16 @@ def main() -> None:
     for key, *_ in _config:
         config[key] = getattr(args, key)
 
+    # Create the exons
     if args.transcript:
         exons = exons_from_mutalyzer(args.transcript, config)
     elif args.exon_tsv:
         exons = exons_from_tsv_file(args.exon_tsv)
+
+    if args.variant_tsv:
+        vars = variants_from_tsv_file(args.variant_tsv)
+        for i, exon in enumerate(exons, 1):
+            exon.variants = vars[i]
 
     if args.dump_exons:
         dump_exons(exons, args.dump_exons)
