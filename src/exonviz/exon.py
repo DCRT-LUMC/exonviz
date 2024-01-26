@@ -205,7 +205,7 @@ class Exon:
             self.coding and self.coding.start == 0 and self.coding.end < self.size
         )
         if start_coding:
-            x_pos = self.coding.end * scale - 1
+            x_pos = x + (self.coding.end * scale - 1)
             width = (self.size - self.coding.size) * scale + 1
 
         # If only the end of the exon is coding
@@ -398,6 +398,7 @@ def parse_coding_region(exon_dict: Dict[Any, Any]) -> None:
             coding_dict[coding_field] = exon_dict.pop(coding_field)
         else:
             coding_dict[coding_field] = 0
+
     # Rename start and end
     coding_dict["start"] = coding_dict.pop("coding_start")
     coding_dict["end"] = coding_dict.pop("coding_end")

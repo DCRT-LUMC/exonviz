@@ -114,8 +114,8 @@ class TestExon:
         """
         e = Exon(size=100, coding=Coding(start=0, end=20))
 
-        non_coding = e._draw_noncoding()
-        assert non_coding.x == 19
+        non_coding = e._draw_noncoding(x=13, y=17)
+        assert non_coding.x == 19 + 13
         assert non_coding.width == 81
 
     def test_draw_non_coding_center_coding(self) -> None:

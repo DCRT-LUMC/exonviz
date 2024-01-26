@@ -97,12 +97,8 @@ def make_parser() -> argparse.ArgumentParser:
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--transcript", help="Transcript (with version) to visualise"
-    )
-    group.add_argument(
-        "--exon-tsv", help="TSV file containing exons"
-    )
+    group.add_argument("--transcript", help="Transcript (with version) to visualise")
+    group.add_argument("--exon-tsv", help="TSV file containing exons")
 
     return parser
 
@@ -139,6 +135,7 @@ def dump_variants(exons: List[Exon], fname: str) -> None:
                 print(i, end="\t", file=fout)
                 print(variant.tsv(sep="\t"), file=fout)
 
+
 def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     """Attempt to create exons from mutalyzer"""
     try:
@@ -148,10 +145,12 @@ def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
         exit(1)
     return exons
 
+
 def exons_from_tsv_file(fname: str) -> List[Exon]:
     """Read Exons from a tsv file"""
     with open(fname) as fin:
         return exons_from_tsv(fin)
+
 
 def main() -> None:
     parser = make_parser()
