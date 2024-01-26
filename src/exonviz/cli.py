@@ -86,7 +86,7 @@ def make_parser() -> argparse.ArgumentParser:
     option_parser = make_option_parser()
 
     parser = argparse.ArgumentParser(
-        description="Run ExonViz using the Mutalyzer API",
+        description="Visualise exons and mutations",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         parents=[option_parser],
     )

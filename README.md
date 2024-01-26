@@ -18,19 +18,16 @@ Pass either a transcript (with version!), or a valid HGVS description to exonviz
 Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
 
 ```
-usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding]
-               [--gap GAP] [--color COLOR] [--exonnumber]
-               [--firstexon FIRSTEXON] [--lastexon LASTEXON]
-               transcript
+usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding] [--gap GAP] [--color COLOR] [--exonnumber]
+               [--firstexon FIRSTEXON] [--lastexon LASTEXON] [--dump-exons DUMP_EXONS]
+               [--dump-variants DUMP_VARIANTS] (--transcript TRANSCRIPT | --exon-tsv EXON_TSV)
+               [--variant-tsv VARIANT_TSV]
 
-Description of command.
+Visualise exons and mutations
 
-positional arguments:
-  transcript            Transcript (with version) to visualise
-
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  --width WIDTH         Maximum width of the figure (default: inf)
+  --width WIDTH         Maximum width of the figure (default: 9999999)
   --height HEIGHT       Exon height (default: 20)
   --noncoding           Show non coding regions (default: False)
   --gap GAP             Gap between the exons (default: 5)
@@ -38,7 +35,16 @@ optional arguments:
   --exonnumber          Show exon number (default: False)
   --firstexon FIRSTEXON
                         The first exon to draw (default: 1)
-  --lastexon LASTEXON   The last exon to draw (default: inf)
+  --lastexon LASTEXON   The last exon to draw (default: 9999)
+  --dump-exons DUMP_EXONS
+                        Write exons to the specified file (default: None)
+  --dump-variants DUMP_VARIANTS
+                        Write variants to the specified file (default: None)
+  --transcript TRANSCRIPT
+                        Transcript (with version) to visualise (default: None)
+  --exon-tsv EXON_TSV   TSV file containing exons (default: None)
+  --variant-tsv VARIANT_TSV
+                        TSV file containing variants (default: None)
 ```
 
 ## Examples
