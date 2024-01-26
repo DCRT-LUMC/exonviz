@@ -81,6 +81,32 @@ def make_option_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def make_parser() -> argparse.ArgumentParser:
+    option_parser = make_option_parser()
+
+    parser = argparse.ArgumentParser(
+        description="Run ExonViz using the Mutalyzer API",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        parents=[option_parser],
+    )
+    parser.add_argument(
+        "--dump-exons", type=str, help="Write exons to the specified file"
+    )
+    parser.add_argument(
+        "--dump-variants", type=str, help="Write variants to the specified file"
+    )
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "--transcript", help="Transcript (with version) to visualise"
+    )
+    group.add_argument(
+        "--exon-tsv", help="TSV file containing exons"
+    )
+
+    return parser
+
+
 def dump_exons(exons: List[Exon], fname: str) -> None:
     """Write the exons to the specified file"""
     header = [
@@ -113,36 +139,30 @@ def dump_variants(exons: List[Exon], fname: str) -> None:
                 print(i, end="\t", file=fout)
                 print(variant.tsv(sep="\t"), file=fout)
 
+def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
+    """Attempt to create exons from mutalyzer"""
+    try:
+        exons = make_exons(transcript, config)
+    except RuntimeError as e:
+        print(e, file=sys.stderr)
+        exit(1)
+    return exons
+
+def exons_from_tsv(fname: str) -> List[Exon]:
+    raise NotImplementedError
 
 def main() -> None:
-    option_parser = make_option_parser()
-
-    parser = argparse.ArgumentParser(
-        description="Run ExonViz using the Mutalyzer API",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        parents=[option_parser],
-    )
-    parser.add_argument("transcript", help="Transcript (with version) to visualise")
-
-    parser.add_argument(
-        "--dump-exons", type=str, help="Write exons to the specified file"
-    )
-    parser.add_argument(
-        "--dump-variants", type=str, help="Write variants to the specified file"
-    )
-
+    parser = make_parser()
     args = parser.parse_args()
     # Make the configuration for the drawing
     config = dict()
     for key, *_ in _config:
         config[key] = getattr(args, key)
 
-    # Try to talk to mutalyzer
-    try:
-        exons = make_exons(args.transcript, config)
-    except RuntimeError as e:
-        print(e, file=sys.stderr)
-        exit(1)
+    if args.transcript:
+        exons = exons_from_mutalyzer(args.transcript, config)
+    elif args.exon_tsv:
+        exons = exons_from_tsv(args.exon_tsv)
 
     if args.dump_exons:
         dump_exons(exons, args.dump_exons)
