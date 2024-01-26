@@ -41,30 +41,38 @@ def draw_legend(
     exons: List[Exon], width: int, height: int, y: float = 0
 ) -> List[Element]:
     """Draw the legend for variants in Exons"""
-    def guess_width(variant: Variant, height: int) -> float:
+
+    def guess_width(name: str, height: int) -> float:
         """Guess how wide the legend for this variant will be"""
         letter_width = 10
-        return height * 1.5 + len(var.name) * letter_width
+        return height * 1.5 + len(name) * letter_width
+
+    def get_legend_keys(exons: List[Exon]) -> List[Tuple[str, str]]:
+        """Extract the legend keys from the Exon Variants"""
+        keys = list()
+        for exon in exons:
+            for variant in exon.variants:
+                key = (variant.color, variant.name)
+                if key not in keys:
+                    keys.append(key)
+        return keys
 
     elements: List[Element] = list()
 
     # The x-position where we will draw the first entry of the legend
-    x_pos = height
-    for exon in exons:
-        for var in exon.variants:
-            entry_width = guess_width(var, height)
-            if entry_width > width:
-                raise RuntimeError(f"Variant name {var.name} too wide to render")
-            elif x_pos + entry_width > width:
-                y = y + height * 1.5
-                x_pos = height
-            elements.append(
-                svg.Rect(x=x_pos, y=y, width=height, height=height, fill=var.color)
-            )
-            elements.append(
-                svg.Text(x=x_pos + height * 1.5, y=y + 0.75 * height, text=var.name)
-            )
-            x_pos += 2*height + entry_width
+    x_pos: float = height
+    for color, name in get_legend_keys(exons):
+        entry_width = guess_width(name, height)
+        if entry_width > width:
+            raise RuntimeError(f"Variant name {name} too wide to render")
+        elif x_pos + entry_width > width:
+            y = y + height * 1.5
+            x_pos = height
+        elements.append(svg.Rect(x=x_pos, y=y, width=height, height=height, fill=color))
+        elements.append(
+            svg.Text(x=x_pos + height * 1.5, y=y + 0.75 * height, text=name)
+        )
+        x_pos += 2 * height + entry_width
 
     return elements
 
