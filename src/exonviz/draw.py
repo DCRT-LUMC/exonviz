@@ -37,14 +37,37 @@ def bottom_right(elements: List[Element]) -> Tuple[int, int]:
     return x, y
 
 
+def draw_legend(
+    exons: List[Exon], width: int, height: int, x: float = 0, y: float = 0
+) -> List[Element]:
+    """Draw the legend for variants in Exons"""
+    elements: List[Element] = list()
+    for exon in exons:
+        for var in exon.variants:
+            elements.append(
+                svg.Rect(x=x, y=y, width=height, height=height, fill=var.color)
+            )
+            elements.append(
+                svg.Text(x=x + height * 1.5, y=y + 0.75 * height, text=var.name)
+            )
+            y = y + height * 1.5
+    return elements
+
+
 @no_type_check
 def draw_exons(
     exons: List[Exon],
     config: Dict[str, Any],
 ) -> svg.SVG:
+    width = config["width"]
+    height = config["height"]
+
     elements = exonviz.exon.draw_exons(
-        exons, width=config["width"], height=config["height"], gap=config["gap"]
+        exons, width=width, height=height, gap=config["gap"]
     )
+    # How far down the page did we go?
+    x, y = bottom_right(elements)
+    elements += draw_legend(exons, x=height, y=y + height, height=height, width=width)
 
     # Set style for exonnumber, even if we don't need it
     elements.append(
