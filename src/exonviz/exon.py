@@ -137,9 +137,9 @@ class Exon:
             )
         )
 
-    def draw_size(self) -> float:
+    def draw_size(self, scale: float) -> float:
         """Determine how big the Exon is when drawn"""
-        return self.size
+        return self.size * scale
 
     def remove_noncoding(self) -> None:
         """Update an exon to remove the non coding region"""
@@ -239,7 +239,7 @@ class Exon:
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
     ) -> Polygon:
         # Determine x-coordinate for the coding region start
-        cx = x + self.coding.start
+        cx = x + self.coding.start * scale
 
         # Calculate the size of the arrow/notch
         cap_size = height * 0.25
@@ -367,7 +367,7 @@ class Exon:
 
 
 def group_exons(
-    exons: List[Exon], height: int, gap: int, width: int
+    exons: List[Exon], height: int, gap: int, width: int, scale: float = 1.0
 ) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
@@ -387,9 +387,9 @@ def group_exons(
                 row = list()
                 x = 0
             else:
-                new_exon = exon.split(space_left)
+                new_exon = exon.split(int(space_left / scale))
                 row.append(new_exon)
-                x += gap + new_exon.draw_size()
+                x += gap + new_exon.draw_size(scale)
     page.append(row)
     return page
 
@@ -401,10 +401,15 @@ def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Ele
     # The exons will be modified by grouping them, so we make a copy here
     tmp_exons = copy.deepcopy(exons)
 
+    # Calculate the minimum scale at which we can draw every exon
+    scale = max(e.min_scale(height) for e in exons)
+    # Use the default scale of 1, if possible
+    scale = max(scale, 1)
+
     for row in group_exons(tmp_exons, width=width, height=height, gap=gap):
         for exon in row:
-            elements += exon.draw(height=height, x=x, y=y)
-            x += exon.draw_size() + gap
+            elements += exon.draw(height=height, scale=scale, x=x, y=y)
+            x += exon.draw_size(scale) + gap
         y += 2 * height
         x = height
     return elements
