@@ -45,7 +45,7 @@ optional arguments:
 ### SDHD
 Using the default settings, which does not include non-coding regions of the transcript:
 
-`exonviz SDHD > SDHD.svg`
+`exonviz --transcript SDHD > SDHD.svg`
 
 ![Figure of SDH exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/SDHD.svg)
 
@@ -53,7 +53,7 @@ Using the default settings, which does not include non-coding regions of the tra
 For DMD, we explicitly specify the transcript we are interested in. We also set
 a maximum width for the figure, since DMD has many exons:
 
-`exonviz "NM_004006.3" --width 1024 --color purple --exonnumber > DMD.svg`
+`exonviz --transcript "NM_004006.3" --width 1024 --color purple --exonnumber > DMD.svg`
 
 ![Figure of DMD exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/DMD.svg)
 
@@ -63,7 +63,7 @@ Include the non coding exons, since most exons of ATXN1 are non coding. We
 limit the maximum width and increase the height of the picture. For clarity, we
 also increase the distance between the displayed exons:
 
-`exonviz ENST00000436367.6 --noncoding --width 4000 --height 150 --gap 50 > ATXN1.svg`
+`exonviz --transcript ENST00000436367.6 --noncoding --width 4000 --height 150 --gap 50 > ATXN1.svg`
 
 ![Figure of ATXN1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/ATXN1.svg)
 
@@ -71,13 +71,13 @@ also increase the distance between the displayed exons:
 You can also input a valid HGVS description on the transcript of interest. The variant will be ignored.
 Include the non coding regions and increase the height and distance between the exons:
 
-`exonviz "NM_000533.5:c.100G>T" --noncoding --height 100 --gap 50 > PLP1.svg`
+`exonviz --transcript "NM_000533.5:c.100G>T" --noncoding --height 100 --gap 50 > PLP1.svg`
 
 ![Figure of PLP1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/PLP1.svg)
 
 ### NF1
 Set the maximum width of the figure to the approximate size of the largest exon:
 
-`exonviz "ENST00000358273.9" --noncoding --width 3600 --height 75 --gap 20 > examples/NF1-202.svg`
+`exonviz --transcript "ENST00000358273.9" --noncoding --width 3600 --height 75 --gap 20 > NF1-202.svg`
 
 ![Figure of NF1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.1.4/examples/NF1-202.svg)
