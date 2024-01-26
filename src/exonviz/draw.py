@@ -1,6 +1,6 @@
 from typing import List, Union, Tuple, Any, Dict, no_type_check
 import svg
-from .exon import element_xy, Element, Exon
+from .exon import element_xy, Element, Exon, Variant
 import exonviz.exon
 import textwrap
 
@@ -38,19 +38,34 @@ def bottom_right(elements: List[Element]) -> Tuple[int, int]:
 
 
 def draw_legend(
-    exons: List[Exon], width: int, height: int, x: float = 0, y: float = 0
+    exons: List[Exon], width: int, height: int, y: float = 0
 ) -> List[Element]:
     """Draw the legend for variants in Exons"""
+    def guess_width(variant: Variant, height: int) -> float:
+        """Guess how wide the legend for this variant will be"""
+        letter_width = 10
+        return height * 1.5 + len(var.name) * letter_width
+
     elements: List[Element] = list()
+
+    # The x-position where we will draw the first entry of the legend
+    x_pos = height
     for exon in exons:
         for var in exon.variants:
+            entry_width = guess_width(var, height)
+            if entry_width > width:
+                raise RuntimeError(f"Variant name {var.name} too wide to render")
+            elif x_pos + entry_width > width:
+                y = y + height * 1.5
+                x_pos = height
             elements.append(
-                svg.Rect(x=x, y=y, width=height, height=height, fill=var.color)
+                svg.Rect(x=x_pos, y=y, width=height, height=height, fill=var.color)
             )
             elements.append(
-                svg.Text(x=x + height * 1.5, y=y + 0.75 * height, text=var.name)
+                svg.Text(x=x_pos + height * 1.5, y=y + 0.75 * height, text=var.name)
             )
-            y = y + height * 1.5
+            x_pos += 2*height + entry_width
+
     return elements
 
 
@@ -67,7 +82,7 @@ def draw_exons(
     )
     # How far down the page did we go?
     x, y = bottom_right(elements)
-    elements += draw_legend(exons, x=height, y=y + height, height=height, width=width)
+    elements += draw_legend(exons, y=y + height, height=height, width=width)
 
     # Set style for exonnumber, even if we don't need it
     elements.append(
