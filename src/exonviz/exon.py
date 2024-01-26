@@ -225,10 +225,19 @@ class Exon:
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start
 
+        # Calculate the size of the arrow/notch
         cap_size = height * 0.25
+
+        # Total caps we need to draw. If the exon is too small, we raise an error
+        total_caps: float = 0
+        if self.coding.start_phase != 0:
+            total_caps += height * 0.25
+        if self.coding.end_phase != 0:
+            total_caps += height * 0.25
+
         size = self.coding.size * scale
 
-        if size < cap_size * 2:
+        if size < total_caps:
             raise ValueError(f"Coding region {self.coding} is to small to draw")
 
         # fmt: off
@@ -251,10 +260,8 @@ class Exon:
 
         end: List[List[float]] = [
             [ # Square
-                cx + size - cap_size, y,
                 cx + size, y,
                 cx + size, y + height,
-                cx + size - cap_size, y + height
             ],
             [ # Arrow
                 cx + size - cap_size, y,

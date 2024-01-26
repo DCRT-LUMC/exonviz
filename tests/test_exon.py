@@ -214,10 +214,8 @@ class TestExon:
             (0, [
                 0, 20,
                 0, 0,
-                115, 0,
                 120, 0,
                 120, 20,
-                115, 20
             ]),
             (1, [
                 0, 20,
@@ -272,6 +270,51 @@ class TestExon:
             assert text.x == 11 + 60  # offset + half the exon size
             assert text.y == 23 + 10  # offset + half the height
 
+        def test_draw_coding_tiny_phase_zero(self) -> None:
+            """
+            GIVEN a tiny coding exon with start and end phase 0
+            WHEN we draw it
+            THEN there should be no error for the notch/arrow
+            """
+            E = Exon(size=1, coding=Coding(start=0, end=1, start_phase=0, end_phase=0))
+            E._draw_coding(height=20, scale=1)
+
+        def test_draw_coding_tiny_start_phase_one(self) -> None:
+            """
+            GIVEN a tiny coding exon with start phase 1, end phase 0
+            WHEN we draw it
+            THEN there should be no error
+            """
+            size = 5
+            E = Exon(
+                size=size, coding=Coding(start=0, end=size, start_phase=1, end_phase=0)
+            )
+            E._draw_coding(height=20, scale=1)
+
+        def test_draw_coding_tiny_end_phase_one(self) -> None:
+            """
+            GIVEN a tiny coding exon with start phase 0, end phase 1
+            WHEN we draw it
+            THEN there should be no error
+            """
+            size = 5
+            E = Exon(
+                size=size, coding=Coding(start=0, end=size, start_phase=0, end_phase=1)
+            )
+            E._draw_coding(height=20, scale=1)
+
+        def test_draw_coding_tiny_start_phase_one_end_phase_one(self) -> None:
+            """
+            GIVEN a tiny coding exon with start phase 1, end phase 1
+            WHEN we draw it
+            THEN there should be no error
+            """
+            size = 10
+            E = Exon(
+                size=size, coding=Coding(start=0, end=size, start_phase=1, end_phase=1)
+            )
+            E._draw_coding(height=20, scale=1)
+
     def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
         GIVEN an exon where the center region is coding
@@ -289,10 +332,8 @@ class TestExon:
         (0, 0, [
             0, 20,
             0, 0,
-            95.0, 0,
             100, 0,
             100, 20,
-            95.0, 20
         ]),
         # |||>
         (0, 1, [
@@ -317,10 +358,8 @@ class TestExon:
             0, 20,
             5, 10,
             0, 0,
-            95, 0,
             100, 0,
             100, 20,
-            95, 20
         ]),
         # >||>
         (1, 1, [
@@ -347,11 +386,9 @@ class TestExon:
             5, 20,
             0, 10,
             5, 0,
-            95, 0,
             100, 0,
             100, 20,
-            95, 20
-         ]),
+        ]),
         # <||>
         (2, 1, [
             5, 20,
@@ -410,8 +447,12 @@ class TestExon:
         WHEN we try to draw it
         THEN we should get a ValueError
         """
-        too_small = Exon(size=100, coding=Coding(start=0, end=9))
-        big_enough = Exon(size=100, coding=Coding(start=0, end=10))
+        too_small = Exon(
+            size=100, coding=Coding(start=0, end=9, start_phase=1, end_phase=1)
+        )
+        big_enough = Exon(
+            size=100, coding=Coding(start=0, end=10, start_phase=1, end_phase=1)
+        )
 
         with pytest.raises(ValueError):
             too_small._draw_coding()
