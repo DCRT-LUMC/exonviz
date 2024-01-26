@@ -888,3 +888,26 @@ class TestDrawing:
 
         assert x == max_x
         assert y == max_y
+
+    exon_scale = [
+        # Non coding exons can be drawn at any scale
+        (Exon(100), 0),
+        # A coding region with phase 0 can be drawn at any scale
+        (Exon(100, Coding(start=0, end=1, start_phase=0, end_phase=0)), 0),
+        # Drawing a single cap takes 5px, so the scale for a coding region of size 1 is 5
+        (Exon(100, Coding(start=0, end=1, start_phase=1, end_phase=0)), 5),
+        # Drawing two caps, we need a scale of 10
+        (Exon(100, Coding(start=0, end=1, start_phase=1, end_phase=1)), 10),
+    ]
+
+    @pytest.mark.parametrize("exon, expected_scale", exon_scale)
+    def test_determine_exon_scale(self, exon: Exon, expected_scale: float) -> None:
+        """
+        GIVEN an exon
+        WHEN we determine the minimal scale it can be drawn self.assertTrue(
+        THEN it has to match the expected scale
+        """
+        height = 20
+        assert exon.min_scale(height=height) == expected_scale
+        # Test that there is no value error
+        exon.draw(height=height, scale=expected_scale)

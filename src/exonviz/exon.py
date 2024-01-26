@@ -183,6 +183,22 @@ class Exon:
 
         return elements
 
+    def min_scale(self, height: float = 20) -> float:
+        """Determine the minimum scale this exon can be drawn at"""
+        # If there is no coding region, the exon can be drawn at any scale
+        if not self.coding:
+            return 0.0
+
+        # Total caps we need to draw. If the exon is too small, we raise an error
+        total_caps: float = 0
+        if self.coding.start_phase != 0:
+            total_caps += height * 0.25
+        if self.coding.end_phase != 0:
+            total_caps += height * 0.25
+
+        scale = total_caps / self.coding.size
+        return scale
+
     def _draw_noncoding(
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
     ) -> Rect:
@@ -228,17 +244,11 @@ class Exon:
         # Calculate the size of the arrow/notch
         cap_size = height * 0.25
 
-        # Total caps we need to draw. If the exon is too small, we raise an error
-        total_caps: float = 0
-        if self.coding.start_phase != 0:
-            total_caps += height * 0.25
-        if self.coding.end_phase != 0:
-            total_caps += height * 0.25
-
+        # Total size we need to draw.
         size = self.coding.size * scale
 
-        if size < total_caps:
-            raise ValueError(f"Coding region {self.coding} is to small to draw")
+        if scale < self.min_scale(height):
+            raise ValueError(f"Coding region {self.coding} is too small to draw")
 
         # fmt: off
         start: List[List[float]] = [
