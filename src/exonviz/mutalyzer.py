@@ -16,7 +16,7 @@ Range = Tuple[int, int]
 
 
 def fetch_exons(transcript: str) -> Dict[str, Any]:
-    """Fetch variant information from mutalyzer"""
+    """Fetch transcript information from mutalyzer"""
 
     url = f"https://mutalyzer.nl/api/normalize/{transcript}"
 
