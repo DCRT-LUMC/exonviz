@@ -7,7 +7,7 @@ import argparse
 import re
 import sys
 import gzip
-from importlib import resources
+import pkg_resources
 from collections import defaultdict
 
 from typing import List, Dict, Any
@@ -19,7 +19,7 @@ from .draw import _config
 
 
 def get_MANE() -> Dict[str, str]:
-    fname = str(resources.files("exonviz.data").joinpath("mane.txt.gz"))
+    fname = pkg_resources.resource_filename(__name__, "data/mane.txt.gz")
     with gzip.open(fname, "rt") as fin:
         mane = dict()
         for line in fin:
