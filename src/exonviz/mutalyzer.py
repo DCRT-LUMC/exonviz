@@ -9,7 +9,7 @@ from GTGT.range import intersect
 
 import logging
 
-logging.basicConfig(level="DEBUG")
+logging.basicConfig()
 log = logging.getLogger(__name__)
 
 Range = Tuple[int, int]
@@ -86,21 +86,16 @@ def convert_exon_positions(
 
 def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     """Create the coding region"""
-    # log.debug(f"exon: {exon}")
-    # log.debug(f"coding_region: {coding_region}")
     c = intersect(exon, coding_region)
     if not c:
         return Coding()
 
-    # log.debug(f"intersected: {c}")
     assert len(c) == 1
     # Determine the coding start and end, relative to the exon start
     coding_start, coding_end = c[0]
     coding_start -= exon[0]
     coding_end -= exon[0]
 
-    log.debug(f"coding_start: {coding_start}")
-    log.debug(f"coding_end: {coding_end}")
     end_phase = (start_phase + (coding_end - coding_start)) % 3
     return Coding(
         start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase
@@ -112,7 +107,6 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
     reverse = is_reverse(exons[0][0], exons[0][1])
 
     x = NonCoding(convert_exon_positions(exons, reverse), reverse)
-    g = Genomic()
 
     position, exon_offset, transcript_offset = x.coordinate_to_noncoding(
         variant["start"]
@@ -218,7 +212,6 @@ def build_exons(
 ) -> List[Exon]:
     """Build Exons from the mutalyzer payload"""
     Exons: List[Exon] = list()
-    log.debug(config)
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
@@ -228,7 +221,6 @@ def build_exons(
     # Convert to ranges
     exon_ranges = exons_to_ranges(exons, cds)
     cds_ranges = cds_to_ranges(exons, cds)
-    log.debug(exon_ranges)
 
     start_phase = 0
 
@@ -255,7 +247,6 @@ def build_exons(
         color = config["color"]
 
         E = Exon(size=e_size, coding=coding, variants=vars, name=name, color=color)
-        log.debug(f"Create exon: {E}")
 
         # Set the start phase for the next exon
         start_phase = coding.end_phase
