@@ -70,9 +70,20 @@ def draw_legend(
             x_pos = height
         elements.append(svg.Rect(x=x_pos, y=y, width=height, height=height, fill=color))
         elements.append(
-            svg.Text(x=x_pos + height * 1.5, y=y + 0.75 * height, text=name)
+            svg.Text(x=x_pos + height * 1.5, y=y + 0.5 * height, text=name, class_=["legend"])
         )
         x_pos += 2 * height + entry_width
+
+    # Add styling for the legend
+    elements.append(
+        svg.Style(
+            text=textwrap.dedent(
+                f"""
+                .legend {{ font: {height*0.8}px sans-serif; fill: black; dominant-baseline: central; }}
+                """
+            )
+        )
+    )
 
     return elements
 
