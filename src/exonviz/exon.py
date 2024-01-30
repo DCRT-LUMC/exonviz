@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, Union
 import copy
+import math
 
 import sys
 
@@ -12,7 +13,7 @@ else:
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style
 
-from GTGT.range import intersect
+from GTGT.range import intersect, Range
 
 import logging
 
@@ -351,6 +352,43 @@ class Exon:
             color=new_color,
             variants=new_variants,
         )
+
+    def valid_splits(self, height: float = 20, scale: float = 1) -> List[Range]:
+        """Determine which splits of this exon can be drawn"""
+        splits = list()
+
+        # Size of the notch/arrow
+        cap_size = height * 0.25
+
+        # Calculate the space to leave for the start of the coding region
+        # If the phase is 0, we don't need to leave any room
+        coding_start_offset = 0 if not self.coding.start_phase else math.ceil(cap_size)
+        coding_end_offset = 0 if not self.coding.end_phase else math.ceil(cap_size)
+
+        # Add the first non coding part
+        start = 0
+        end = self.coding.start + 1
+        nc_before = (start, end)
+
+        # Add the coding part
+        start = self.coding.start + coding_start_offset
+        end = self.coding.end - coding_end_offset + 1
+        coding = (start, end)
+
+        # Add the final non-coding part
+        start = self.coding.end
+        end = self.size + 1
+        nc_after = (start, end)
+
+        # We don't want ranges of a single bp
+        if nc_before[1] - nc_before[0] > 1:
+            splits.append(nc_before)
+        if coding[1] - coding[0] > 1:
+            splits.append(coding)
+        if nc_after[1] - nc_after[0] > 1:
+            splits.append(nc_after)
+
+        return splits
 
     def tsv(self, sep: str = "\t") -> str:
         """Dump an exon as tsv"""

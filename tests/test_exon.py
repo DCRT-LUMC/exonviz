@@ -1,6 +1,6 @@
 import pytest
 
-from typing import List, Dict, cast
+from typing import List, Dict, cast, Tuple
 import copy
 
 from exonviz.exon import (
@@ -43,117 +43,6 @@ class TestExon:
         ]
         c = Coding(start=40, end=80, start_phase=1, end_phase=2)
         return Exon(size=100, coding=c, variants=vars, name="Exon-1", color="yellow")
-
-    def test_default_exon(self, default_exon: Exon) -> None:
-        """
-        GIVEN a default exon of size 100
-        WHEN we don't change anythin
-        """
-        # THEN the size must be 100
-        assert default_exon.size == 100
-
-        # THEN the coding region should be false
-        assert not default_exon.coding
-        # THEN the coding region should start at 0
-        assert default_exon.coding.start == 0
-
-        # THEN the variants should be an empty list
-        assert default_exon.variants == list()
-
-        # THEN the default color should be set to DCRT blue
-        assert default_exon.color == "#4C72B7"
-
-    def test_boolean_exon_true(self) -> None:
-        """
-        GIVEN an exon of size one
-        THEN the boolean value is True
-        """
-        e = Exon(size=1)
-        assert e
-
-    def test_boolean_exon_false(self) -> None:
-        """
-        GIVEN an exon of size zero
-        THEN the boolean value is False
-        """
-        zero = Exon(size=0)
-        assert not zero
-
-    def test_exon_color(self) -> None:
-        """
-        GIVEN we create an exon with a set color
-        THEN that color must be stored in the object
-        """
-        e = Exon(size=100, color="red")
-        assert e.color == "red"
-
-    def test_draw_exon_non_coding(self, all: Exon) -> None:
-        """
-        GIVEN a yellow exon
-        WHEN we draw the exon
-        THEN the color should be set
-        """
-        non_coding = all._draw_noncoding()
-        assert non_coding.fill == "yellow"
-
-    def test_draw_fully_non_coding(self) -> None:
-        """
-        GIVEN an exon without a coding region
-        WHEN we draw the non coding region
-        THEN it should be the width of the exon
-        """
-        e = Exon(size=100)
-
-        non_coding = e._draw_noncoding()
-        assert non_coding.width == 100
-
-    def test_draw_non_coding_start_coding(self) -> None:
-        """
-        GIVEN an exon where the start is coding
-        WHEN we draw the non coding region
-        THEN the drawing should start 1 pixel into the coding region
-        THEN the drawing should extend to the end of the exon
-        """
-        e = Exon(size=100, coding=Coding(start=0, end=20))
-
-        non_coding = e._draw_noncoding(x=13, y=17)
-        assert non_coding.x == 19 + 13
-        assert non_coding.width == 81
-
-    def test_draw_non_coding_center_coding(self) -> None:
-        """
-        GIVEN an exon that is coding in the center
-        WHEN we draw the non coding region
-        THEN it should be the width of the exon (since we will draw the coding
-             region on top of it)
-        """
-        e = Exon(size=100, coding=Coding(start=30, end=70))
-
-        non_coding = e._draw_noncoding()
-        assert non_coding.width == 100
-
-    def test_draw_non_coding_end_coding(self) -> None:
-        """
-        GIVEN an exon where the end is coding
-        WHEN we draw the non coding region
-        THEN the drawing should start at the start of the exon
-        THEN the drawing should extend 1 pixel into the coding region
-        """
-        e = Exon(size=100, coding=Coding(start=80, end=100))
-
-        non_coding = e._draw_noncoding()
-        assert non_coding.x == 0
-        assert non_coding.width == 81
-
-    def test_draw_non_coding_fully_coding(self) -> None:
-        """
-        GIVEN an exon that is fully coding
-        WHEN we draw the exon
-        THEN we should not draw the non coding region
-        """
-        e = Exon(size=100, coding=Coding(start=0, end=100))
-        elements = e.draw()
-        assert len(elements) == 1
 
     class TestDrawingScale:
         """Test drawing an Exon whith non-default scale"""
@@ -314,6 +203,174 @@ class TestExon:
                 size=size, coding=Coding(start=0, end=size, start_phase=1, end_phase=1)
             )
             E._draw_coding(height=20, scale=1)
+
+    class TestSplits:
+        """Test the code to determine legal splits"""
+
+    # fmt: off
+    splits = [
+        # Exon that cannot be split, |>
+        (Exon(5, Coding(end=5, end_phase=1)),
+        []),
+        # Non coding exon, =====
+        (Exon(10),
+        [(0, 11)]),
+        # Coding exon, phase 0-0, |||||
+        (Exon(10, Coding(end=10)),
+        [(0, 11)]),
+        # Center is coding, phase 0-0, =|||=
+        (Exon(40, Coding(10, 30)),
+        [(0, 11), (10, 31), (30, 41)]),
+        # Coding exon, phase 0-1, ||||>
+        (Exon(15, Coding(end=15, end_phase=1)),
+        [(0, 11)]),
+        # Coding exon, phase 1-1, <|||<
+        (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
+        [(5, 11)]),
+        # Coding exon, phase 2-2, >|||>
+        (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
+        [(5, 11)]),
+        # Coding exon, phase 0-1, >||||
+        (Exon(15, Coding(end=15, start_phase=1)),
+        [(5, 16)]),
+        # Center is coding, phase 1-0, =>||=
+        (
+            Exon(40, Coding(start=10, end=30, start_phase=1)),
+            [(0, 11), (15, 31), (30, 41)]
+        ),
+        # Center is coding, phase 2-2, =<||>=
+        (
+            Exon(40, Coding(start=10, end=30, start_phase=2, end_phase=2)),
+            [(0, 11), (15, 26), (30, 41)]
+        )
+
+    ]
+    # fmt: on
+
+    @pytest.mark.parametrize("exon, valid_splits", splits)
+    def test_valid_splits_scale_one(
+        self, exon: Exon, valid_splits: List[Range]
+    ) -> None:
+        """
+        GIVEN an exon
+        WHEN we call valid_splits with the specified height and scale for drawing
+        THEN we should get a list of Ranges that contain the valid splits
+             (where the resulting Exons can be drawn)
+        """
+        height = 20
+        scale = 1
+        assert exon.valid_splits(height=height, scale=scale) == valid_splits
+
+    def test_default_exon(self, default_exon: Exon) -> None:
+        """
+        GIVEN a default exon of size 100
+        WHEN we don't change anythin
+        """
+        # THEN the size must be 100
+        assert default_exon.size == 100
+
+        # THEN the coding region should be false
+        assert not default_exon.coding
+        # THEN the coding region should start at 0
+        assert default_exon.coding.start == 0
+
+        # THEN the variants should be an empty list
+        assert default_exon.variants == list()
+
+        # THEN the default color should be set to DCRT blue
+        assert default_exon.color == "#4C72B7"
+
+    def test_boolean_exon_true(self) -> None:
+        """
+        GIVEN an exon of size one
+        THEN the boolean value is True
+        """
+        e = Exon(size=1)
+        assert e
+
+    def test_boolean_exon_false(self) -> None:
+        """
+        GIVEN an exon of size zero
+        THEN the boolean value is False
+        """
+        zero = Exon(size=0)
+        assert not zero
+
+    def test_exon_color(self) -> None:
+        """
+        GIVEN we create an exon with a set color
+        THEN that color must be stored in the object
+        """
+        e = Exon(size=100, color="red")
+        assert e.color == "red"
+
+    def test_draw_exon_non_coding(self, all: Exon) -> None:
+        """
+        GIVEN a yellow exon
+        WHEN we draw the exon
+        THEN the color should be set
+        """
+        non_coding = all._draw_noncoding()
+        assert non_coding.fill == "yellow"
+
+    def test_draw_fully_non_coding(self) -> None:
+        """
+        GIVEN an exon without a coding region
+        WHEN we draw the non coding region
+        THEN it should be the width of the exon
+        """
+        e = Exon(size=100)
+
+        non_coding = e._draw_noncoding()
+        assert non_coding.width == 100
+
+    def test_draw_non_coding_start_coding(self) -> None:
+        """
+        GIVEN an exon where the start is coding
+        WHEN we draw the non coding region
+        THEN the drawing should start 1 pixel into the coding region
+        THEN the drawing should extend to the end of the exon
+        """
+        e = Exon(size=100, coding=Coding(start=0, end=20))
+
+        non_coding = e._draw_noncoding(x=13, y=17)
+        assert non_coding.x == 19 + 13
+        assert non_coding.width == 81
+
+    def test_draw_non_coding_center_coding(self) -> None:
+        """
+        GIVEN an exon that is coding in the center
+        WHEN we draw the non coding region
+        THEN it should be the width of the exon (since we will draw the coding
+             region on top of it)
+        """
+        e = Exon(size=100, coding=Coding(start=30, end=70))
+
+        non_coding = e._draw_noncoding()
+        assert non_coding.width == 100
+
+    def test_draw_non_coding_end_coding(self) -> None:
+        """
+        GIVEN an exon where the end is coding
+        WHEN we draw the non coding region
+        THEN the drawing should start at the start of the exon
+        THEN the drawing should extend 1 pixel into the coding region
+        """
+        e = Exon(size=100, coding=Coding(start=80, end=100))
+
+        non_coding = e._draw_noncoding()
+        assert non_coding.x == 0
+        assert non_coding.width == 81
+
+    def test_draw_non_coding_fully_coding(self) -> None:
+        """
+        GIVEN an exon that is fully coding
+        WHEN we draw the exon
+        THEN we should not draw the non coding region
+        """
+        e = Exon(size=100, coding=Coding(start=0, end=100))
+        elements = e.draw()
+        assert len(elements) == 1
 
     def test_draw_exon_coding_color(self, center_coding: Exon) -> None:
         """
