@@ -362,8 +362,12 @@ class Exon:
 
         # Calculate the space to leave for the start of the coding region
         # If the phase is 0, we don't need to leave any room
-        coding_start_offset = 0 if not self.coding.start_phase else math.ceil(cap_size)
-        coding_end_offset = 0 if not self.coding.end_phase else math.ceil(cap_size)
+        coding_start_offset = (
+            0 if not self.coding.start_phase else math.ceil(cap_size / scale)
+        )
+        coding_end_offset = (
+            0 if not self.coding.end_phase else math.ceil(cap_size / scale)
+        )
 
         # Add the first non coding part
         start = 0

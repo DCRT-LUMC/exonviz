@@ -207,59 +207,116 @@ class TestExon:
     class TestSplits:
         """Test the code to determine legal splits"""
 
-    # fmt: off
-    splits = [
-        # Exon that cannot be split, |>
-        (Exon(5, Coding(end=5, end_phase=1)),
-        []),
-        # Non coding exon, =====
-        (Exon(10),
-        [(0, 11)]),
-        # Coding exon, phase 0-0, |||||
-        (Exon(10, Coding(end=10)),
-        [(0, 11)]),
-        # Center is coding, phase 0-0, =|||=
-        (Exon(40, Coding(10, 30)),
-        [(0, 11), (10, 31), (30, 41)]),
-        # Coding exon, phase 0-1, ||||>
-        (Exon(15, Coding(end=15, end_phase=1)),
-        [(0, 11)]),
-        # Coding exon, phase 1-1, <|||<
-        (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
-        [(5, 11)]),
-        # Coding exon, phase 2-2, >|||>
-        (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
-        [(5, 11)]),
-        # Coding exon, phase 0-1, >||||
-        (Exon(15, Coding(end=15, start_phase=1)),
-        [(5, 16)]),
-        # Center is coding, phase 1-0, =>||=
-        (
-            Exon(40, Coding(start=10, end=30, start_phase=1)),
-            [(0, 11), (15, 31), (30, 41)]
-        ),
-        # Center is coding, phase 2-2, =<||>=
-        (
-            Exon(40, Coding(start=10, end=30, start_phase=2, end_phase=2)),
-            [(0, 11), (15, 26), (30, 41)]
-        )
+        # fmt: off
+        splits = [
+            # Exon that cannot be split, |>
+            (Exon(5, Coding(end=5, end_phase=1)),
+            []),
+            # Non coding exon, =====
+            (Exon(10),
+            [(0, 11)]),
+            # Coding exon, phase 0-0, |||||
+            (Exon(10, Coding(end=10)),
+            [(0, 11)]),
+            # Center is coding, phase 0-0, =|||=
+            (Exon(40, Coding(10, 30)),
+            [(0, 11), (10, 31), (30, 41)]),
+            # Coding exon, phase 0-1, ||||>
+            (Exon(15, Coding(end=15, end_phase=1)),
+            [(0, 11)]),
+            # Coding exon, phase 1-1, <|||<
+            (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
+            [(5, 11)]),
+            # Coding exon, phase 2-2, >|||>
+            (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
+            [(5, 11)]),
+            # Coding exon, phase 0-1, >||||
+            (Exon(15, Coding(end=15, start_phase=1)),
+            [(5, 16)]),
+            # Center is coding, phase 1-0, =>||=
+            (
+                Exon(40, Coding(start=10, end=30, start_phase=1)),
+                [(0, 11), (15, 31), (30, 41)]
+            ),
+            # Center is coding, phase 2-2, =<||>=
+            (
+                Exon(40, Coding(start=10, end=30, start_phase=2, end_phase=2)),
+                [(0, 11), (15, 26), (30, 41)]
+            )
 
-    ]
-    # fmt: on
+        ]
+        # fmt: on
 
-    @pytest.mark.parametrize("exon, valid_splits", splits)
-    def test_valid_splits_scale_one(
-        self, exon: Exon, valid_splits: List[Range]
-    ) -> None:
-        """
-        GIVEN an exon
-        WHEN we call valid_splits with the specified height and scale for drawing
-        THEN we should get a list of Ranges that contain the valid splits
-             (where the resulting Exons can be drawn)
-        """
-        height = 20
-        scale = 1
-        assert exon.valid_splits(height=height, scale=scale) == valid_splits
+        @pytest.mark.parametrize("exon, valid_splits", splits)
+        def test_valid_splits_scale_one(
+            self, exon: Exon, valid_splits: List[Range]
+        ) -> None:
+            """
+            GIVEN an exon
+            WHEN we call valid_splits with the specified height and scale for drawing
+            THEN we should get a list of Ranges that contain the valid splits
+                 (where the resulting Exons can be drawn)
+            """
+            height = 20
+            scale = 1
+            assert exon.valid_splits(height=height, scale=scale) == valid_splits
+
+        # fmt: off
+        splits = [
+            # Exon that CAN be split, at scale=1.7, but not scale=1, |>
+            (Exon(5, Coding(end=5, end_phase=1)),
+            [(0, 3)]),
+            # Exon that CANNOT be split, even at scale=1.7
+            (Exon(3, Coding(end=3, end_phase=1)),
+            []),
+            # Non coding exon, =====
+            (Exon(12),
+            [(0, 13)]),
+            # Coding exon, phase 0-0, |||||
+            (Exon(15, Coding(end=15)),
+            [(0, 16)]),
+            # Center is coding, phase 0-0, =|||=
+            (Exon(47, Coding(15, 33)),
+            [(0, 16), (15, 34), (33, 48)]),
+            # Coding exon, phase 0-1, ||||>
+            (Exon(15, Coding(end=15, end_phase=1)),
+            [(0, 13)]),
+            # Coding exon, phase 1-1, <|||<
+            (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
+            [(3, 13)]),
+            # Coding exon, phase 2-2, >|||>
+            (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
+            [(3, 13)]),
+            # Coding exon, phase 0-1, >||||
+            (Exon(15, Coding(end=15, start_phase=1)),
+            [(3, 16)]),
+            # Center is coding, phase 1-0, =>||=
+            (
+                Exon(42, Coding(start=15, end=27, start_phase=1)),
+                [(0, 16), (18, 28), (27, 43)]
+            ),
+            # Center is coding, phase 2-2, =<||>=
+            (
+                Exon(42, Coding(start=15, end=27, start_phase=2, end_phase=2)),
+                [(0, 16), (18, 25), (27, 43)]
+            )
+
+        ]
+        # fmt: on
+
+        @pytest.mark.parametrize("exon, valid_splits", splits)
+        def test_valid_splits_scale_one_point_seven(
+            self, exon: Exon, valid_splits: List[Range]
+        ) -> None:
+            """
+            GIVEN an exon
+            WHEN we call valid_splits with the specified height and scale for drawing
+            THEN we should get a list of Ranges that contain the valid splits
+                 (where the resulting Exons can be drawn)
+            """
+            height = 20
+            scale = 1.7
+            assert exon.valid_splits(height=height, scale=scale) == valid_splits
 
     def test_default_exon(self, default_exon: Exon) -> None:
         """
