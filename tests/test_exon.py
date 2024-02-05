@@ -212,28 +212,28 @@ class TestExon:
         splits = [
             # Exon that cannot be split, |>
             (Exon(5, Coding(end=5, end_phase=1)),
-            []),
+            [(5, 6)]),
             # Non coding exon, =====
             (Exon(10),
             [(0, 11)]),
             # Coding exon, phase 0-0, |||||
             (Exon(10, Coding(end=10)),
-            [(0, 11)]),
+            [(0, 11), (10, 11)]),
             # Center is coding, phase 0-0, =|||=
             (Exon(40, Coding(10, 30)),
             [(0, 11), (10, 31), (30, 41)]),
             # Coding exon, phase 0-1, ||||>
             (Exon(15, Coding(end=15, end_phase=1)),
-            [(0, 11)]),
+            [(0, 11), (15, 16)]),
             # Coding exon, phase 1-1, <|||<
             (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
-            [(5, 11)]),
+            [(5, 11), (15, 16)]),
             # Coding exon, phase 2-2, >|||>
             (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
-            [(5, 11)]),
+            [(5, 11), (15, 16)]),
             # Coding exon, phase 0-1, >||||
             (Exon(15, Coding(end=15, start_phase=1)),
-            [(5, 16)]),
+            [(5, 16), (15, 16)]),
             # Center is coding, phase 1-0, =>||=
             (
                 Exon(40, Coding(start=10, end=30, start_phase=1)),
@@ -266,31 +266,31 @@ class TestExon:
         splits = [
             # Exon that CAN be split, at scale=1.7, but not scale=1, |>
             (Exon(5, Coding(end=5, end_phase=1)),
-            [(0, 3)]),
+            [(0, 3), (5, 6)]),
             # Exon that CANNOT be split, even at scale=1.7
             (Exon(3, Coding(end=3, end_phase=1)),
-            []),
+            [(3, 4)]),
             # Non coding exon, =====
             (Exon(12),
             [(0, 13)]),
             # Coding exon, phase 0-0, |||||
             (Exon(15, Coding(end=15)),
-            [(0, 16)]),
+            [(0, 16), (15, 16)]),
             # Center is coding, phase 0-0, =|||=
             (Exon(47, Coding(15, 33)),
             [(0, 16), (15, 34), (33, 48)]),
             # Coding exon, phase 0-1, ||||>
             (Exon(15, Coding(end=15, end_phase=1)),
-            [(0, 13)]),
+            [(0, 13), (15, 16)]),
             # Coding exon, phase 1-1, <|||<
             (Exon(15, Coding(end=15, start_phase=1, end_phase=1)),
-            [(3, 13)]),
+            [(3, 13), (15, 16)]),
             # Coding exon, phase 2-2, >|||>
             (Exon(15, Coding(end=15, start_phase=2, end_phase=2)),
-            [(3, 13)]),
+            [(3, 13), (15, 16)]),
             # Coding exon, phase 0-1, >||||
             (Exon(15, Coding(end=15, start_phase=1)),
-            [(3, 16)]),
+            [(3, 16), (15, 16)]),
             # Center is coding, phase 1-0, =>||=
             (
                 Exon(42, Coding(start=15, end=27, start_phase=1)),

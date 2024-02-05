@@ -365,6 +365,13 @@ class Exon:
 
     def valid_splits(self, height: float = 20, scale: float = 1) -> List[Range]:
         """Determine which splits of this exon can be drawn"""
+        def meaningfull(split: Range) -> bool:
+            """Determine if a split is meaningfull
+
+            Empty split (0, 1) is not meaningfull
+            """
+            return cast(bool, split != (0, 1))
+
         splits = list()
 
         # Size of the notch/arrow
@@ -394,12 +401,12 @@ class Exon:
         end = self.size + 1
         nc_after = (start, end)
 
-        # We don't want ranges of a single bp
-        if nc_before[1] - nc_before[0] > 1:
+        # We don't want empty ranges, or (0, 1)
+        if meaningfull(nc_before):
             splits.append(nc_before)
-        if coding[1] - coding[0] > 1:
+        if meaningfull(coding):
             splits.append(coding)
-        if nc_after[1] - nc_after[0] > 1:
+        if meaningfull(nc_after):
             splits.append(nc_after)
 
         return splits
@@ -454,12 +461,18 @@ def group_exons(
             # How much space is left on the page
             space_left = int(width - x)
 
-            # Leave some space to account for the coding caps, if needed
+            # valid_splits = exon.valid_splits(height=height, scale=scale)
+            #
+            # if not valid_splits and exon.draw_size(scale=scale) > space_left:
+            #     if not row:
+            #         raise RuntimeError(f"{exon=}, {space_left=}")
             if space_left < 2 * height:
                 page.append(row)
                 row = list()
                 x = 0
             else:
+                # split = _pick_split(valid_splits, int(space_left / scale))
+                # new_exon = exon.split(split)
                 new_exon = exon.split(int(space_left / scale))
                 row.append(new_exon)
                 x += gap + new_exon.draw_size(scale)
