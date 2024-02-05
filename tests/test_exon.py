@@ -938,9 +938,9 @@ class TestDrawing:
         ([Exon(100)], 99, 0, [[Exon(99)], [Exon(1)]]),
         # Two exons fit on one row
         ([Exon(50), Exon(50)], 100, 0, [[Exon(50), Exon(50)]]),
-        ## Two exons don't fit on one row
+        # Two exons don't fit on one row
         ([Exon(50), Exon(51)], 100, 0, [[Exon(50), Exon(50)], [Exon(1)]]),
-        ## Two exons that almost fit on one row
+        # Two exons that almost fit on one row
         ([Exon(50), Exon(50)], 99, 0, [[Exon(50), Exon(49)], [Exon(1)]]),
         # Two exons fit on one row, but not with a gap
         ([Exon(50), Exon(50)], 100, 1, [[Exon(50), Exon(49)], [Exon(1)]]),

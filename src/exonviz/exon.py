@@ -440,7 +440,7 @@ def _pick_split(splits: List[Range], page_size: int) -> int:
     splits_that_fit = [x for x in splits_that_fit if x]
 
     if not splits_that_fit:
-        raise ValueError("No valid split range specified")
+        raise ValueError(f"No valid split range specified: {splits=}, {page_size=}")
 
     biggest_split = splits_that_fit[-1]
     return cast(int, biggest_split[-1] - 1)
@@ -455,27 +455,43 @@ def group_exons(
     page = list()
     row: List[Exon] = list()
 
-    x: float = 0
+    space_left = width
     for exon in exons:
         while exon:
-            # How much space is left on the page
-            space_left = int(width - x)
-
-            # valid_splits = exon.valid_splits(height=height, scale=scale)
-            #
-            # if not valid_splits and exon.draw_size(scale=scale) > space_left:
-            #     if not row:
-            #         raise RuntimeError(f"{exon=}, {space_left=}")
-            if space_left < 2 * height:
+            # If there is no space left
+            if space_left < 1:
+                if not row:
+                    raise RuntimeError("Cannot add empty row to page")
                 page.append(row)
                 row = list()
-                x = 0
-            else:
-                # split = _pick_split(valid_splits, int(space_left / scale))
-                # new_exon = exon.split(split)
-                new_exon = exon.split(int(space_left / scale))
-                row.append(new_exon)
-                x += gap + new_exon.draw_size(scale)
+                space_left = width
+                continue
+
+            valid_splits = exon.valid_splits(height=height, scale=scale)
+
+            # If there is no way to split the current exon that fits on the page, start a new row
+            if not valid_splits:
+                if not row:
+                    raise RuntimeError("Cannot add empty row to page")
+                page.append(row)
+                row = list()
+                space_left = width
+                continue
+
+            # Try to see if we can pick a split that fits the page
+            try:
+                split = _pick_split(valid_splits, int(space_left / scale))
+            except ValueError:
+                if not row:
+                    raise RuntimeError("Cannot add empty row to page")
+                page.append(row)
+                row = list()
+                space_left = width
+                continue
+
+            new_exon = exon.split(split)
+            row.append(new_exon)
+            space_left -= gap + math.ceil(new_exon.draw_size(scale))
     page.append(row)
     return page
 
