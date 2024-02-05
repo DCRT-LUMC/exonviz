@@ -981,7 +981,9 @@ class TestDrawing:
     def test_exons_on_page(
         self, exons: List[Exon], width: int, gap: int, page: List[List[Exon]]
     ) -> None:
-        new_page = group_exons(exons, height=20, scale=1, gap=gap, width=width)
+        new_page = group_exons(
+            exons, height=20, scale=1, gap=gap, width=width, page_full=0
+        )
 
         assert new_page == page
 

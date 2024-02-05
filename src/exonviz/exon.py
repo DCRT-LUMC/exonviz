@@ -365,6 +365,7 @@ class Exon:
 
     def valid_splits(self, height: float = 20, scale: float = 1) -> List[Range]:
         """Determine which splits of this exon can be drawn"""
+
         def meaningfull(split: Range) -> bool:
             """Determine if a split is meaningfull
 
@@ -447,7 +448,12 @@ def _pick_split(splits: List[Range], page_size: int) -> int:
 
 
 def group_exons(
-    exons: List[Exon], height: int, gap: int, width: int, scale: float = 1.0
+    exons: List[Exon],
+    height: int,
+    gap: int,
+    width: int,
+    scale: float = 1.0,
+    page_full: float = 0.15,
 ) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
@@ -467,6 +473,15 @@ def group_exons(
                 space_left = width
                 continue
 
+            # If there is less than 15% (default) of the page left, and we already have
+            # some exons on this row
+            if space_left / width < page_full and row:
+                page.append(row)
+                row = list()
+                space_left = width
+                continue
+
+            # Determine which way we can split this exon
             valid_splits = exon.valid_splits(height=height, scale=scale)
 
             # If there is no way to split the current exon that fits on the page, start a new row
