@@ -1,5 +1,15 @@
 from dataclasses import dataclass
-from typing import Any, List, Optional, Sequence, Dict, Tuple, no_type_check, Union
+from typing import (
+    Any,
+    List,
+    Optional,
+    Sequence,
+    Dict,
+    Tuple,
+    no_type_check,
+    Union,
+    cast,
+)
 import copy
 import math
 
@@ -406,6 +416,27 @@ class Exon:
             self.coding.end_phase,
         ]
         return sep.join(map(str, records))
+
+
+def _pick_split(splits: List[Range], page_size: int) -> int:
+    """
+    Pick a legal split from the allowed splits and the page size
+
+    For now, we just pick the biggest possible split
+    """
+    # Intersect each valid split with the page
+    splits_that_fit = list()
+    page = (0, page_size + 1)
+    for split in splits:
+        splits_that_fit += intersect(split, page)
+    # Remove empty intersections
+    splits_that_fit = [x for x in splits_that_fit if x]
+
+    if not splits_that_fit:
+        raise ValueError("No valid split range specified")
+
+    biggest_split = splits_that_fit[-1]
+    return cast(int, biggest_split[-1] - 1)
 
 
 def group_exons(

@@ -8,6 +8,7 @@ from exonviz.exon import (
     Exon,
     Variant,
     group_exons,
+    _pick_split,
     exon_from_dict,
     element_xy,
     Element,
@@ -983,6 +984,43 @@ class TestDrawing:
         new_page = group_exons(exons, height=20, scale=1, gap=gap, width=width)
 
         assert new_page == page
+
+    invalid_splits: List[Tuple[List[Range], int]] = [
+        # Splits, page_size
+        # There are no valid splits
+        (list(), 10),
+        # the smallest valid split is smaller than the page
+        ([(10, 20)], 4),
+    ]
+
+    @pytest.mark.parametrize("splits, page_size", invalid_splits)
+    def test_pick_split_invalid(self, splits: List[Range], page_size: int) -> None:
+        """
+        GIVEN an empty list of valid splits
+        WHEN we pick a split
+        THEN we should get a ValueError
+        """
+        with pytest.raises(ValueError):
+            _pick_split(splits, page_size)
+
+    splits = [
+        # Splits, page_size, expected
+        # Only one split, and it fits on the page
+        ([(0, 11)], 10, 10),
+        # Two splits, and the second split fits
+        ([(0, 5), (6, 19)], 15, 15),
+        # Two splits, and only the first split fits
+        ([(0, 5), (6, 19)], 4, 4),
+        # Two splits, page is bigger than the first, but smaller than the
+        # second split
+        ([(0, 5), (16, 19)], 10, 4),
+    ]
+
+    @pytest.mark.parametrize("splits, page_size, expected", splits)
+    def test_pick_split(
+        self, splits: List[Range], page_size: int, expected: int
+    ) -> None:
+        assert _pick_split(splits, page_size) == expected
 
     elements = [
         # element, max_x, max_y
