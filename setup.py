@@ -73,6 +73,7 @@ setup(
         "svg-py",
         "GTGT",
         "mutalyzer_crossmapper",
+        "mutalyzer_hgvs_parser",
         "setuptools"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],

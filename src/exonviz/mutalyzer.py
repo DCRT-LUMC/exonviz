@@ -4,6 +4,7 @@ from urllib.error import HTTPError
 import json
 
 from mutalyzer_crossmapper import NonCoding, Genomic
+from mutalyzer_hgvs_parser import to_model
 from .exon import Exon, Coding, Variant
 from GTGT.range import intersect
 
@@ -60,10 +61,6 @@ def convert_mutalyzer_range(start: str, end: str, reverse: bool) -> Tuple[int, i
         return g_end, g_start + 1
     else:
         return g_start, g_end + 1
-
-
-def convert_coding_positions(positions: List[List[str]], reverse: bool) -> Range:
-    return convert_mutalyzer_range(positions[0][0], positions[0][1], reverse)
 
 
 def is_reverse(start: str, end: str) -> bool:
@@ -134,6 +131,11 @@ def parse_view_variants(
 def inside(exon: Range, variant: Dict[str, Any]) -> bool:
     pos = variant["start"]
     return cast(bool, pos >= exon[0] and pos < exon[1])
+
+
+def transcript_to_coordinate(transcript: str) -> str:
+    """Determine the coordinate system used by a transcript"""
+    return cast(str, to_model(transcript)["coordinate_system"])
 
 
 def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:

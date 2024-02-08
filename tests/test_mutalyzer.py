@@ -1,8 +1,8 @@
 import pytest
 from exonviz.mutalyzer import (
     convert_exon_positions,
-    convert_coding_positions,
     convert_mutalyzer_range,
+    transcript_to_coordinate,
     is_reverse,
     make_coding,
     parse_view_variants,
@@ -27,13 +27,6 @@ mutalyzer = {
     "cds": {"g": [["238", "11295"]]},
 }
 
-
-def test_convert_coding_positions() -> None:
-    assert convert_coding_positions([["238", "11295"]], reverse=False) == (237, 11294)
-
-
-def test_convert_coding_positions_reverse() -> None:
-    assert convert_coding_positions([["29199", "7218"]], reverse=True) == (29198, 7217)
 
 mut_positions = [
     (["1", "268"], False, (0, 268)),
@@ -336,3 +329,14 @@ def test_rewrite_reverse_variants(
     """Test rewriting variant payload on the reverse strand"""
     rewrite_reverse_variants(view_variants)
     assert view_variants == expected
+
+transcripts = [
+    ("NC_1234.4:c.=", "c"),
+    ("NC_1234.4:r.=", "r"),
+    ("NG_012337.3(NM_003002.4):c.274G>T", "c"),
+    ("NC_000011.10:g.112088970del", "g"),
+    ("GRCh38(chr11):g.112088970del", "g"),
+]
+@pytest.mark.parametrize("transcript, coordinate", transcripts)
+def test_get_coordinate_system_from_transcript(transcript: str, coordinate: str) -> None:
+    assert transcript_to_coordinate(transcript) == coordinate
