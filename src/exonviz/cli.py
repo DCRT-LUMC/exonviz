@@ -66,11 +66,13 @@ def make_option_parser() -> argparse.ArgumentParser:
 
     for key, value, description in _config:
         # Booleans are a special case
-        if type(value) == bool:
+        if isinstance(value, bool):
             action = "store_false" if value else "store_true"
             parser.add_argument(
                 f"--{key}", default=value, action=action, help=description
             )
+        elif isinstance(value, list):
+            parser.add_argument(f"--{key}", default=value, nargs="+", help=description)
         else:
             parser.add_argument(
                 f"--{key}",
