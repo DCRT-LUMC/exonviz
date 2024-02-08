@@ -15,7 +15,11 @@ _config = [
     ("exonnumber", False, "Show exon number"),
     ("firstexon", 1, "The first exon to draw"),
     ("lastexon", 9999, "The last exon to draw"),
-    ("variantcolors", ["red", "blue"], "List of variant colors to cycle through"),
+    (
+        "variantcolors",
+        ["#EBCE2B", "#702C8C", "#DB6917", "#BA1C30", "#C0BD7F"],
+        "List of variant colors to cycle through",
+    ),
 ]
 
 config = {key: value for key, value, description in _config}
