@@ -226,6 +226,9 @@ def build_exons(
 
     # Used for the exon name
     index = 0
+    # Used for picking the variant color
+    color_index = 0
+    colors = config["variantcolors"]
 
     # Get the variants
     variants = parse_view_variants(exons, vars)
@@ -241,6 +244,11 @@ def build_exons(
         coding = make_coding(exon, cds_ranges, start_phase)
         # Determine the variants for this exon
         vars = exon_variants(exon, variants)
+        # Set the vaiant colors
+        for var in vars:
+            i = color_index % len(colors)
+            var.color = colors[i]
+            color_index += 1
         # Determine the size for this exon
         e_size = e_end - e_start
         # Get the color from the configuration

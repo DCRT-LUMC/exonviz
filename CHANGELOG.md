@@ -8,6 +8,12 @@ that users understand how the changes affect the new version.
 --->
 
 
+## v0.2.3
++ Add --variantcolors to the configuration
+
+## v0.2.0
++ Big refactor
+
 ## v0.1.4
 + Drop support for Python 3.8
 + Add support for drawing only part of the transcript
