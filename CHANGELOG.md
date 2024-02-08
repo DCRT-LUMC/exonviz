@@ -9,6 +9,8 @@ that users understand how the changes affect the new version.
 
 
 ## v0.2.3
++ Include the coordinate system in variant name
++ Set four Kelly Colors as default
 + Add --variantcolors to the configuration
 
 ## v0.2.0

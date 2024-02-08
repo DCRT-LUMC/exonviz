@@ -138,7 +138,9 @@ def transcript_to_coordinate(transcript: str) -> str:
     return cast(str, to_model(transcript)["coordinate_system"])
 
 
-def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
+def exon_variants(
+    exon: Range, variants: List[Dict[str, Any]], coordinate: str
+) -> List[Variant]:
     """Create a list of Variants that fall within the exon
 
     The position of the variants is relative to the Exon start position
@@ -147,7 +149,8 @@ def exon_variants(exon: Range, variants: List[Dict[str, Any]]) -> List[Variant]:
     for var in variants:
         if inside(exon, var):
             relative_position = var["start"] - exon[0]
-            vars.append(Variant(relative_position, var["description"], "red"))
+            desc = var["description"]
+            vars.append(Variant(relative_position, f"{coordinate}.{desc}", "red"))
     return vars
 
 
@@ -210,13 +213,17 @@ def rewrite_reverse_variants(view_variants: Dict[str, Any]) -> None:
 
 
 def build_exons(
-    mutalyzer: Dict[str, Any], view_variants: Dict[str, Any], config: Dict[str, Any]
+    transcript: str,
+    mutalyzer: Dict[str, Any],
+    view_variants: Dict[str, Any],
+    config: Dict[str, Any],
 ) -> List[Exon]:
     """Build Exons from the mutalyzer payload"""
     Exons: List[Exon] = list()
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
+    coordinate_system = transcript_to_coordinate(transcript)
     rewrite_reverse_variants(view_variants)
     vars = view_variants["views"]
 
@@ -245,8 +252,8 @@ def build_exons(
         # Determine the coding region for this exon
         coding = make_coding(exon, cds_ranges, start_phase)
         # Determine the variants for this exon
-        vars = exon_variants(exon, variants)
-        # Set the vaiant colors
+        vars = exon_variants(exon, variants, coordinate_system)
+        # Set the variant colors
         for var in vars:
             i = color_index % len(colors)
             var.color = colors[i]

@@ -57,7 +57,7 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     exons = fetch_exons(transcript)
     variants = fetch_variants(transcript)
 
-    return build_exons(exons, variants, config)
+    return build_exons(transcript, exons, variants, config)
 
 
 def make_option_parser() -> argparse.ArgumentParser:

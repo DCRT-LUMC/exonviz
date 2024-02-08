@@ -148,26 +148,31 @@ def test_parse_view_variants(
 
 
 variants = [
-    # exon: Range, variants, expected
-    ((0, 10), [{"start": 100}], list()),
+    # exon: Range, variants, coordinate, expected
+    ((0, 10), [{"start": 100}], "coordinate", list()),
     (
         (0, 10),
         [{"start": 0, "description": "274G>T"}],
-        [Variant(0, "274G>T", color="red")],
+        "c",
+        [Variant(0, "c.274G>T", color="red")],
     ),
     (
         (100, 110),
         [{"start": 105, "description": "274G>T"}],
-        [Variant(5, "274G>T", color="red")],
+        "r",
+        [Variant(5, "r.274G>T", color="red")],
     ),
 ]
 
 
-@pytest.mark.parametrize("exon, variants, expected", variants)
+@pytest.mark.parametrize("exon, variants, coordinate, expected", variants)
 def test_exon_variants(
-    exon: Range, variants: List[Dict[str, Any]], expected: List[Variant]
+    exon: Range,
+    variants: List[Dict[str, Any]],
+    expected: List[Variant],
+    coordinate: str,
 ) -> None:
-    assert exon_variants(exon, variants) == expected
+    assert exon_variants(exon, variants, coordinate) == expected
 
 
 inside_exon_variants = [
@@ -330,6 +335,7 @@ def test_rewrite_reverse_variants(
     rewrite_reverse_variants(view_variants)
     assert view_variants == expected
 
+
 transcripts = [
     ("NC_1234.4:c.=", "c"),
     ("NC_1234.4:r.=", "r"),
@@ -337,6 +343,10 @@ transcripts = [
     ("NC_000011.10:g.112088970del", "g"),
     ("GRCh38(chr11):g.112088970del", "g"),
 ]
+
+
 @pytest.mark.parametrize("transcript, coordinate", transcripts)
-def test_get_coordinate_system_from_transcript(transcript: str, coordinate: str) -> None:
+def test_get_coordinate_system_from_transcript(
+    transcript: str, coordinate: str
+) -> None:
     assert transcript_to_coordinate(transcript) == coordinate
