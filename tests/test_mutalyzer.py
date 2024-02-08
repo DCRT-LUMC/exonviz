@@ -28,12 +28,12 @@ mutalyzer = {
 }
 
 
-# def test_convert_coding_positions() -> None:
-#     assert convert_coding_positions([["238", "11295"]]) == (237, 11294)
-#
-#
-# def test_convert_coding_positions_reverse() -> None:
-#     assert convert_coding_positions([["29199", "7218"]]) == (29198, 7217)
+def test_convert_coding_positions() -> None:
+    assert convert_coding_positions([["238", "11295"]], reverse=False) == (237, 11294)
+
+
+def test_convert_coding_positions_reverse() -> None:
+    assert convert_coding_positions([["29199", "7218"]], reverse=True) == (29198, 7217)
 
 mut_positions = [
     (["1", "268"], False, (0, 268)),
