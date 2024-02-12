@@ -8,6 +8,8 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.2.4-dev
++ Fix a bug where the legend is truncated if it is wider than the transcript,
+  but smaller than the page
 + Add check for invalid values for `--width`, `--height`, `--scale` and `--gap`
   when drawing
 + Scale estimated legend size with the specified `--height`

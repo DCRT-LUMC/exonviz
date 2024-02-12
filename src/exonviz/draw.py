@@ -3,6 +3,7 @@ import svg
 from .exon import element_xy, Element, Exon, Variant
 import exonviz.exon
 import textwrap
+import math
 
 
 # Options for drawing the figure. Used to create the cli parser and default dict
@@ -33,25 +34,33 @@ def shift(
     return [x + y_offset if i % 2 else x + x_offset for i, x in enumerate(points)]
 
 
-def bottom_right(elements: List[Element]) -> Tuple[int, int]:
+def bottom_right(elements: List[Element], height: int) -> Tuple[int, int]:
+    """
+    Determine the bottom right x and y position for a list of svg Elements
+    """
     x = 0
     y = 0
     for e in elements:
         e_x, e_y = element_xy(e)
+        # The text from the legend is a special case, since the size of the
+        # letters depends on the height
+        if isinstance(e, svg.Text):
+            text = e.text if e.text else ""
+            e_x += math.ceil(_guess_width(text, height))
         x = max(x, e_x)
         y = max(y, e_y)
     return x, y
 
 
+def _guess_width(name: str, height: int) -> float:
+    """Guess how wide the legend for this variant will be"""
+    letter_width = height / 2
+    return height * 1.5 + len(name) * letter_width
+
 def draw_legend(
     exons: List[Exon], width: int, height: int, y: float = 0
 ) -> List[Element]:
     """Draw the legend for variants in Exons"""
-
-    def guess_width(name: str, height: int) -> float:
-        """Guess how wide the legend for this variant will be"""
-        letter_width = height / 2
-        return height * 1.5 + len(name) * letter_width
 
     def get_legend_keys(exons: List[Exon]) -> List[Tuple[str, str]]:
         """Extract the legend keys from the Exon Variants"""
@@ -68,7 +77,7 @@ def draw_legend(
     # The x-position where we will draw the first entry of the legend
     x_pos: float = height
     for color, name in get_legend_keys(exons):
-        entry_width = guess_width(name, height)
+        entry_width = _guess_width(name, height)
         if entry_width > width:
             raise RuntimeError(f"Variant name {name} too wide to render")
         elif x_pos + entry_width > width:
@@ -119,7 +128,7 @@ def draw_exons(
         exons, width=width, height=height, scale=scale, gap=gap
     )
     # How far down the page did we go?
-    x, y = bottom_right(elements)
+    x, y = bottom_right(elements, height)
     elements += draw_legend(exons, y=y + height, height=height, width=width)
 
     # Set style for exonnumber, even if we don't need it
@@ -133,6 +142,6 @@ def draw_exons(
         )
     )
     # The maximum width we have reached for this picture
-    canvas_width, canvas_height = bottom_right(elements)
+    canvas_width, canvas_height = bottom_right(elements, height)
 
     return svg.SVG(width=canvas_width, height=canvas_height, elements=elements)
