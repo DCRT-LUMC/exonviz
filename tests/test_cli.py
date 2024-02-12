@@ -18,28 +18,24 @@ def test_check_input_valid(input: str) -> None:
     assert check_input(input) == input
 
 
-NO_VARIANT = [
+BEFORE_AFTER = [
     ("NM_004006.3", "NM_004006.3:c.="),
     ("NM_000533.5", "NM_000533.5:c.="),
     ("ENST00000358273.9", "ENST00000358273.9:c.="),
 ]
 
 
-@pytest.mark.parametrize("input, rewrite", NO_VARIANT)
+@pytest.mark.parametrize("input, rewrite", BEFORE_AFTER)
 def test_check_input_no_variant(input: str, rewrite: str) -> None:
     """Check that we rewrite it to a valid 'no variant' format"""
     assert check_input(input) == rewrite
 
 
-NO_VERSION = [
-    "NM_004006",
-    "NM_000533",
-    "ENST00000358273",
-]
+ERROR = ["/l", "", "_"]
 
 
-@pytest.mark.parametrize("input", NO_VERSION)
-def test_check_input_no_version(input: str) -> None:
-    """Raise an error when there is no version"""
-    with pytest.raises(RuntimeError):
+@pytest.mark.parametrize("input", ERROR)
+def test_check_invalid_input(input: str) -> None:
+    """Raise an error when we cannot figure out the HGVS"""
+    with pytest.raises(Exception):
         check_input(input)

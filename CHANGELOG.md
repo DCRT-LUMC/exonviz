@@ -8,6 +8,7 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.2.4-dev
++ Use mutalyzer_hgvs_parser to check user input
 + Include the smallest scale a transcript can be drawn at in the error message
   when the scale is too small
 + Fix a bug where the legend is truncated if it is wider than the transcript,

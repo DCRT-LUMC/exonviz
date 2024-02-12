@@ -14,6 +14,7 @@ from typing import List, Dict, Any
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons
+from mutalyzer_hgvs_parser import parse
 
 from .draw import _config
 
@@ -29,17 +30,18 @@ def get_MANE() -> Dict[str, str]:
 
 
 def check_input(transcript: str) -> str:
-    """Check the input from the user, and rewrite when needed"""
-    # If it looks like there is no variant
-    if re.match(r"^\w+\.\d+$", transcript):
-        return f"{transcript}:c.="
+    """Rewrite the transcript if it is not a valid HGVS description"""
+    # Is transcript already valid HGVS
+    try:
+        parse(transcript)
+        return transcript
+    except Exception:
+        pass
 
-    # If it looks like the user forgot the version number, there isn't much we can do
-    if re.match(r"^\w+$", transcript):
-        msg = "Please specify the version of the transcript you are interested in: "
-        raise RuntimeError(msg + transcript)
-
-    return transcript
+    # Maybe we got a bare transcript, we should make it a variant description
+    var_transcript = f"{transcript}:c.="
+    parse(var_transcript)
+    return var_transcript
 
 
 def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
