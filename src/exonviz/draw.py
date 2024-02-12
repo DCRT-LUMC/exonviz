@@ -50,7 +50,7 @@ def draw_legend(
 
     def guess_width(name: str, height: int) -> float:
         """Guess how wide the legend for this variant will be"""
-        letter_width = 10
+        letter_width = height / 2
         return height * 1.5 + len(name) * letter_width
 
     def get_legend_keys(exons: List[Exon]) -> List[Tuple[str, str]]:

@@ -8,8 +8,9 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.2.4-dev
-+ Fix a bug breaking `--firstexon` and `--lastexon` option
++ Scale estimated legend size with the specified `--height`
 + Add explicit `--scale` option
++ Fix a bug breaking `--firstexon` and `--lastexon` option
 
 ## v0.2.3
 + Include the coordinate system in variant name
