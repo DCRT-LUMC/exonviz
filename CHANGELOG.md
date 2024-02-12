@@ -7,7 +7,7 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 --->
 
-## v0.2.4-dev
+## v0.2.4
 + Show detailed errors from mutalyzer
 + Use mutalyzer_hgvs_parser to check user input
 + Include the smallest scale a transcript can be drawn at in the error message
