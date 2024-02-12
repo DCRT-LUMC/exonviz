@@ -57,6 +57,7 @@ def _guess_width(name: str, height: int) -> float:
     letter_width = height / 2
     return height * 1.5 + len(name) * letter_width
 
+
 def draw_legend(
     exons: List[Exon], width: int, height: int, y: float = 0
 ) -> List[Element]:
@@ -123,6 +124,12 @@ def draw_exons(
         raise ValueError("scale should be greater than zero")
     if gap < 0:
         raise ValueError("gap should at least be zero")
+
+    # Determine the smallest scale every exon can be drawn at
+    min_scale = max((e.min_scale(height) for e in exons))
+    if scale < min_scale:
+        msg = f"Transcript must be drawn at scale {min_scale} or larger"
+        raise ValueError(msg)
 
     elements = exonviz.exon.draw_exons(
         exons, width=width, height=height, scale=scale, gap=gap

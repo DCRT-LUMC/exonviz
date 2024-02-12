@@ -209,7 +209,9 @@ class Exon:
             total_caps += height * 0.25
 
         # Make sure we always round up, and only include 2 decimal places
-        d = Decimal(total_caps / self.coding.size).quantize(Decimal('0.1'), rounding=ROUND_UP)
+        d = Decimal(total_caps / self.coding.size).quantize(
+            Decimal("0.1"), rounding=ROUND_UP
+        )
         return float(d)
 
     def _draw_noncoding(
