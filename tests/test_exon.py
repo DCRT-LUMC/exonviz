@@ -804,7 +804,7 @@ class TestExon:
         exons = [Exon(100), Exon(200)]
         before = copy.deepcopy(exons)
         # Draw the exons, and discard the drawing
-        draw_exons(exons, height=20, gap=10, width=1_000_000)
+        draw_exons(exons, height=20, scale=1, gap=10, width=1_000_000)
         assert exons == before
 
 

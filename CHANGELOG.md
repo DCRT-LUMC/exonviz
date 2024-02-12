@@ -9,6 +9,7 @@ that users understand how the changes affect the new version.
 
 ## v0.2.4-dev
 + Fix a bug breaking `--firstexon` and `--lastexon` option
++ Add explicit `--scale` option
 
 ## v0.2.3
 + Include the coordinate system in variant name

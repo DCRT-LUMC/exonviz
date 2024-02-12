@@ -9,6 +9,7 @@ import textwrap
 _config = [
     ("width", 9999999, "Maximum width of the figure"),
     ("height", 20, "Exon height"),
+    ("scale", 1.0, "Scale (pixels per bp)"),
     ("noncoding", False, "Show non coding regions"),
     ("gap", 5, "Gap between the exons"),
     ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
@@ -102,9 +103,10 @@ def draw_exons(
 ) -> svg.SVG:
     width = config["width"]
     height = config["height"]
+    scale = config["scale"]
 
     elements = exonviz.exon.draw_exons(
-        exons, width=width, height=height, gap=config["gap"]
+        exons, width=width, height=height, scale=scale, gap=config["gap"]
     )
     # How far down the page did we go?
     x, y = bottom_right(elements)

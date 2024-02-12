@@ -313,7 +313,7 @@ class Exon:
                 Rect(
                     x=x + variant.position * scale,
                     y=y,
-                    width=height / 20,
+                    width=scale,
                     height=height,
                     fill=variant.color,
                 )
@@ -511,19 +511,16 @@ def group_exons(
     return page
 
 
-def draw_exons(exons: List[Exon], width: int, height: int, gap: int) -> List[Element]:
+def draw_exons(
+    exons: List[Exon], width: int, height: int, scale: float, gap: int
+) -> List[Element]:
     x: float = height
     y: float = height
     elements = list()
     # The exons will be modified by grouping them, so we make a copy here
     tmp_exons = copy.deepcopy(exons)
 
-    # Calculate the minimum scale at which we can draw every exon
-    scale = max(e.min_scale(height) for e in exons)
-    # Use the default scale of 1, if possible
-    scale = max(scale, 1)
-
-    for row in group_exons(tmp_exons, width=width, height=height, gap=gap):
+    for row in group_exons(tmp_exons, width=width, height=height, scale=scale, gap=gap):
         for exon in row:
             elements += exon.draw(height=height, scale=scale, x=x, y=y)
             x += exon.draw_size(scale) + gap

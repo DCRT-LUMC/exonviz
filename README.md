@@ -18,8 +18,8 @@ Pass either a transcript (with version!), or a valid HGVS description to exonviz
 Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
 
 ```
-usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding]
-               [--gap GAP] [--color COLOR] [--exonnumber]
+usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--scale SCALE]
+               [--noncoding] [--gap GAP] [--color COLOR] [--exonnumber]
                [--firstexon FIRSTEXON] [--lastexon LASTEXON]
                [--variantcolors VARIANTCOLORS [VARIANTCOLORS ...]]
                [--dump-exons DUMP_EXONS] [--dump-variants DUMP_VARIANTS]
@@ -32,6 +32,7 @@ options:
   -h, --help            show this help message and exit
   --width WIDTH         Maximum width of the figure (default: 9999999)
   --height HEIGHT       Exon height (default: 20)
+  --scale SCALE         Scale (pixels per bp) (default: 1.0)
   --noncoding           Show non coding regions (default: False)
   --gap GAP             Gap between the exons (default: 5)
   --color COLOR         Color for the exons (e.g. 'purple') (default: #4C72B7)
