@@ -7,7 +7,10 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 --->
 
-## v0.2.3-dev
+## v0.2.3
++ Include the coordinate system in variant name
++ Set four Kelly Colors as default
++ Add --variantcolors to the configuration
 
 ## v0.2.2
 + Various bug fixes for un-drawable exons
@@ -16,11 +19,6 @@ that users understand how the changes affect the new version.
 + Big refactor
 + Add support for displaying variants on exons
 + Add support for breaking off long exons
-
-## v0.2.3
-+ Include the coordinate system in variant name
-+ Set four Kelly Colors as default
-+ Add --variantcolors to the configuration
 
 ## v0.2.0
 + Big refactor
