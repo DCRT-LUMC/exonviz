@@ -18,9 +18,12 @@ Pass either a transcript (with version!), or a valid HGVS description to exonviz
 Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
 
 ```
-usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding] [--gap GAP] [--color COLOR] [--exonnumber]
-               [--firstexon FIRSTEXON] [--lastexon LASTEXON] [--dump-exons DUMP_EXONS]
-               [--dump-variants DUMP_VARIANTS] (--transcript TRANSCRIPT | --exon-tsv EXON_TSV)
+usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--noncoding]
+               [--gap GAP] [--color COLOR] [--exonnumber]
+               [--firstexon FIRSTEXON] [--lastexon LASTEXON]
+               [--variantcolors VARIANTCOLORS [VARIANTCOLORS ...]]
+               [--dump-exons DUMP_EXONS] [--dump-variants DUMP_VARIANTS]
+               (--transcript TRANSCRIPT | --exon-tsv EXON_TSV)
                [--variant-tsv VARIANT_TSV]
 
 Visualise exons and mutations
@@ -36,6 +39,10 @@ options:
   --firstexon FIRSTEXON
                         The first exon to draw (default: 1)
   --lastexon LASTEXON   The last exon to draw (default: 9999)
+  --variantcolors VARIANTCOLORS [VARIANTCOLORS ...]
+                        List of variant colors to cycle through (default:
+                        ['#BA1C30', '#DB6917', '#EBCE2B', '#702C8C',
+                        '#C0BD7F'])
   --dump-exons DUMP_EXONS
                         Write exons to the specified file (default: None)
   --dump-variants DUMP_VARIANTS
