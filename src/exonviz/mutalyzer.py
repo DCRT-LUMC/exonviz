@@ -16,6 +16,16 @@ log = logging.getLogger(__name__)
 Range = Tuple[int, int]
 
 
+def parse_error_payload(error: HTTPError) -> str:
+    """Parse HTTPError payload from mutalyzer"""
+    try:
+        js = json.loads(error.read().decode())
+        msg = "\n".join((error["details"] for error in js["custom"]["errors"]))
+    except Exception:
+        msg = ""
+    return msg if msg else str(error)
+
+
 def fetch_exons(transcript: str) -> Dict[str, Any]:
     """Fetch transcript information from mutalyzer"""
 
@@ -24,7 +34,7 @@ def fetch_exons(transcript: str) -> Dict[str, Any]:
     try:
         response = urllib.request.urlopen(url)
     except HTTPError as e:
-        msg = f"Fetching '{url}' returned {e}"
+        msg = parse_error_payload(e)
         raise RuntimeError(msg)
     else:
         js = json.loads(response.read())

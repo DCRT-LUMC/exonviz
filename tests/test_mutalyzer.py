@@ -1,3 +1,6 @@
+from urllib.request import HTTPError
+import io
+import json
 import pytest
 from exonviz.mutalyzer import (
     convert_exon_positions,
@@ -14,10 +17,12 @@ from exonviz.mutalyzer import (
     exon_variant,
     inside,
     Range,
+    parse_error_payload,
 )
 from exonviz.exon import Coding, Variant
 
 from typing import Any, Dict, List, Tuple
+from http.client import HTTPMessage
 
 # Example mutalyzer payload
 mutalyzer = {
@@ -350,3 +355,45 @@ def test_get_coordinate_system_from_transcript(
     transcript: str, coordinate: str
 ) -> None:
     assert transcript_to_coordinate(transcript) == coordinate
+
+
+ERRORS = [
+    # msg, fp, expected
+    (
+        "UNPROCESSABLE ENTITY",
+        {"Hello": "world"},
+        "HTTP Error 400: UNPROCESSABLE ENTITY",
+    ),
+    (
+        "UNPROCESSABLE ENTITY",
+        {"custom": dict()},
+        "HTTP Error 400: UNPROCESSABLE ENTITY",
+    ),
+    ("fallback", {"custom": {"errors": list()}}, "HTTP Error 400: fallback"),
+    (
+        "fallback",
+        {"custom": {"errors": [{"details": "Inner error message 1"}]}},
+        "Inner error message 1",
+    ),
+    (
+        "fallback",
+        {
+            "custom": {
+                "errors": [{"details": "Inner error message 1"}, {"details": "Inner 2"}]
+            }
+        },
+        "Inner error message 1\nInner 2",
+    ),
+]
+
+
+@pytest.mark.parametrize("error, payload, expected", ERRORS)
+def test_parse_error_payload(
+    error: str, payload: Dict[str, Any], expected: str
+) -> None:
+    # Convert dict into a bytes representation of json
+    fp_io = io.BytesIO(bytes(json.dumps(payload), "utf-8"))
+
+    E = HTTPError("url", 400, msg=error, hdrs=HTTPMessage(), fp=fp_io)
+
+    assert parse_error_payload(E) == expected
