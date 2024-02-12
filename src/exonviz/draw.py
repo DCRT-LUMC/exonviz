@@ -17,7 +17,7 @@ _config = [
     ("lastexon", 9999, "The last exon to draw"),
     (
         "variantcolors",
-        ["#EBCE2B", "#702C8C", "#DB6917", "#BA1C30", "#C0BD7F"],
+        ["#BA1C30", "#DB6917", "#EBCE2B", "#702C8C", "#C0BD7F"],
         "List of variant colors to cycle through",
     ),
 ]
