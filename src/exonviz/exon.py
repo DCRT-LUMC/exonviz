@@ -12,6 +12,7 @@ from typing import (
 )
 import copy
 import math
+from decimal import Decimal, ROUND_UP
 
 import sys
 
@@ -207,8 +208,9 @@ class Exon:
         if self.coding.end_phase != 0:
             total_caps += height * 0.25
 
-        scale = total_caps / self.coding.size
-        return scale
+        # Make sure we always round up, and only include 2 decimal places
+        d = Decimal(total_caps / self.coding.size).quantize(Decimal('0.1'), rounding=ROUND_UP)
+        return float(d)
 
     def _draw_noncoding(
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
@@ -259,7 +261,8 @@ class Exon:
         size = self.coding.size * scale
 
         if scale < self.min_scale(height):
-            raise ValueError(f"Coding region {self.coding} is too small to draw")
+            msg = f"Coding region of {self} must be drawn at scale={self.min_scale(height)}"
+            raise ValueError(msg)
 
         # fmt: off
         start: List[List[float]] = [
