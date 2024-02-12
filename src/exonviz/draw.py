@@ -104,9 +104,19 @@ def draw_exons(
     width = config["width"]
     height = config["height"]
     scale = config["scale"]
+    gap = config["gap"]
+
+    if width < 1:
+        raise ValueError("width should at least be 1")
+    if height < 1:
+        raise ValueError("height should at least be 1")
+    if scale <= 0:
+        raise ValueError("scale should be greater than zero")
+    if gap < 0:
+        raise ValueError("gap should at least be zero")
 
     elements = exonviz.exon.draw_exons(
-        exons, width=width, height=height, scale=scale, gap=config["gap"]
+        exons, width=width, height=height, scale=scale, gap=gap
     )
     # How far down the page did we go?
     x, y = bottom_right(elements)

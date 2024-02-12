@@ -8,6 +8,8 @@ that users understand how the changes affect the new version.
 --->
 
 ## v0.2.4-dev
++ Add check for invalid values for `--width`, `--height`, `--scale` and `--gap`
+  when drawing
 + Scale estimated legend size with the specified `--height`
 + Add explicit `--scale` option
 + Fix a bug breaking `--firstexon` and `--lastexon` option

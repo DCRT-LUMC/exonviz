@@ -1,6 +1,6 @@
 import pytest
 
-from typing import List, Dict, cast, Tuple
+from typing import List, Dict, cast, Tuple, Any
 import copy
 
 from exonviz.exon import (
@@ -14,6 +14,8 @@ from exonviz.exon import (
     Element,
     draw_exons,
 )
+from exonviz.draw import draw_exons as draw_exons_config
+
 from GTGT.range import Range
 from svg import Rect, Text, Polygon, Style
 
@@ -1065,3 +1067,33 @@ class TestDrawing:
         assert exon.min_scale(height=height) == expected_scale
         # Test that there is no value error
         exon.draw(height=height, scale=expected_scale)
+
+    invalid_configs = [
+        ({"width": 0.9}, "width should at least be 1"),
+        ({"width": 0}, "width should at least be 1"),
+        ({"width": -10}, "width should at least be 1"),
+        ({"height": 0.9}, "height should at least be 1"),
+        ({"height": 0}, "height should at least be 1"),
+        ({"height": -10}, "height should at least be 1"),
+        ({"scale": -0.9}, "scale should be greater than zero"),
+        ({"scale": 0}, "scale should be greater than zero"),
+        ({"gap": -0.9}, "gap should at least be zero"),
+    ]
+
+    @pytest.mark.parametrize("invalid, msg", invalid_configs)
+    def test_invalid_drawing_config(self, invalid: Dict[str, Any], msg: str) -> None:
+        # Default (correct) configuration
+        config = {
+            "width": 1000,
+            "height": 20,
+            "scale": 1.0,
+            "gap": 5,
+        }
+        # Update the configuration with the invalid value from 'config'
+        config.update(invalid)
+
+        exons = [Exon(size=100)]
+
+        with pytest.raises(ValueError) as e:
+            draw_exons_config(exons, config)
+        assert msg in str(e.value)
