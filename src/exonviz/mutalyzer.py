@@ -303,7 +303,7 @@ def build_exons(
         Exons.append(E)
 
     # Remove exons that are not part of the specified exon range
-    first_exon = config["firstexon"] - 1
+    first_exon = max(0, config["firstexon"] - 1)
     last_exon = min(config["lastexon"], len(Exons))
     Exons = Exons[first_exon:last_exon]
 
