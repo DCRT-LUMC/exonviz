@@ -122,6 +122,20 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
     return not exon_offset
 
 
+def variants_outside_exons(
+    exons: List[List[str]], payload: List[Dict[str, Any]]
+) -> List[str]:
+    """Determine description of variants that fall outside the exons"""
+    # Exclude the regions that flank the variants
+    variants = [x for x in payload if x["type"] == "variant"]
+
+    outside = list()
+    for var in variants:
+        if not exon_variant(exons, var):
+            outside.append(var["description"])
+    return outside
+
+
 def parse_view_variants(
     exons: List[List[str]], payload: List[Dict[str, Any]]
 ) -> List[Dict[str, Any]]:
@@ -129,9 +143,15 @@ def parse_view_variants(
     # Exclude the regions that flank the variants
     variants = [x for x in payload if x["type"] == "variant"]
 
+    # Variants outside of the exons
+    outside = variants_outside_exons(exons, payload)
+
     for var in variants:
         # Exclude variants that do not fall inside an exon
-        if not exon_variant(exons, var):
+        if var["description"] in outside:
+            dsc = var["description"]
+            msg = f"Dropped variant {dsc}, which falls outside the exons"
+            log.warn(msg)
             continue
         var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
 

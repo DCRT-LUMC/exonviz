@@ -4,7 +4,6 @@ without executing side effects
 """
 
 import argparse
-import re
 import sys
 import gzip
 import pkg_resources
