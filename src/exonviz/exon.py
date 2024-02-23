@@ -459,12 +459,17 @@ def group_exons(
     width: int,
     scale: float = 1.0,
     page_full: float = 0.15,
+    gap_offset: int | None = None,
 ) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
         return [[]]
     page = list()
     row: List[Exon] = list()
+
+    # Additional gap offset for exons that end with phase-0
+    if gap_offset is None:
+        gap_offset = math.ceil(height * 0.25)
 
     space_left = width
     for exon in exons:
@@ -512,6 +517,9 @@ def group_exons(
             new_exon = exon.split(split)
             row.append(new_exon)
             space_left -= gap + math.ceil(new_exon.draw_size(scale))
+            # Increase the gap if the exon ends in phase-0, so it looks visually nicer
+            if new_exon.coding.end_phase == 0:
+                space_left -= gap_offset
     page.append(row)
     return page
 
@@ -529,6 +537,9 @@ def draw_exons(
         for exon in row:
             elements += exon.draw(height=height, scale=scale, x=x, y=y)
             x += exon.draw_size(scale) + gap
+            if exon.coding.end_phase == 0:
+                x += height * 0.25
+
         y += 2 * height
         x = height
     return elements

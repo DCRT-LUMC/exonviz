@@ -7,7 +7,10 @@ This document is user facing. Please word the changes in such a way
 that users understand how the changes affect the new version.
 --->
 
-## v0.2.5-dev
+## v0.2.6-dev
++ Increase gap size after phase-0 exon to improve visuals
+
+## v0.2.5
 + Fix a bug when --firstexon is smaller than 1
 + Show a warning when variants are dropped
 
