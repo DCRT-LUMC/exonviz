@@ -459,7 +459,7 @@ def group_exons(
     width: int,
     scale: float = 1.0,
     page_full: float = 0.15,
-    gap_offset: int | None = None,
+    gap_offset: Optional[int] = None,
 ) -> List[List[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
