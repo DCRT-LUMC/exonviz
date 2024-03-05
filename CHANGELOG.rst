@@ -6,7 +6,7 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
-v0.2.6-dev
+v0.2.6
 ----------
 + Increase gap size after phase-0 exon to improve visuals
 
