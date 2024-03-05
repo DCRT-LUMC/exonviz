@@ -11,7 +11,7 @@ jobs:
   release:
       name: Create a release
       needs:
-        - test
+        - tests
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
