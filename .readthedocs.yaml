@@ -31,6 +31,3 @@ formats:
 python:
    install:
    - requirements: docs/requirements.txt
-  # Install the package before building the docs
-  - method pip:
-    path: .
