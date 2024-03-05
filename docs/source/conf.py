@@ -6,8 +6,8 @@ project = 'ExonViz'
 copyright = '2023, LUMC'
 author = 'Redmar van den Berg'
 
-release = '0.2.6'
-version = '0.2.6'
+release = '0.2.7'
+version = '0.2.7'
 
 # -- General configuration
 
