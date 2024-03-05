@@ -18,6 +18,9 @@ jobs:
 
       - name: Check release version is present in every file
         run: >-
+          set -eoux
+          pwd
+          ls
           for fname in setup.py CHANGELOG.rst docs/source/conf.py; do
             grep ${RELEASE_VERSION#v} ${fname}
           done
