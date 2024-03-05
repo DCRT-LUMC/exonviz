@@ -9,6 +9,7 @@ Changelog
 v0.2.7
 ----------
 + Automate release process
+
 v0.2.6
 ----------
 + Increase gap size after phase-0 exon to improve visuals
