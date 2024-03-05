@@ -17,7 +17,7 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Check release version is present in every file
-        run: >-
+        run: |
           set -eoux
           pwd
           ls
