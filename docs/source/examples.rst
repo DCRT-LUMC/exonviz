@@ -56,10 +56,25 @@ The figure and associated TSV file are shown below, note that exon 3 has been sp
 
 .. code-block:: bash
 
-   exonviz --exon-tsv PLP1-DM20.csv --scale 1.3 --gap 0 > PLP1-DM20.svg
+   exonviz --exon-tsv PLP1-DM20.tsv --scale 1.3 --gap 0 > PLP1-DM20.svg
 
 .. image:: ../figures/PLP1-DM20.svg
 
 .. csv-table:: TSV file for PLP1 and DM20
    :delim: tab
-   :file: ../figures/PLP1-DM20.csv
+   :file: ../figures/PLP1-DM20.tsv
+
+
+NDUFAF6 poison exon
+-------------------
+`Catania et al., 2018 <https://www.nature.com/articles/s10038-018-0423-1>`_ describe a deep intronic variant in `NDUFAF6` which leads to the inclusion of a 124nt poison exon.
+
+.. code-block:: bash
+
+   exonviz --exon-tsv NUDFAF6.tsv  > NDUFAF6.svg
+
+.. image:: ../figures/NDUFAF6.svg
+
+.. csv-table:: TSV file for NDUFAF6 poison exon
+  :delim: tab
+  :file: ../figures/NDUFAF6.tsv

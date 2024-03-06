@@ -1,0 +1,11 @@
+size	name	color	coding_start	coding_end	start_phase	end_phase
+197	1	#4C72B7	0	197	0	2
+100	2	#4C72B7	0	100	2	0
+123	3	#4C72B7	0	123	0	0
+124	poison exon	darkred	0	0	0	0
+57	4	#4C72B7	0	57	0	0
+103	5	#4C72B7	0	103	0	1
+134	6	#4C72B7	0	134	1	0
+102	7	#4C72B7	0	102	0	0
+57	8	#4C72B7	0	57	0	0
+129	9	#4C72B7	0	129	0	0
