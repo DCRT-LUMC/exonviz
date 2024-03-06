@@ -13,15 +13,14 @@ ExonViz can be installed using pip:
    pip install exonviz
 
 Default usage
-----------------
-Currently, the command line interface for GTGT is just
-a placeholder.
+-------------
 
 .. code-block:: console
 
    exonviz --transcript DMD > DMD.svg
 
-You can also specify the person to greeting
+Command line
+------------
 
 .. code-block:: console
 
