@@ -6,11 +6,11 @@ Usage
 Installation
 ------------
 
-ExonVIz can be installed using pip:
+ExonViz can be installed using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install exonviz
+   pip install exonviz
 
 Default usage
 ----------------

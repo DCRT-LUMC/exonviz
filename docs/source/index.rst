@@ -1,9 +1,12 @@
 Welcome to the documentation for ExonViz
 ================================================
 
-Describe your project here.
+ExonViz is a tool to draw transcripts, to scale. You can try the online version on
+`exonviz.rnatherapy.nl <https://exonviz.rnatherapy.nl>`_
 
-Check out the :doc:`usage` section for further information, including
+.. image:: ../figures/NM_003002.4.png
+
+Check out the :doc:`introduction` section for further information, including
 how to :ref:`install<installation>` the project.
 
 .. note::
@@ -15,6 +18,7 @@ Contents
 
 .. toctree::
 
+   introduction
    usage
    api
    changelog
