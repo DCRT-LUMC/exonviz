@@ -65,9 +65,9 @@ The figure and associated TSV file are shown below, note that exon 3 has been sp
    :file: ../figures/PLP1-DM20.tsv
 
 
-NDUFAF6 poison exon
--------------------
-`Catania et al., 2018 <https://www.nature.com/articles/s10038-018-0423-1>`_ describe a deep intronic variant in `NDUFAF6` which leads to the inclusion of a 124nt poison exon.
+NDUFAF6 cryptic exon
+--------------------
+`Catania et al., 2018 <https://www.nature.com/articles/s10038-018-0423-1>`_ describe a deep intronic variant in `NDUFAF6` which leads to the inclusion of a 124nt cryptic exon.
 
 .. code-block:: bash
 
@@ -75,6 +75,6 @@ NDUFAF6 poison exon
 
 .. image:: ../figures/NDUFAF6.svg
 
-.. csv-table:: TSV file for NDUFAF6 poison exon
+.. csv-table:: TSV file for NDUFAF6 cryptic exon
   :delim: tab
   :file: ../figures/NDUFAF6.tsv
