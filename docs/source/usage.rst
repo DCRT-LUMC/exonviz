@@ -40,7 +40,7 @@ Command line
      --height HEIGHT       Exon height (default: 20)
      --scale SCALE         Scale (pixels per bp) (default: 1.0)
      --noncoding           Show non coding regions (default: False)
-     --gap GAP             Gap between the exons (default: 5)
+     --gap GAP             Gap between the exons (default: 0)
      --color COLOR         Color for the exons (e.g. 'purple') (default: #4C72B7)
      --exonnumber          Show exon number (default: False)
      --firstexon FIRSTEXON

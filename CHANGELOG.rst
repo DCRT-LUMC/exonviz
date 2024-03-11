@@ -8,6 +8,7 @@ Changelog
 
 v0.2.8-dev
 ----------
++ Set the default gap size to zero
 + Add documentation to readthedocs
 
 v0.2.7

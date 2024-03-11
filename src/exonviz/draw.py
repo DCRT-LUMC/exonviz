@@ -12,7 +12,7 @@ _config = [
     ("height", 20, "Exon height"),
     ("scale", 1.0, "Scale (pixels per bp)"),
     ("noncoding", False, "Show non coding regions"),
-    ("gap", 5, "Gap between the exons"),
+    ("gap", 0, "Gap between the exons"),
     ("color", "#4C72B7", "Color for the exons (e.g. 'purple')"),
     ("exonnumber", False, "Show exon number"),
     ("firstexon", 1, "The first exon to draw"),
