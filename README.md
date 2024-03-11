@@ -6,93 +6,23 @@
 # Exonviz
 Visualise exons
 ------------------------------------------------------------------------
+## Online version
+You can try out ExonViz online at [exonviz.rnatherapy.nl](exonviz.rnatherapy.nl).
+
 ## Installation
-Exonviz only requires Python, and can be installed using PIP:
+ExonViz only requires Python, and can be installed using PIP:
 ```
 pip install exonviz
 ```
 
 ## Usage
-Pass either a transcript (with version!), or a valid HGVS description to exonviz to generate a figure.
-
-### Options
-Since each gene is different, you will probably want to play around with the options to get the perfect figure for your favorite gene.
-
-```
-usage: exonviz [-h] [--width WIDTH] [--height HEIGHT] [--scale SCALE]
-               [--noncoding] [--gap GAP] [--color COLOR] [--exonnumber]
-               [--firstexon FIRSTEXON] [--lastexon LASTEXON]
-               [--variantcolors VARIANTCOLORS [VARIANTCOLORS ...]]
-               [--dump-exons DUMP_EXONS] [--dump-variants DUMP_VARIANTS]
-               (--transcript TRANSCRIPT | --exon-tsv EXON_TSV)
-               [--variant-tsv VARIANT_TSV]
-
-Visualise exons and mutations
-
-options:
-  -h, --help            show this help message and exit
-  --width WIDTH         Maximum width of the figure (default: 9999999)
-  --height HEIGHT       Exon height (default: 20)
-  --scale SCALE         Scale (pixels per bp) (default: 1.0)
-  --noncoding           Show non coding regions (default: False)
-  --gap GAP             Gap between the exons (default: 5)
-  --color COLOR         Color for the exons (e.g. 'purple') (default: #4C72B7)
-  --exonnumber          Show exon number (default: False)
-  --firstexon FIRSTEXON
-                        The first exon to draw (default: 1)
-  --lastexon LASTEXON   The last exon to draw (default: 9999)
-  --variantcolors VARIANTCOLORS [VARIANTCOLORS ...]
-                        List of variant colors to cycle through (default:
-                        ['#BA1C30', '#DB6917', '#EBCE2B', '#702C8C',
-                        '#C0BD7F'])
-  --dump-exons DUMP_EXONS
-                        Write exons to the specified file (default: None)
-  --dump-variants DUMP_VARIANTS
-                        Write variants to the specified file (default: None)
-  --transcript TRANSCRIPT
-                        Transcript (with version) to visualise (default: None)
-  --exon-tsv EXON_TSV   TSV file containing exons (default: None)
-  --variant-tsv VARIANT_TSV
-                        TSV file containing variants (default: None)
+Simply supply either a transcript (with version!), or a valid HGVS description to exonviz to generate a figure:
+```bash
+exonviz "NM_003002.4:r.[274G>T;300del]" > SHDH.svg
 ```
 
-## Examples
-### SDHD
-Using the default settings, which does not include non-coding regions of the transcript:
-
-`exonviz --transcript SDHD > SDHD.svg`
-
-![Figure of SDH exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.2.4/examples/SDHD.svg)
-
-### DMD
-For DMD, we explicitly specify the transcript we are interested in. We also set
-a maximum width for the figure, since DMD has many exons:
-
-`exonviz --transcript "NM_004006.3" --width 1024 --color purple --exonnumber > DMD.svg`
-
-![Figure of DMD exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.2.4/examples/DMD.svg)
-
-
-### ATXN1
-Include the non coding exons, since most exons of ATXN1 are non coding. We
-limit the maximum width and increase the height of the picture. For clarity, we
-also increase the distance between the displayed exons:
-
-`exonviz --transcript ENST00000436367.6 --noncoding --width 4000 --height 150 --gap 50 > ATXN1.svg`
-
-![Figure of ATXN1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.2.4/examples/ATXN1.svg)
-
-### PLP1
-You can also input a valid HGVS description on the transcript of interest. The variant will be ignored.
-Include the non coding regions and increase the height and distance between the exons:
-
-`exonviz --transcript "NM_000533.5:c.100G>T" --height 100 --gap 50 --scale 6.5 > PLP1.svg`
-
-![Figure of PLP1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.2.4/examples/PLP1.svg)
-
-### NF1
-Set the maximum width of the figure to the approximate size of the largest exon:
-
-`exonviz --transcript "ENST00000358273.9" --noncoding --width 3600 --height 75 --gap 20 > NF1-202.svg`
-
-![Figure of NF1 exons](https://raw.githubusercontent.com/DCRT-LUMC/exonviz/v0.2.4/examples/NF1-202.svg)
+### Documentation
+The documentation for ExonViz is available on
+[Readthedocs](exonviz.readthedocs.org), including some
+[examples](https://exonviz.readthedocs.io/en/latest/examples.html) of what is
+possible using the command line version of ExonViz.
