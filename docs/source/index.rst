@@ -21,5 +21,5 @@ Contents
    introduction
    usage
    examples
-   api
+   disclaimer
    changelog
