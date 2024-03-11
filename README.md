@@ -2,6 +2,10 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 [![Documentation Status](https://readthedocs.org/projects/exonviz/badge/?version=latest)](https://exonviz.readthedocs.io/en/latest/?badge=latest)
+[![Last commit](https://img.shields.io/github/last-commit/DCRT-LUMC/exonviz.svg)](https://img.shields.io/github/last-commit/DCRT-LUMC/exonviz.svg)
+[![Release](https://img.shields.io/github/release/DCRT-LUMC/exonviz.svg)](https://img.shields.io/github/release/DCRT-LUMC/exonviz.svg)
+[![PyPI](https://img.shields.io/pypi/v/exonviz.svg)](https://img.shields.io/pypi/v/exonviz.svg)
+[![Commits since latest release](https://img.shields.io/github/commits-since/DCRT-LUMC/exonviz/latest)](https://img.shields.io/github/commits-since/DCRT-LUMC/exonviz/latest)
 
 # Exonviz
 ExonViz is a simple tool to generate and draw transcripts that include coding
