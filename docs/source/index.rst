@@ -2,7 +2,7 @@ Welcome to the documentation for ExonViz
 ================================================
 
 ExonViz is a tool to draw transcripts, to scale. You can try the online version on
-`exonviz.rnatherapy.nl <https://exonviz.rnatherapy.nl>`_
+`exonviz.rnatherapy.nl <https://exonviz.rnatherapy.nl>`_!
 
 .. image:: ../figures/SDHD.svg
 

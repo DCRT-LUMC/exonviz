@@ -1,6 +1,7 @@
 [![Continous integration](https://github.com/DCRT-LUMC/exonviz/actions/workflows/ci.yml/badge.svg)](https://github.com/DCRT-LUMC/exonviz/actions/workflows/ci.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![Documentation Status](https://readthedocs.org/projects/exonviz/badge/?version=latest)](https://exonviz.readthedocs.io/en/latest/?badge=latest)
 
 # Exonviz
 Visualise exons
