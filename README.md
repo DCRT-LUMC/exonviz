@@ -14,7 +14,7 @@ exons are visible. Single or multiple variants along the transcript can be
 drawn and will automatically be shown in the correct location.
 
 ## Online version
-You can try out ExonViz online at [exonviz.rnatherapy.nl](exonviz.rnatherapy.nl).
+You can try out ExonViz online at [exonviz.rnatherapy.nl](https://exonviz.rnatherapy.nl).
 
 ## Installation
 ExonViz only requires Python, and can be installed using PIP:
