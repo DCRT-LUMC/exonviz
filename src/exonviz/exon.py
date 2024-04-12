@@ -22,7 +22,7 @@ else:
     from typing_extensions import TypeAlias
 
 from _io import TextIOWrapper
-from svg import Rect, Polygon, Text, Style
+from svg import Rect, Polygon, Text, Style, Circle
 
 from GTGT.range import intersect, Range
 
@@ -30,7 +30,7 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element: TypeAlias = Union[Rect, Polygon, Text, Style]
+Element: TypeAlias = Union[Circle, Rect, Polygon, Text, Style]
 
 
 @dataclass()
@@ -176,7 +176,12 @@ class Exon:
         self.coding.start = 0
 
     def draw(
-        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
+        self,
+        height: float = 20,
+        scale: float = 1,
+        x: float = 0,
+        y: float = 0,
+        variant_shape: str = "pin",
     ) -> List[Element]:
         """Draw the Exon, in SVG format
 
@@ -189,7 +194,9 @@ class Exon:
             elements.append(self._draw_noncoding(height=height, scale=scale, x=x, y=y))
         if self.coding:
             elements.append(self._draw_coding(height=height, scale=scale, x=x, y=y))
-        elements += self._draw_variants(height=height, scale=scale, x=x, y=y)
+        elements += self._draw_variants(
+            height=height, scale=scale, x=x, y=y, shape=variant_shape
+        )
         if self.name:
             elements.append(self._draw_name(height=height, scale=scale, x=x, y=y))
 
@@ -310,19 +317,48 @@ class Exon:
         )
 
     def _draw_variants(
-        self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
-    ) -> Sequence[Rect]:
-        elements = list()
+        self,
+        height: float = 20,
+        scale: float = 1,
+        x: float = 0,
+        y: float = 0,
+        shape: str = "bar",
+    ) -> Sequence[Element]:
+        elements: List[Element] = list()
+        c_size = 0.25 * height
         for variant in self.variants:
-            elements.append(
-                Rect(
-                    x=x + variant.position * scale,
-                    y=y,
-                    width=scale,
-                    height=height,
-                    fill=variant.color,
+            if shape == "pin":
+                elements.append(
+                    Rect(
+                        x=x + variant.position * scale,
+                        y=y - 0.5 * height,
+                        width=scale,
+                        height=1.5 * height,
+                        fill=variant.color,
+                    )
                 )
-            )
+                elements.append(
+                    Circle(
+                        cx=x + variant.position * scale + 0.5 * scale,
+                        cy=y - 0.5 * height,
+                        r=c_size,
+                        stroke=variant.color,
+                        fill=variant.color,
+                    )
+                )
+            elif shape == "bar":
+                elements.append(
+                    Rect(
+                        x=x + variant.position * scale,
+                        y=y,
+                        width=scale,
+                        height=height,
+                        fill=variant.color,
+                    )
+                )
+            else:
+                msg = f"Unknown variant shape '{shape}'"
+                raise NotADirectoryError(msg)
         return elements
 
     def _draw_name(
@@ -525,7 +561,12 @@ def group_exons(
 
 
 def draw_exons(
-    exons: List[Exon], width: int, height: int, scale: float, gap: int
+    exons: List[Exon],
+    width: int,
+    height: int,
+    scale: float,
+    gap: int,
+    variant_shape: str,
 ) -> List[Element]:
     x: float = height
     y: float = height
@@ -535,7 +576,9 @@ def draw_exons(
 
     for row in group_exons(tmp_exons, width=width, height=height, scale=scale, gap=gap):
         for exon in row:
-            elements += exon.draw(height=height, scale=scale, x=x, y=y)
+            elements += exon.draw(
+                height=height, scale=scale, x=x, y=y, variant_shape=variant_shape
+            )
             x += exon.draw_size(scale) + gap
             if exon.coding.end_phase == 0:
                 x += height * 0.25
@@ -636,6 +679,9 @@ def element_xy(element: Element) -> Tuple[float, float]:
     elif isinstance(element, Style):
         x = 0
         y = 0
+    elif isinstance(element, Circle):
+        x = element.cx + element.r
+        y = element.cy + element.r
     else:
         raise ValueError(element)
     return x, y

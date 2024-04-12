@@ -22,6 +22,7 @@ _config = [
         ["#BA1C30", "#DB6917", "#EBCE2B", "#702C8C", "#C0BD7F"],
         "List of variant colors to cycle through",
     ),
+    ("variantshape", "pin", "Shape of the variant ('pin' or 'bar')"),
 ]
 
 config = {key: value for key, value, description in _config}
@@ -115,6 +116,7 @@ def draw_exons(
     height = config["height"]
     scale = config["scale"]
     gap = config["gap"]
+    variant_shape = config["variantshape"]
 
     if width < 1:
         raise ValueError("width should at least be 1")
@@ -132,7 +134,12 @@ def draw_exons(
         raise ValueError(msg)
 
     elements = exonviz.exon.draw_exons(
-        exons, width=width, height=height, scale=scale, gap=gap
+        exons,
+        width=width,
+        height=height,
+        scale=scale,
+        gap=gap,
+        variant_shape=variant_shape,
     )
     # How far down the page did we go?
     x, y = bottom_right(elements, height)

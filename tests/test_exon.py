@@ -145,11 +145,24 @@ class TestExon:
             WHEN the variants are drawn with a scale
             THEN the variant positions should be shifted to match
             """
-            variants = all._draw_variants(scale=1.2)
+            variants = all._draw_variants(scale=1.2, shape="bar")
 
-            assert variants[0].x == 12
-            assert variants[1].x == 36
-            assert variants[2].x == 96
+            assert variants[0].x == 12  # type: ignore
+            assert variants[1].x == 36  # type: ignore
+            assert variants[2].x == 96  # type: ignore
+
+        def test_draw_variants_scale_pin(self, all: Exon) -> None:
+            """
+            GIVEN an exon with variant
+            WHEN the variants are drawn with a scale, with shape pin
+            THEN the variant positions should be shifted to match
+            """
+            variants = all._draw_variants(scale=1.2, shape="pin")
+
+            # bar
+            assert variants[0].x == 12  # type: ignore
+            # circle, centered on the middle of the variant bar
+            assert variants[1].cx == 12.6  # type: ignore
 
         def test_draw_name_scale(self, all: Exon) -> None:
             """
@@ -806,7 +819,9 @@ class TestExon:
         exons = [Exon(100), Exon(200)]
         before = copy.deepcopy(exons)
         # Draw the exons, and discard the drawing
-        draw_exons(exons, height=20, scale=1, gap=10, width=1_000_000)
+        draw_exons(
+            exons, height=20, scale=1, gap=10, width=1_000_000, variant_shape="bar"
+        )
         assert exons == before
 
 
@@ -897,7 +912,7 @@ class TestVariant:
         GIVEN an exon with two variants
         WHEN the exon is drawn
         """
-        elements = with_variant.draw(height=20)
+        elements = with_variant.draw(height=20, variant_shape="bar")
         assert len(elements) == 3
 
         # The first variant is the second element
@@ -1088,6 +1103,7 @@ class TestDrawing:
             "height": 20,
             "scale": 1.0,
             "gap": 5,
+            "variantshape": "bar",
         }
         # Update the configuration with the invalid value from 'config'
         config.update(invalid)
