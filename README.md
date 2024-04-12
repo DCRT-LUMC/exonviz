@@ -27,7 +27,7 @@ Simply supply either a transcript (with version!), or a valid HGVS description
 to exonviz to generate a figure:
 
 ```bash
-exonviz "NM_003002.4:r.[274G>T;300del]" > SHDH.svg
+exonviz --transcript "NM_003002.4:r.[274G>T;300del]" > SHDH.svg
 ```
 ![Figure for SHDH](https://exonviz.readthedocs.io/en/latest/_images/SDHD.svg)
 
