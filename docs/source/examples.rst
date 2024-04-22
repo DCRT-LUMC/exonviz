@@ -32,14 +32,14 @@ Create a schematic visualisation of the DMD gene. Since this gene is very large,
 .. code-block:: bash
 
     # Write the exons in TSV format to dmd.tsv
-    exonviz --transcript DMD --exonnumber --dump-exons dmd.tsv
+    exonviz --transcript DMD --exonnumber --dump-exons DMD-schematic.tsv
     
     # Next, modify each exon to be 30 bp in your favorite text editor
     # Don't forget to also update the size of the coding region for each exon
     # (see the table below)
 
     # Finally, draw the exons from the TSV file
-    exonviz --exon-tsv dmd.tsv --width 750 --gap 0 > DMD-schematic.svg
+    exonviz --exon-tsv DMD-schematic.tsv --width 750 --gap 0 > DMD-schematic.svg
 
 
 .. image:: ../figures/DMD-schematic.svg
@@ -71,7 +71,7 @@ NDUFAF6 cryptic exon
 
 .. code-block:: bash
 
-   exonviz --exon-tsv NUDFAF6.tsv  > NDUFAF6.svg
+   exonviz --exon-tsv NDUFAF6.tsv  > NDUFAF6.svg
 
 .. image:: ../figures/NDUFAF6.svg
 
