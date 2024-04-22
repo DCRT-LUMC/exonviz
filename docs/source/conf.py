@@ -11,7 +11,7 @@ project = 'ExonViz'
 copyright = '2023, LUMC'
 author = 'Redmar van den Berg'
 
-release = '0.2.8'
+release = '0.2.9'
 version = '.'.join(release.split('.')[0:2])
 
 # -- General configuration

@@ -6,6 +6,11 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
+v0.2.9
+------
++ Add option to specify variant shape
++ Set default variant shape to pin
+
 v0.2.8
 ----------
 + Set the default gap size to zero
