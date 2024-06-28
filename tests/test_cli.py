@@ -52,8 +52,37 @@ TRIM = [
 def test_trim_variants(before: str, trimmed: str):
     """
     GIVEN an HGVS variant description
-    WHEN we trim the trim_variants
+    WHEN we trim the variants
     THEN we should get a description without variants
          while maintaining the same coordinate system
     """
     assert trim_variants(before) == trimmed
+
+ORDER = [
+    ("NM_003002.4:c.=", "NM_003002.4:c.="),
+    ("NM_003002.4:r.=", "NM_003002.4:r.="),
+    ("NM_003002.4:r.300del", "NM_003002.4:r.300del"),
+    ("NM_003002.4:r.[274G>T;300del]", "NM_003002.4:r.[274G>T;300del]"),
+    ("NM_003002.4:r.[300del;274G>T]", "NM_003002.4:r.[274G>T;300del]"),
+    ("NM_001378743.1(CYLD):c.-229G>C","NM_001378743.1(CYLD):c.-229G>C"),
+    ("NM_001378743.1(CYLD):c.[-229G>C;10del]","NM_001378743.1(CYLD):c.[-229G>C;10del]"),
+]
+
+@pytest.mark.parametrize("before, sorted", ORDER)
+def test_sort_variants(before: str, sorted: str):
+    """
+    GIVEN an HGVS variant description
+    WHEN we order the variants
+    THEN we should get a description with the variants in increasing order
+         while maintaining the same coordinate system
+    """
+    assert sort_variants(before) == sorted
+
+NOT_SUPPORTED = [
+        "NM_152416.3:c.[477_478ins[NC_000008.11:g.95036371_95036495;500del]",
+        "NM_152416.3:c.477_478ins[NC_000008.11:g.95036371_95036495]",
+]
+@pytest.mark.parametrize("hgvs", NOT_SUPPORTED)
+def test_unsupported_hgvs(hgvs: str) -> None:
+    with pytest.raises(ValueError):
+        sort_variants(hgvs)

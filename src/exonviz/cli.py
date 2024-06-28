@@ -8,6 +8,7 @@ import sys
 import gzip
 import pkg_resources
 from collections import defaultdict
+import re
 
 from typing import List, Dict, Any
 from .draw import draw_exons
@@ -52,8 +53,47 @@ def trim_variants(transcript: str) -> str:
 
 
 def sort_variants(transcript):
-    """Sort variants within an HGVS description"""
-    return transcript
+    """
+    Sort variants within an HGVS description
+
+    This is pretty nasty, we use regex to pull out the variants and sort them.
+
+    This will fail horribly on nested variants such as
+    NM_152416.3:c.[500del;477_478ins[NC_000008.11:g.95036371_95036495]]
+    """
+    # Try to guess if this is a nested variant description
+    count = 0
+    for char in transcript:
+        if char == "[":
+            count +=1
+    if count > 1:
+        raise ValueError(f"Cannot sort HGVS description: {transcript}")
+
+    # If there is only one opening bracket, there is nothing to sort
+    if count == 0:
+        return transcript
+
+    # Find the variants
+    start = transcript.find("[")
+    end = transcript.find("]")
+    variants = transcript[start+1:end]
+
+    # Patern to split the position from the description
+    pattern = r"^(-?\d+)(.*)$"
+    split_vars = list()
+    for var in variants.split(';'):
+        m = re.match(pattern, var)
+        if not m:
+            raise ValueError
+        pos = int(m.group(1))
+        desc = m.group(2)
+        split_vars.append((pos, desc))
+
+    # Sort by position
+    split_vars = sorted(split_vars, key=lambda x: x[0])
+    vars = ";".join(f"{x[0]}{x[1]}" for x in split_vars)
+
+    return transcript[:start]+f"[{vars}]"
 
 
 def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
@@ -74,7 +114,8 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     # Rewrite the HGVS description with variants to put the variants in order,
     # which they might not be
     ordered_variants = sort_variants(transcript)
-    exons = fetch_exons(transcript)
+
+    exons = fetch_exons(no_variants)
     variants = fetch_variants(ordered_variants)
 
     return build_exons(transcript, exons, variants, config)
