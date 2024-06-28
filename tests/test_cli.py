@@ -48,8 +48,9 @@ TRIM = [
     ("NM_003002.4:r.[300del;274G>T]", "NM_003002.4:r.="),
 ]
 
+
 @pytest.mark.parametrize("before, trimmed", TRIM)
-def test_trim_variants(before: str, trimmed: str):
+def test_trim_variants(before: str, trimmed: str) -> None:
     """
     GIVEN an HGVS variant description
     WHEN we trim the variants
@@ -58,35 +59,37 @@ def test_trim_variants(before: str, trimmed: str):
     """
     assert trim_variants(before) == trimmed
 
+
 ORDER = [
     ("NM_003002.4:c.=", "NM_003002.4:c.="),
     ("NM_003002.4:r.=", "NM_003002.4:r.="),
     ("NM_003002.4:r.300del", "NM_003002.4:r.300del"),
     ("NM_003002.4:r.[274G>T;300del]", "NM_003002.4:r.[274G>T;300del]"),
     ("NM_003002.4:r.[300del;274G>T]", "NM_003002.4:r.[274G>T;300del]"),
-    ("NM_001378743.1(CYLD):c.-229G>C","NM_001378743.1(CYLD):c.-229G>C"),
+    ("NM_001378743.1(CYLD):c.-229G>C", "NM_001378743.1(CYLD):c.-229G>C"),
     (
         "NM_001378743.1(CYLD):c.[-229G>C;10del]",
-        "NM_001378743.1(CYLD):c.[-229G>C;10del]"
+        "NM_001378743.1(CYLD):c.[-229G>C;10del]",
     ),
     (
         "NM_001378743.1(CYLD):c.[11del;-229G>C;10del]",
-        "NM_001378743.1(CYLD):c.[-229G>C;10del;11del]"
+        "NM_001378743.1(CYLD):c.[-229G>C;10del;11del]",
     ),
-    ("NM_001378743.1(CYLD):c.-204+132C>T","NM_001378743.1(CYLD):c.-204+132C>T"),
+    ("NM_001378743.1(CYLD):c.-204+132C>T", "NM_001378743.1(CYLD):c.-204+132C>T"),
     (
         "NM_001378743.1(CYLD):c.[10del;-204+132C>T]",
-        "NM_001378743.1(CYLD):c.[-204+132C>T;10del]"
+        "NM_001378743.1(CYLD):c.[-204+132C>T;10del]",
     ),
     ("NM_001378743.1(CYLD):c.*3000C>G", "NM_001378743.1(CYLD):c.*3000C>G"),
     (
         "NM_001378743.1(CYLD):c.[*3000C>G;10del]",
-        "NM_001378743.1(CYLD):c.[10del;*3000C>G]"
+        "NM_001378743.1(CYLD):c.[10del;*3000C>G]",
     ),
 ]
 
+
 @pytest.mark.parametrize("before, sorted", ORDER)
-def test_sort_variants(before: str, sorted: str):
+def test_sort_variants(before: str, sorted: str) -> None:
     """
     GIVEN an HGVS variant description
     WHEN we order the variants
@@ -95,10 +98,13 @@ def test_sort_variants(before: str, sorted: str):
     """
     assert sort_variants(before) == sorted
 
+
 NOT_SUPPORTED = [
-        "NM_152416.3:c.[477_478ins[NC_000008.11:g.95036371_95036495;500del]",
-        "NM_152416.3:c.477_478ins[NC_000008.11:g.95036371_95036495]",
+    "NM_152416.3:c.[477_478ins[NC_000008.11:g.95036371_95036495;500del]",
+    "NM_152416.3:c.477_478ins[NC_000008.11:g.95036371_95036495]",
 ]
+
+
 @pytest.mark.parametrize("hgvs", NOT_SUPPORTED)
 def test_unsupported_hgvs(hgvs: str) -> None:
     with pytest.raises(ValueError):

@@ -52,7 +52,7 @@ def trim_variants(transcript: str) -> str:
     return f"{id_}:{coordinate}.="
 
 
-def sort_variants(transcript):
+def sort_variants(transcript: str) -> str:
     """
     Sort variants within an HGVS description
 
@@ -65,7 +65,7 @@ def sort_variants(transcript):
     count = 0
     for char in transcript:
         if char == "[":
-            count +=1
+            count += 1
     if count > 1:
         raise ValueError(f"Cannot sort HGVS description: {transcript}")
 
@@ -76,18 +76,18 @@ def sort_variants(transcript):
     # Find the variants
     start = transcript.find("[")
     end = transcript.find("]")
-    variants = transcript[start+1:end]
+    variants = transcript[start + 1 : end]
 
     # Patern to split the position from the description
     pattern = r"^([-\*]?\d+)(.*)$"
     variant_position = list()
-    for var in variants.split(';'):
+    for var in variants.split(";"):
         m = re.match(pattern, var)
         if not m:
             raise ValueError
         pos = m.group(1)
         # The position is after the coding region
-        if pos.startswith('*'):
+        if pos.startswith("*"):
             pos = int(m.group(1)[1:])
         else:
             pos = int(m.group(1))
@@ -97,7 +97,7 @@ def sort_variants(transcript):
     sorted_variants = sorted(variant_position, key=lambda x: x[1])
     vars = ";".join(f"{x[0]}" for x in sorted_variants)
 
-    return transcript[:start]+f"[{vars}]"
+    return transcript[:start] + f"[{vars}]"
 
 
 def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
