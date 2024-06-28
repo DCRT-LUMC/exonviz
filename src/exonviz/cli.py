@@ -13,7 +13,7 @@ from typing import List, Dict, Any
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons
-from mutalyzer_hgvs_parser import parse
+from mutalyzer_hgvs_parser import parse, to_model
 
 from .draw import _config
 
@@ -43,6 +43,19 @@ def check_input(transcript: str) -> str:
     return var_transcript
 
 
+def trim_variants(transcript: str) -> str:
+    """Remove variants from an HGVS description"""
+    model = to_model(transcript)
+    id_ = model["reference"]["id"]
+    coordinate = model["coordinate_system"]
+    return f"{id_}:{coordinate}.="
+
+
+def sort_variants(transcript):
+    """Sort variants within an HGVS description"""
+    return transcript
+
+
 def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     """Make or fetch the requested exons"""
 
@@ -55,8 +68,14 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
         # Does the transcript format make sense?
         transcript = check_input(transcript)
 
+    # Make the HGVS description without variants for the normalizer
+    no_variants = trim_variants(transcript)
+
+    # Rewrite the HGVS description with variants to put the variants in order,
+    # which they might not be
+    ordered_variants = sort_variants(transcript)
     exons = fetch_exons(transcript)
-    variants = fetch_variants(transcript)
+    variants = fetch_variants(ordered_variants)
 
     return build_exons(transcript, exons, variants, config)
 

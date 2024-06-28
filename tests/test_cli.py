@@ -1,6 +1,6 @@
 import pytest
 
-from exonviz.cli import check_input
+from exonviz.cli import check_input, trim_variants, sort_variants
 
 
 # A list of valid inputs for the tool
@@ -39,3 +39,21 @@ def test_check_invalid_input(input: str) -> None:
     """Raise an error when we cannot figure out the HGVS"""
     with pytest.raises(Exception):
         check_input(input)
+
+
+TRIM = [
+    ("NM_003002.4:c.=", "NM_003002.4:c.="),
+    ("NM_003002.4:r.=", "NM_003002.4:r.="),
+    ("NM_003002.4:r.300del", "NM_003002.4:r.="),
+    ("NM_003002.4:r.[300del;274G>T]", "NM_003002.4:r.="),
+]
+
+@pytest.mark.parametrize("before, trimmed", TRIM)
+def test_trim_variants(before: str, trimmed: str):
+    """
+    GIVEN an HGVS variant description
+    WHEN we trim the trim_variants
+    THEN we should get a description without variants
+         while maintaining the same coordinate system
+    """
+    assert trim_variants(before) == trimmed
