@@ -79,19 +79,23 @@ def sort_variants(transcript):
     variants = transcript[start+1:end]
 
     # Patern to split the position from the description
-    pattern = r"^(-?\d+)(.*)$"
-    split_vars = list()
+    pattern = r"^([-\*]?\d+)(.*)$"
+    variant_position = list()
     for var in variants.split(';'):
         m = re.match(pattern, var)
         if not m:
             raise ValueError
-        pos = int(m.group(1))
-        desc = m.group(2)
-        split_vars.append((pos, desc))
+        pos = m.group(1)
+        # The position is after the coding region
+        if pos.startswith('*'):
+            pos = int(m.group(1)[1:])
+        else:
+            pos = int(m.group(1))
+        variant_position.append((var, pos))
 
     # Sort by position
-    split_vars = sorted(split_vars, key=lambda x: x[0])
-    vars = ";".join(f"{x[0]}{x[1]}" for x in split_vars)
+    sorted_variants = sorted(variant_position, key=lambda x: x[1])
+    vars = ";".join(f"{x[0]}" for x in sorted_variants)
 
     return transcript[:start]+f"[{vars}]"
 
