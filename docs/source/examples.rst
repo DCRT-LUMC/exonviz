@@ -89,13 +89,13 @@ variants for CYLD transcript `NM_001378743.1` have been visualized using ExonViz
 .. image:: ../figures/CYLD.svg
 
 How to create the figure
-========================
+^^^^^^^^^^^^^^^^^^^^^^^^
 Generating a figure such as this is fairly involved, since it requires
 gathering all variants for a given transcript, and then modifying them so they
 are displayed per category.
 
 Gather the variants
--------------------
+^^^^^^^^^^^^^^^^^^^
 The following should be repeated for every variant category of interest, we will use the category `Likely Pathogenic` as an example. At the time of writing, this gives the following HGVS description:
 
 `NM_001378743.1(CYLD):c.[454_455del;1111del;2040dup;2282_2283del;2616del;2723dup]`.
@@ -108,7 +108,7 @@ Note that intronic variants such as `1684+2T>C` should not be included, since th
 
 
 Export the variants
-===================
+^^^^^^^^^^^^^^^^^^^
 Use ExonViz to export the exons and variants to TSV files to maninpulate
 
 .. code-block:: bash
@@ -120,7 +120,7 @@ Use ExonViz to export the exons and variants to TSV files to maninpulate
   :file: ../figures/CYLD-example.tsv
 
 Update the variants
-===================
+^^^^^^^^^^^^^^^^^^^
 Open the `likely-pathogenic.tsv` file in a spreadsheet program, and update the **name** column to contain `(Likely) Pathognic`, and the **color** option to `red` for each variant.
 
 .. csv-table:: Updated likely pathogenic variants for CYLD
@@ -128,7 +128,7 @@ Open the `likely-pathogenic.tsv` file in a spreadsheet program, and update the *
   :file: ../figures/CYLD-example-update.tsv
 
 Draw the figure with ExonViz
-============================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Repeat the above steps for each category from ClinVar you are interested in. When you are satisfied with the variants, you can merge all categories into a single file. You can then draw CYLD from the tsv files you have created. ExonViz will recognise that there are multiple variants with the same `name` and `color`, and will only include each combination in the legend only once.
 
 .. code-block:: bash
