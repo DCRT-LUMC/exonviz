@@ -54,7 +54,7 @@ def fetch_variants(transcript: str) -> Dict[str, Any]:
     try:
         response = urllib.request.urlopen(url)
     except HTTPError as e:
-        msg = f"Fetching '{url}' returned {e}"
+        msg = parse_error_payload(e)
         raise RuntimeError(msg)
     else:
         js: Dict[str, Any] = json.loads(response.read())
