@@ -7,7 +7,7 @@ Changelog
 .. that users understand how the changes affect the new version.
 
 v0.2.12-dev
--------
+-----------
 + Correct HGVS notation for RNA variants
 
 v0.2.11
