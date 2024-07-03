@@ -163,9 +163,9 @@ variants = [
     ),
     (
         (100, 110),
-        [{"start": 105, "description": "274G>T"}],
+        [{"start": 105, "description": "274g>u"}],
         "r",
-        [Variant(5, "r.274G>T", color="red")],
+        [Variant(5, "r.274g>u", color="red")],
     ),
 ]
 

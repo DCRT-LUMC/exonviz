@@ -6,6 +6,10 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
+v0.2.12-dev
+-------
++ Correct HGVS notation for RNA variants
+
 v0.2.11
 -------
 + Resolve mutalyzer API timeout issue for large number of variants
