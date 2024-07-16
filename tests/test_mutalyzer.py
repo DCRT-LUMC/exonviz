@@ -34,18 +34,18 @@ mutalyzer = {
 
 
 mut_positions = [
-    (["1", "268"], False, (0, 268)),
-    (["269", "330"], False, (268, 330)),
-    (["11284", "13992"], False, (11283, 13992)),
-    (["7748", "1"], True, (0, 7748)),
+    (["1", "268"], (0, 268)),
+    (["269", "330"], (268, 330)),
+    (["11284", "13992"], (11283, 13992)),
+    (["7748", "1"], (0, 7748)),
 ]
 
 
-@pytest.mark.parametrize("positions, reverse, expected", mut_positions)
+@pytest.mark.parametrize("positions, expected", mut_positions)
 def test_convert_mutalyzer_positions(
-    positions: List[str], reverse: bool, expected: Tuple[int, int]
+    positions: List[str], expected: Tuple[int, int]
 ) -> None:
-    assert convert_mutalyzer_range(positions[0], positions[1], reverse) == expected
+    assert convert_mutalyzer_range(positions[0], positions[1]) == expected
 
 
 def test_is_reverse() -> None:
@@ -77,7 +77,7 @@ def test_convert_mutalyzer_positions_reverse() -> None:
         (462186, 462349),
     ]
 
-    assert convert_exon_positions(positions, reverse=True) == expected
+    assert convert_exon_positions(positions) == expected
 
 
 coding = [

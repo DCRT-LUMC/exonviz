@@ -61,16 +61,13 @@ def fetch_variants(transcript: str) -> Dict[str, Any]:
     return js
 
 
-def convert_mutalyzer_range(start: str, end: str, reverse: bool) -> Tuple[int, int]:
+def convert_mutalyzer_range(start: str, end: str) -> Tuple[int, int]:
     """Convert a mutalyzer range to 0-based coordinates"""
-    crossmap = Genomic()
 
-    g_start = crossmap.genomic_to_coordinate(int(start))
-    g_end = crossmap.genomic_to_coordinate(int(end))
-    if reverse:
-        return g_end, g_start + 1
+    if is_reverse(start, end):
+        return int(end) - 1, int(start)
     else:
-        return g_start, g_end + 1
+        return int(start) - 1, int(end)
 
 
 def is_reverse(start: str, end: str) -> bool:
@@ -78,17 +75,16 @@ def is_reverse(start: str, end: str) -> bool:
     return int(start) > int(end)
 
 
-def convert_exon_positions(
-    positions: List[List[str]], reverse: bool
-) -> List[Tuple[int, int]]:
+def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
     """Convert exon positions from Mutalyzer to a list of Ranges
 
     This function also accounts for reverse transcripts
     """
+    reverse = int(positions[0][0]) > int(positions[0][1])
     if reverse:
-        return [convert_mutalyzer_range(x[0], x[1], reverse) for x in positions[::-1]]
+        return [convert_mutalyzer_range(x[0], x[1]) for x in positions[::-1]]
     else:
-        return [convert_mutalyzer_range(x[0], x[1], reverse) for x in positions]
+        return [convert_mutalyzer_range(x[0], x[1]) for x in positions]
 
 
 def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
@@ -113,7 +109,7 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
     """Determine if a given variant falls in an exon"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    x = NonCoding(convert_exon_positions(exons), reverse)
 
     position, exon_offset, transcript_offset = x.coordinate_to_noncoding(
         variant["start"]
@@ -188,7 +184,7 @@ def exons_to_ranges(exons: List[List[str]], cds: List[str]) -> List[Tuple[int, i
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    x = NonCoding(convert_exon_positions(exons), reverse)
     g = Genomic()
 
     output_exons = list()
@@ -206,7 +202,7 @@ def cds_to_ranges(exons: List[List[str]], cds: List[str]) -> Tuple[int, int]:
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(cds[0], cds[1])
 
-    x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    x = NonCoding(convert_exon_positions(exons), reverse)
     g = Genomic()
 
     cds_start = x.coordinate_to_noncoding(g.genomic_to_coordinate(int(cds[0])))[0] - 1
@@ -221,7 +217,7 @@ def variant_to_ranges(
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons, reverse), reverse)
+    x = NonCoding(convert_exon_positions(exons), reverse)
     g = Genomic()
 
     new_start = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_start)[0])
