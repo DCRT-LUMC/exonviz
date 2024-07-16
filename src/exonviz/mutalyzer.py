@@ -80,11 +80,10 @@ def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
 
     This function also accounts for reverse transcripts
     """
-    reverse = int(positions[0][0]) > int(positions[0][1])
-    if reverse:
-        return [convert_mutalyzer_range(x[0], x[1]) for x in positions[::-1]]
+    if is_reverse(*positions[0]):
+        return [convert_mutalyzer_range(*x) for x in positions[::-1]]
     else:
-        return [convert_mutalyzer_range(x[0], x[1]) for x in positions]
+        return [convert_mutalyzer_range(*x) for x in positions]
 
 
 def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
