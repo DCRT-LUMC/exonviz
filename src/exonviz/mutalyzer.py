@@ -330,7 +330,7 @@ def pos_to_tuple(position: str) -> Tuple[int, int, int]:
         c_pos = int(position)
 
     # If the position has a intronic component
-    if (m := re.match(r"^(-?\d+)([-\+]\d+)", position)):
+    if m := re.match(r"^(-?\d+)([-\+]\d+)", position):
         c_pos = int(m.group(1))
         intronic = int(m.group(2))
 
