@@ -309,35 +309,34 @@ def build_exons(
 
 
 def pos_to_tuple(position: str) -> Tuple[int, ...]:
-    """Convert a HGVS position to a tuple of positions"""
+    """Convert a HGVS position to a tuple of three positions
+    The meaning of the three positions is as follows
+
+    The first int is 1 if after the CDS end, and 0 otherwise
+    The second int is the c. position, e.g. the 'normal' hgvs position
+    The third position is the intronic position, or 0
+    """
+
+    # Initialise the 'special' positions
+    after_cds = 0
+    intronic = 0
+
     # If we are after the coding region
     if position.startswith("*"):
-        after_cds = True
+        after_cds = 1
         position = position[1:]
-    else:
-        after_cds = False
 
-    # Hopefully, the position is just an int
+    # If the position is a 'regular' c. position
     if re.match(r"^-?\d+$", position):
-        if after_cds:
-            return cast(int, math.inf), int(position)
-        else:
-            return int(position),
+        c_pos = int(position)
 
-    # intronic variant
+    # If the position has a intronic component
     if (m := re.match(r"^(-?\d+)([-\+]\d+)", position)):
-        if after_cds:
-            return cast(int, math.inf), int(m.group(1)), int(m.group(2))
-        else:
-            return int(m.group(1)), int(m.group(2))
+        c_pos = int(m.group(1))
+        intronic = int(m.group(2))
+
+    return after_cds, c_pos, intronic
 
 
 def less_than(a: str, b: str) -> bool:
-    def is_int(x: str) -> bool:
-        return re.match(r"^-?\d+$", x)
-
-    def is_intronic(x: str) -> bool:
-        pass
-    # If the positions are simple ints
-    if is_int(a) and is_int(b):
-        return int(a) < int(b)
+    return pos_to_tuple(a) < pos_to_tuple(b)
