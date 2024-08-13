@@ -4,7 +4,6 @@ from urllib.error import HTTPError
 import json
 
 import re
-import math
 
 from mutalyzer_crossmapper import NonCoding, Genomic
 from mutalyzer_hgvs_parser import to_model
@@ -308,7 +307,7 @@ def build_exons(
     return Exons
 
 
-def pos_to_tuple(position: str) -> Tuple[int, ...]:
+def pos_to_tuple(position: str) -> Tuple[int, int, int]:
     """Convert a HGVS position to a tuple of three positions
     The meaning of the three positions is as follows
 

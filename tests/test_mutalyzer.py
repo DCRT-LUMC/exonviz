@@ -3,7 +3,6 @@ import io
 import json
 import pytest
 import itertools
-from math import inf
 from exonviz.mutalyzer import (
     convert_exon_positions,
     convert_mutalyzer_range,
@@ -428,11 +427,19 @@ POSITIONS = [
         "-5-1",
         "-1",
         "1",
+        "5",
         "10+1",
         "10+2",
         "11-2",
         "11-1",
-        "11"
+        "11",
+        "*1",
+        "*5",
+        "*5+1",
+        "*5+2",
+        "*6-2",
+        "*6-1",
+        "*6"
 ]
 
 # Pairs where a > b
