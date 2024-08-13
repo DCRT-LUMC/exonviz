@@ -2,6 +2,8 @@ from urllib.request import HTTPError
 import io
 import json
 import pytest
+import itertools
+from math import inf
 from exonviz.mutalyzer import (
     convert_exon_positions,
     convert_mutalyzer_range,
@@ -18,6 +20,8 @@ from exonviz.mutalyzer import (
     inside,
     Range,
     parse_error_payload,
+    less_than,
+    pos_to_tuple
 )
 from exonviz.exon import Coding, Variant
 
@@ -397,3 +401,41 @@ def test_parse_error_payload(
     E = HTTPError("url", 400, msg=error, hdrs=HTTPMessage(), fp=fp_io)
 
     assert parse_error_payload(E) == expected
+
+
+TO_TUP = [
+        ("-20", (-20,)),
+        ("-10+1", (-10, 1)),
+        ("10+1", (10, 1)),
+        ("11-1", (11, -1)),
+        ("*1", (inf, 1)),
+        ("*5+1", (inf, 5, 1)),
+        ("*6-1", (inf, 6, -1)),
+]
+
+
+@pytest.mark.parametrize("pos, expected", TO_TUP)
+def test_pos_to_tuple(pos: str, expected: Tuple[int, ...]) -> None:
+    assert pos_to_tuple(pos) == expected
+
+# Sorted list of HGVS positions, in increasing position
+POSITIONS = [
+        "-20",
+        "-10",
+        #"-10+1",
+]
+
+# Pairs where a > b
+GREATER = list(itertools.combinations(POSITIONS, 2))
+# Pairs where a < b
+SMALLER = list(itertools.combinations(POSITIONS[::-1], 2))
+
+
+@pytest.mark.parametrize("a, b", GREATER)
+def test_sort_positions_greater(a: str, b: str) -> None:
+    assert less_than(a, b)
+
+
+@pytest.mark.parametrize("a, b", SMALLER)
+def test_sort_positions_smaller(a: str, b: str) -> None:
+    assert not less_than(a, b)

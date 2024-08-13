@@ -3,6 +3,9 @@ import urllib.request
 from urllib.error import HTTPError
 import json
 
+import re
+import math
+
 from mutalyzer_crossmapper import NonCoding, Genomic
 from mutalyzer_hgvs_parser import to_model
 from .exon import Exon, Coding, Variant
@@ -303,3 +306,38 @@ def build_exons(
     Exons = Exons[first_exon:last_exon]
 
     return Exons
+
+
+def pos_to_tuple(position: str) -> Tuple[int, ...]:
+    """Convert a HGVS position to a tuple of positions"""
+    # If we are after the coding region
+    if position.startswith("*"):
+        after_cds = True
+        position = position[1:]
+    else:
+        after_cds = False
+
+    # Hopefully, the position is just an int
+    if re.match(r"^-?\d+$", position):
+        if after_cds:
+            return cast(int, math.inf), int(position)
+        else:
+            return int(position),
+
+    # intronic variant
+    if (m := re.match(r"^(-?\d+)([-\+]\d+)", position)):
+        if after_cds:
+            return cast(int, math.inf), int(m.group(1)), int(m.group(2))
+        else:
+            return int(m.group(1)), int(m.group(2))
+
+
+def less_than(a: str, b: str) -> bool:
+    def is_int(x: str) -> bool:
+        return re.match(r"^-?\d+$", x)
+
+    def is_intronic(x: str) -> bool:
+        pass
+    # If the positions are simple ints
+    if is_int(a) and is_int(b):
+        return int(a) < int(b)
