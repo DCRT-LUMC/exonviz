@@ -9,6 +9,8 @@ Changelog
 v0.2.12-dev
 -----------
 + Correct HGVS notation for RNA variants
++ Fix a bug when sorting HGVS variants after the CDS ends. This would lead to
+  incorrect legend colors
 
 v0.2.11
 -------

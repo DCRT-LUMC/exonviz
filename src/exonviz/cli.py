@@ -12,7 +12,7 @@ import re
 
 from functools import cmp_to_key
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, cast
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons, less_than
@@ -96,7 +96,9 @@ def sort_variants(transcript: str) -> str:
         lookup[pos] = var
 
     # Sort by position
-    compare = cmp_to_key(lambda a, b: -1 if less_than(a, b) else 1)
+    compare = cmp_to_key(
+        lambda a, b: -1 if less_than(cast(str, a), cast(str, b)) else 1
+    )
     sorted_positions = sorted(lookup.keys(), key=compare)
     vars = ";".join(f"{lookup[x]}" for x in sorted_positions)
 
