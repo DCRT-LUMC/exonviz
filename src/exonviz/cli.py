@@ -10,10 +10,12 @@ import pkg_resources
 from collections import defaultdict
 import re
 
+from functools import cmp_to_key
+
 from typing import List, Dict, Any
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
-from .mutalyzer import fetch_exons, fetch_variants, build_exons
+from .mutalyzer import fetch_exons, fetch_variants, build_exons, less_than
 from mutalyzer_hgvs_parser import parse, to_model
 
 from .draw import _config
@@ -78,24 +80,25 @@ def sort_variants(transcript: str) -> str:
     end = transcript.find("]")
     variants = transcript[start + 1 : end]
 
-    # Patern to split the position from the description
+    # Store position -> variant mappings to reconstruct the description
+    lookup = dict()
+
+    # Pattern to split of the position from the rest of the description
     pattern = r"^([-\*]?\d+)(.*)$"
-    variant_position = list()
+
+    # Split of the position from the variant description, since we can sort
+    # the positions
     for var in variants.split(";"):
         m = re.match(pattern, var)
         if not m:
-            raise ValueError
+            raise ValueError(f"Unhandled variant {var}")
         pos = m.group(1)
-        # The position is after the coding region
-        if pos.startswith("*"):
-            pos = int(m.group(1)[1:])
-        else:
-            pos = int(m.group(1))
-        variant_position.append((var, pos))
+        lookup[pos] = var
 
     # Sort by position
-    sorted_variants = sorted(variant_position, key=lambda x: x[1])
-    vars = ";".join(f"{x[0]}" for x in sorted_variants)
+    compare = cmp_to_key(lambda a, b: -1 if less_than(a, b) else 1)
+    sorted_positions = sorted(lookup.keys(), key=compare)
+    vars = ";".join(f"{lookup[x]}" for x in sorted_positions)
 
     return transcript[:start] + f"[{vars}]"
 
