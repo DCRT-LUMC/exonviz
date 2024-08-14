@@ -469,6 +469,8 @@ VARS = [
     ("NC_123:g.*1281_*1283A[13]", ["*1281_*1283A[13]"]),
     ("NC_123:g.[100del;*1281_*1283A[13]]", ["100del", "*1281_*1283A[13]"]),
 ]
+
+
 @pytest.mark.parametrize("hgvs, expected", VARS)
-def test_get_variants(hgvs:str, expected: List[str]) -> None:
+def test_get_variants(hgvs: str, expected: List[str]) -> None:
     assert get_variants(hgvs) == expected
