@@ -339,3 +339,20 @@ def pos_to_tuple(position: str) -> Tuple[int, int, int]:
 
 def less_than(a: str, b: str) -> bool:
     return pos_to_tuple(a) < pos_to_tuple(b)
+
+
+def get_variants(hgvs: str) -> List[str]:
+    """Get a list of variants from a HGVS description"""
+    reference, description = hgvs.split(':')
+    description=description[2:]
+
+    # If there are no variants
+    if description == '=':
+        return list()
+
+    # If there are multiple variants
+    if description.startswith('['):
+        return description[1:-1].split(';')
+    # If there is a single variant
+    else:
+        return [description]

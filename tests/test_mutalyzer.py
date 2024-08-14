@@ -21,6 +21,7 @@ from exonviz.mutalyzer import (
     parse_error_payload,
     less_than,
     pos_to_tuple,
+    get_variants,
 )
 from exonviz.exon import Coding, Variant
 
@@ -457,3 +458,17 @@ def test_sort_positions_greater(a: str, b: str) -> None:
 @pytest.mark.parametrize("a, b", SMALLER)
 def test_sort_positions_smaller(a: str, b: str) -> None:
     assert not less_than(a, b)
+
+
+VARS = [
+    ("NC_123:c.=", []),
+    ("NC_123:c.100A>T", ["100A>T"]),
+    ("NC_123:c.100_200delinsATCGT", ["100_200delinsATCGT"]),
+    ("NC_123:c.[1del;2A>T]", ["1del", "2A>T"]),
+    ("NC_123:c.(10_12)insN", ["(10_12)insN"]),
+    ("NC_123:g.*1281_*1283A[13]", ["*1281_*1283A[13]"]),
+    ("NC_123:g.[100del;*1281_*1283A[13]]", ["100del", "*1281_*1283A[13]"]),
+]
+@pytest.mark.parametrize("hgvs, expected", VARS)
+def test_get_variants(hgvs:str, expected: List[str]) -> None:
+    assert get_variants(hgvs) == expected
