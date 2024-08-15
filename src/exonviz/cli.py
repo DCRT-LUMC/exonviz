@@ -12,6 +12,11 @@ import re
 
 from functools import cmp_to_key
 
+import logging
+
+logging.basicConfig()
+log = logging.getLogger(__name__)
+
 from typing import List, Dict, Any, cast
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
@@ -129,10 +134,15 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     # which they might not be
     ordered_variants = sort_variants(transcript)
 
-    exons = fetch_exons(no_variants)
+    exon_payload = fetch_exons(no_variants)
     variants = fetch_variants(ordered_variants)
 
-    return build_exons(transcript, exons, variants, config)
+    exons, dropped = build_exons(transcript, exon_payload, variants, config)
+
+    for variant in dropped:
+        log.warning(f"Dropped variant {variant}, which falls outside the exons")
+
+    return exons
 
 
 def make_option_parser() -> argparse.ArgumentParser:

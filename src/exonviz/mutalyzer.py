@@ -146,9 +146,6 @@ def parse_view_variants(
     for var in variants:
         # Exclude variants that do not fall inside an exon
         if var["description"] in outside:
-            dsc = var["description"]
-            msg = f"Dropped variant {dsc}, which falls outside the exons"
-            log.warn(msg)
             continue
         var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
 
@@ -244,7 +241,7 @@ def build_exons(
     mutalyzer: Dict[str, Any],
     view_variants: Dict[str, Any],
     config: Dict[str, Any],
-) -> List[Exon]:
+) -> Tuple[List[Exon], List[str]]:
     """Build Exons from the mutalyzer payload"""
     Exons: List[Exon] = list()
 
@@ -304,7 +301,21 @@ def build_exons(
     last_exon = min(config["lastexon"], len(Exons))
     Exons = Exons[first_exon:last_exon]
 
-    return Exons
+    # Variants that ended up in the exons
+    exon_vars = list()
+    for e in Exons:
+        for v in e.variants:
+            # Remember to cut off the c. or r.
+            exon_vars.append(v.name[2:])
+
+    # Determine which variants have been dropped
+    dropped = list()
+
+    for variant in get_variants(transcript):
+        if variant not in exon_vars:
+            dropped.append(variant)
+
+    return Exons, dropped
 
 
 def pos_to_tuple(position: str) -> Tuple[int, int, int]:
