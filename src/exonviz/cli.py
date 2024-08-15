@@ -50,8 +50,13 @@ def trim_variants(transcript: str) -> str:
     """Remove variants from an HGVS description"""
     model = to_model(transcript)
     id_ = model["reference"]["id"]
+    if "selector" in model["reference"]:
+        selector = model["reference"]["selector"]["id"]
+        selector = f"({selector})"
+    else:
+        selector = ""
     coordinate = model["coordinate_system"]
-    return f"{id_}:{coordinate}.="
+    return f"{id_}{selector}:{coordinate}.="
 
 
 def sort_variants(transcript: str) -> str:
