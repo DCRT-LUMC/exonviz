@@ -5,6 +5,9 @@ Changelog
 
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
+v0.2.13
+-----------
++ Fix a bug where variants are reported outside the exons incorrectly
 
 v0.2.12
 -----------
