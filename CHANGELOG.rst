@@ -9,6 +9,7 @@ Changelog
 v0.2.14-dev
 -----------
 + Use color blind friendly colors for the CYLD figure
++ Strip trailing spaces from HGVS input
 
 v0.2.13
 -------

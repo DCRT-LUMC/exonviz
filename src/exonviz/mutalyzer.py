@@ -311,7 +311,9 @@ def build_exons(
     # Determine which variants have been dropped
     dropped = list()
 
-    for variant in get_variants(transcript):
+    hgvs_variants = get_variants(transcript)
+
+    for variant in hgvs_variants:
         if variant not in exon_vars:
             dropped.append(variant)
 
@@ -355,7 +357,7 @@ def less_than(a: str, b: str) -> bool:
 def get_variants(hgvs: str) -> List[str]:
     """Get a list of variants from a HGVS description"""
     reference, description = hgvs.split(":")
-    description = description[2:]
+    description = description[2:].strip(" ")
 
     # If there are no variants
     if description == "=":
