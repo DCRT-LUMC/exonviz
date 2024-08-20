@@ -82,9 +82,12 @@ NDUFAF6 cryptic exon
 
 CYLD
 ----
-`CYLD` is a tumor supressore gene, which has a clear mutational hotspot in exon
+`CYLD` is a tumor suppressor gene, which has a clear mutational hotspot in exon
 16. In the figure below, all `ClinVar <https://www.ncbi.nlm.nih.gov/clinvar/?term=NM_001378743.1>`_
-variants for CYLD transcript `NM_001378743.1` have been visualized using ExonViz.
+variants for CYLD transcript `NM_001378743.1` have been visualized using
+ExonViz. This figure uses colors that are clearly distinguishable for color
+blind people, thanks to `this useful website
+<https://davidmathlogic.com/colorblind>`_.
 
 .. image:: ../figures/CYLD.svg
 
@@ -121,7 +124,7 @@ Use ExonViz to export the exons and variants to TSV files to maninpulate
 
 Update the variants
 ^^^^^^^^^^^^^^^^^^^
-Open the `likely-pathogenic.tsv` file in a spreadsheet program, and update the **name** column to contain `(Likely) Pathognic`, and the **color** option to `red` for each variant.
+Open the `likely-pathogenic.tsv` file in a spreadsheet program, and update the **name** column to contain `(Likely) Pathognic`, and the **color** option to `#882255` for each variant.
 
 .. csv-table:: Updated likely pathogenic variants for CYLD
   :delim: tab
