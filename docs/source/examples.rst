@@ -10,7 +10,7 @@ Visualise two variants in the SDHD gene
 
 .. code-block:: console
 
-   exonviz --transcript "NM_003002.4:r.[274G>T;300del]" --exonnumber > SDHD.svg
+   exonviz --transcript "NM_003002.4:r.[274g>u;300del]" --exonnumber > SDHD.svg
 
 .. image:: ../figures/SDHD.svg
 
