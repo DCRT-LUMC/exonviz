@@ -10,6 +10,7 @@ v0.2.14-dev
 -----------
 + Use color blind friendly colors for the CYLD figure
 + Strip trailing spaces from HGVS input
++ Always use the first MANE Select transcript
 
 v0.2.13
 -------

@@ -18,6 +18,11 @@ using Mutalyzer, and all relevant information such as coding region and exon
 sizes are extracted. When using the command line version of ExonViz, it is also
 possible to specify custom transcripts.
 
+If the user specifies a gene name, the corresponding `MANE Select
+<https://www.ncbi.nlm.nih.gov/refseq/MANE/>`_ transcript will automatically be
+selected. If there are multiple MANE Select transcripts defined for a gene, the
+first transcript will be used. ExonViz uses MANE Select release 1.2.
+
 To indicate the difference between the coding and non-coding regions of the
 transcript, the non-coding regions is drawn at half the hight of the coding
 region.

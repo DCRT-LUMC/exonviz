@@ -32,7 +32,10 @@ def get_MANE() -> Dict[str, str]:
         mane = dict()
         for line in fin:
             gene, transcript = line.strip("\n").split("\t")
-            mane[gene] = transcript
+            # Some genes have multiple transcripts. If that is the case, we use
+            # the first defined transcript
+            if gene not in mane:
+                mane[gene] = transcript
     return mane
 
 
@@ -121,11 +124,8 @@ def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     # If the transcript is actually the gene name, substitute the MANE transcript
     MANE = get_MANE()
     transcript = MANE.get(transcript, transcript)
-    if transcript in MANE:
-        transcript = MANE[transcript]
-    else:
-        # Does the transcript format make sense?
-        transcript = check_input(transcript)
+    # Does the transcript format make sense?
+    transcript = check_input(transcript)
 
     # Make the HGVS description without variants for the normalizer
     no_variants = trim_variants(transcript)
