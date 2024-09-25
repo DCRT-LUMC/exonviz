@@ -28,7 +28,7 @@ identifiers:
     value: 10.1101/2024.09.18.24313945
 repository-code: 'https://github.com/DCRT-LUMC/exonviz/'
 abstract: >-
-  Sequali is a QC tool that generates useful graphs for both short and
-  long-read data. This includes adapter contamination searching and making an
-  estimate of the amount of duplication.
+  ExonViz is an application and website that creates biologically accurate transcript figures, including features such as coding regions, genetic variants and exon reading frames. Transcript definitions are automatically retrieved from Ensembl and RefSeq. We illustrate the full functionality of ExonViz by generating a figure for all ClinVar variants reported in *CYLD*.
+  ExonViz is available online via [Dutch Center for RNA Therapeutics](https://exonviz.rnatherapy.nl) and can be installed locally via [PyPI](https://pypi.org/project/exonviz/).
+  Extensive documentation on ExonViz is available on [Read the Docs](https://exonviz.readthedocs.io/en/latest/).
 license: AGPL-3.0
