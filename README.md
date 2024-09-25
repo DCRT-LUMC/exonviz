@@ -8,7 +8,7 @@
 [![Commits since latest release](https://img.shields.io/github/commits-since/DCRT-LUMC/exonviz/latest)](https://img.shields.io/github/commits-since/DCRT-LUMC/exonviz/latest)
 
 # Exonviz
-ExonViz is a simple tool to generate and draw transcripts that include coding
+ExonViz is a simple tool to draw transcripts that include coding
 and non-coding regions. All exons are to scale and the reading frames of the
 exons are visible. Single or multiple variants along the transcript can be
 drawn and will automatically be shown in the correct location.
@@ -36,3 +36,11 @@ The documentation for ExonViz is available on
 [Readthedocs](https://exonviz.readthedocs.org), including some
 [examples](https://exonviz.readthedocs.io/en/latest/examples.html) of what is
 possible using the command line version of ExonViz.
+
+
+## Citation
+Please cite our [pre-print](https://www.medrxiv.org/content/10.1101/2024.09.18.24313945v1) if you use ExonViz:
+
+>ExonViz: A website and Python package to visualize transcripts and genetic variants
+>Redmar R. van den Berg, Marlen C. Lauffer, Jeroen F.J. Laros
+>medRxiv 2024.09.18.24313945; doi: https://doi.org/10.1101/2024.09.18.24313945

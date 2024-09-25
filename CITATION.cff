@@ -1,0 +1,34 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: ExonViz
+message: >-
+  ExonViz is a simple tool to draw transcripts that include coding
+  and non-coding regions. All exons are to scale and the reading frames of the
+  exons are visible. Single or multiple variants along the transcript can be
+  drawn and will automatically be shown in the correct location.
+type: software
+authors:
+  - given-names: Redmar R.
+    family-names: van den Berg
+    email: RedmarvandenBerg@lumc.nl
+    affiliation: Leids Universitair Medisch Centrum
+    orcid: 'https://orcid.org/0000-0002-6590-9499'
+  - given-names: Jeroen J.F.J.
+    family-names: Laros
+    affiliation: Leids Universitair Medisch Centrum
+    orcid: 'https://orcid.org/0000-0002-8715-7371'
+  - given-names: Marlen C.
+    family-names: Lauffer
+    affiliation: Leids Universitair Medisch Centrum
+    orcid: 'https://orcid.org/0000-0003-1607-0428'
+identifiers:
+  - type: doi
+    value: 10.1101/2024.09.18.24313945
+repository-code: 'https://github.com/DCRT-LUMC/exonviz/'
+abstract: >-
+  Sequali is a QC tool that generates useful graphs for both short and
+  long-read data. This includes adapter contamination searching and making an
+  estimate of the amount of duplication.
+license: AGPL-3.0
