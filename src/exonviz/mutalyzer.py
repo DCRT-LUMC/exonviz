@@ -8,7 +8,7 @@ import re
 from mutalyzer_crossmapper import NonCoding, Genomic
 from mutalyzer_hgvs_parser import to_model
 from .exon import Exon, Coding, Variant
-from GTGT.range import intersect
+from gtgt.range import intersect
 
 import logging
 

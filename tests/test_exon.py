@@ -16,7 +16,7 @@ from exonviz.exon import (
 )
 from exonviz.draw import draw_exons as draw_exons_config
 
-from GTGT.range import Range
+from gtgt.range import Range
 from svg import Rect, Text, Polygon, Style
 
 

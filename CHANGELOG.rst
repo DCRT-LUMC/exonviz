@@ -6,8 +6,9 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
-v0.2.14-dev
------------
+v0.2.14
+-------
++ Update to gtgt 0.2.1
 + Use color blind friendly colors for the CYLD figure
 + Strip trailing spaces from HGVS input
 + Always use the first MANE Select transcript

@@ -24,7 +24,7 @@ else:
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style, Circle
 
-from GTGT.range import intersect, Range
+from gtgt.range import intersect, Range
 
 import logging
 
