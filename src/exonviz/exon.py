@@ -24,7 +24,7 @@ else:
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style, Circle
 
-from gtgt.range import intersect, Range
+from .range import intersect, Range
 
 import logging
 
@@ -412,7 +412,7 @@ class Exon:
 
             Empty split (0, 1) is not meaningfull
             """
-            return cast(bool, split != (0, 1))
+            return split != (0, 1)
 
         splits = list()
 
@@ -474,7 +474,7 @@ def _pick_split(splits: List[Range], page_size: int) -> int:
     For now, we just pick the biggest possible split
     """
     # Intersect each valid split with the page
-    splits_that_fit = list()
+    splits_that_fit: List[Range] = list()
     page = (0, page_size + 1)
     for split in splits:
         splits_that_fit += intersect(split, page)
@@ -485,7 +485,7 @@ def _pick_split(splits: List[Range], page_size: int) -> int:
         raise ValueError(f"No valid split range specified: {splits=}, {page_size=}")
 
     biggest_split = splits_that_fit[-1]
-    return cast(int, biggest_split[-1] - 1)
+    return biggest_split[-1] - 1
 
 
 def group_exons(

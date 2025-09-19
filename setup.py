@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="exonviz",
-    version="0.2.14",
+    version="0.2.15-dev",
     license="AGPL-3.0",
     description="Visualise exons and their reading frames",
     long_description=long_description,
@@ -71,7 +71,6 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "svg-py",
-        "gtgt>=0.2.1",
         "mutalyzer_crossmapper",
         "mutalyzer_hgvs_parser",
         "setuptools"
