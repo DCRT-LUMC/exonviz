@@ -75,7 +75,7 @@ help avoid conflicts and minimize harm.
 
 When an incident does occur, it is important to report it promptly. To report a
 possible violation, **please sent an email to the maintainer(s) at
-[email][email].**
+mailto:RedmarvandenBerg@lumc.nl**.
 
 Community Moderators take reports of violations seriously and will make every
 effort to respond in a timely manner. They will investigate all reports of code
