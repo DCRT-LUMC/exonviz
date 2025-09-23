@@ -6,7 +6,7 @@ without executing side effects
 import argparse
 import sys
 import gzip
-import pkg_resources
+import importlib
 from collections import defaultdict
 import re
 
@@ -27,15 +27,19 @@ from .draw import _config
 
 
 def get_MANE() -> Dict[str, str]:
-    fname = pkg_resources.resource_filename(__name__, "data/mane.txt.gz")
-    with gzip.open(fname, "rt") as fin:
-        mane = dict()
-        for line in fin:
-            gene, transcript = line.strip("\n").split("\t")
-            # Some genes have multiple transcripts. If that is the case, we use
-            # the first defined transcript
-            if gene not in mane:
-                mane[gene] = transcript
+    mane = dict()
+
+    my_resources = importlib.resources.files("exonviz") / "data"
+    data = (my_resources / "mane.txt.gz").read_bytes()
+    for line in gzip.decompress(data).decode("utf-8").split("\n"):
+        # Skip empty lines
+        if not line:
+            continue
+        gene, transcript = line.split("\t")
+        # Some genes have multiple transcripts. If that is the case, we use
+        # the first defined transcript
+        if gene not in mane:
+            mane[gene] = transcript
     return mane
 
 
