@@ -104,6 +104,7 @@ class Variant:
     :param name: Name (or description) of the Variant
     :param color: Color of the Variant
     """
+
     position: int
     name: str
     color: str
@@ -127,6 +128,7 @@ class Exon:
     :param name: Name of the Exon
     :param color: Color of the Exon
     """
+
     def __init__(
         self,
         size: int,
