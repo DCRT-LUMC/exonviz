@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="exonviz",
-    version="0.2.15",
+    version="0.2.16-dev",
     license="AGPL-3.0",
     description="Visualise exons and their reading frames",
     long_description=long_description,

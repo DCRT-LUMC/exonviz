@@ -35,6 +35,15 @@ Element: TypeAlias = Union[Circle, Rect, Polygon, Text, Style]
 
 @dataclass()
 class Coding:
+    """
+    Coding region for an Exon
+
+    :param start: Start of the Coding region relative to the start of the Exon
+    :param end: End of the Coding region relative to the end of the Exon
+    :param start_phase: Reading phase of the start of the Coding region
+    :param end_phase: Reading phase of the end of the Coding region
+    """
+
     start: int = 0
     end: int = 0
     start_phase: int = 0
@@ -45,9 +54,11 @@ class Coding:
 
     @property
     def size(self) -> int:
+        """Return the size of the Coding region"""
         return self.end - self.start
 
     def split(self, size: int) -> "Coding":
+        """Split a chunk of size from the Coding region"""
         old = (self.start, self.end)
         new = intersect(old, (0, size))
         # Determine the start and end postions for the new Coding region
@@ -87,12 +98,18 @@ class Coding:
 
 @dataclass()
 class Variant:
+    """A Variant which falls within an Exon
+
+    :param position: Position of the Variant relative to the start of the Exon
+    :param name: Name (or description) of the Variant
+    :param color: Color of the Variant
+    """
     position: int
     name: str
     color: str
 
     def tsv(self, sep: str = "\t") -> str:
-        """Dump an exon as tsv"""
+        """Dump a Variant as tsv"""
         records = [
             self.position,
             self.name,
@@ -102,6 +119,14 @@ class Variant:
 
 
 class Exon:
+    """An Exon to be drawn
+
+    :param size: Size of the Exon
+    :param coding: Optional Coding region of the Exon
+    :param variants: Optional list of Variants that fall within the Exon
+    :param name: Name of the Exon
+    :param color: Color of the Exon
+    """
     def __init__(
         self,
         size: int,
@@ -260,6 +285,7 @@ class Exon:
     def _draw_coding(
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
     ) -> Polygon:
+        """Draw the Coding region of an Exon"""
         # Determine x-coordinate for the coding region start
         cx = x + self.coding.start * scale
 
@@ -324,6 +350,7 @@ class Exon:
         y: float = 0,
         shape: str = "bar",
     ) -> Sequence[Element]:
+        """Draw Variants for the Exon"""
         elements: List[Element] = list()
         c_size = 0.25 * height
         for variant in self.variants:
@@ -364,6 +391,7 @@ class Exon:
     def _draw_name(
         self, height: float = 20, scale: float = 1, x: float = 0, y: float = 0
     ) -> Text:
+        """Draw the name of the Exon"""
         return Text(
             x=x + (self.size * scale / 2),
             y=y + 0.5 * height,

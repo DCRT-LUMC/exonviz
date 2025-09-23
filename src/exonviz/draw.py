@@ -112,6 +112,12 @@ def draw_exons(
     exons: List[Exon],
     config: Dict[str, Any],
 ) -> svg.SVG:
+    """Draw a list of Exons based on the specified configuration
+
+    :param exons: List of Exons to draw
+    :param config: ExonViz configuration dictionary
+    :return: SVG figure of the rendered exons
+    """
     width = config["width"]
     height = config["height"]
     scale = config["scale"]

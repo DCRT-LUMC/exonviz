@@ -22,4 +22,5 @@ Contents
    usage
    examples
    disclaimer
+   api
    changelog
