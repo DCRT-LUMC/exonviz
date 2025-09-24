@@ -1,6 +1,6 @@
 import pytest
 
-from exonviz.cli import check_input, trim_variants, sort_variants
+from exonviz.cli import check_input, get_MANE, trim_variants, sort_variants
 
 
 # A list of valid inputs for the tool
@@ -10,6 +10,12 @@ VALID = [
     "ENST00000358273.9:c.=",
     "NG_012337.3(NM_003002.4):c.274G>T",
 ]
+
+
+def test_get_mane() -> None:
+    """Test if we can get the MANE dictionary"""
+    mane = get_MANE()
+    assert mane["BST2"] == "ENST00000252593.7"
 
 
 @pytest.mark.parametrize("input", VALID)
