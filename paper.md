@@ -33,7 +33,7 @@ affiliations:
    index: 4
 
 date: 29 September 2025
-bibliograph: paper.bib
+bibliography: paper.bib
 ---
 
 # Summary
@@ -41,13 +41,12 @@ bibliograph: paper.bib
 `ExonViz` is a Python package and online application that creates biologically
 accurate transcript figures, including features such as coding regions, genetic
 variants and exon reading frames. ExonViz is written in Python 3, its web
-interface is built using Flask. It uses the public Mutalyzer API (Lefter et
-al., 2021) to fetch transcript information. This gives ExonViz access to all
-transcripts defined in the RefSeq (O’Leary et al., 2016) and Ensembl (Harrison
-et al., 2023) databases across many species, ranging from human and mouse to
-fruit fly and coelacanth. Transcripts and annotations defined on the reverse
-strand are reversed on the fly, so ExonViz always visualizes transcripts in
-their forward orientation.
+interface is built using Flask. It uses the public Mutalyzer API [@Lefter2021]
+to fetch transcript information. This gives ExonViz access to all transcripts
+defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024] databases
+across many species, ranging from human and mouse to fruit fly and coelacanth.
+Transcripts and annotations defined on the reverse strand are reversed on the
+fly, so ExonViz always visualizes transcripts in their forward orientation.
 
 ![Example transcript highlighting ExonViz features](docs/figures/abstract.svg){#abstract}
 
@@ -96,3 +95,5 @@ their ideas, suggestions and their feedback on earlier versions of ExonViz. We
 also thank Maximilian Haeussler and his colleagues at the UCSC for their
 efforts implementing exon frame information into the UCSC Genome Browser. We
 also thank Nanieke van den Berg for creating the figure for this manuscript.
+
+# References
