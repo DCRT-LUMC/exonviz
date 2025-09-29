@@ -52,7 +52,7 @@ overview of a transcript’s structure and the localisation of variants of
 interest.
 
 # Features
-<!-- TODO include graphical abstrac here -->
+![Example transcript highlighting ExonViz features](docs/figures/abstract.svg)
 
 # Method
 ExonViz is written in Python 3, its web interface is built using Flask. It uses
