@@ -7,14 +7,17 @@ authors:
  - name: Redmar van den Berg
    orcid:
    affiliation: "1, 2, 3"
+   orcid: 0000-0002-6590-9499
 
  - name: Marlen C. Lauffer
    orcid:
    affiliation: "1, 2"
+   orcid: 0000-0003-1607-0428
 
  - name: Jeroen F.J. Laros
    orcid:
    affiliation: "1, 4"
+   orcid: 0000-0002-8715-7371
 
 affiliations:
  - name: Department of Human Genetics, Leiden University Medical Center, The Netherlands
