@@ -51,25 +51,45 @@ fly, so ExonViz always visualizes transcripts in their forward orientation.
 ![Example transcript highlighting ExonViz features\label{abstract}](docs/figures/abstract.svg)
 
 # Statement of need
-Visualization of genes and genetic variants as well as transcript structure is
-essential within the human genetics community. Such illustrations represent a
-key tool in communicating genetic concepts and facilitating discussions on
-therapeutic interventions.
+Visualization of transcripts, including features like coding and non coding
+regions, reading frames and the mutational landscape is important within the
+field of clinical and human genetics [@Walker2023]. Illustrating the
+exon structure and the distribution of variants over the gene is common
+practice, especially when new genes or transcripts have been discovered. These
+illustrations are also used to assess potential genetic treatment options
+(e.g., canonical exon skipping), in teaching settings, in diagnostics, to
+identify mutational hotspots and for genetic counseling. To date, most people
+have to resort to manually drawing transcripts with tools like Illustrator,
+Photoshop or BioRender, or forgo illustrations altogether. Some tools have been
+made available that aid in drawing transcripts (ggtranscript [@Gustavsson2022]
+and wiggleplotr [@Alasoo2017]), visualize different transcript isoforms
+(genepainter [@Muhlhausen2015]), or visualize variants (Variant View
+[@Ferstay2013]). However, none of these tools can
+automatically draw exon reading frames. Knowledge about the exon frames aids in
+the assessment of the pathogenicity of genetic variants using the ACMG-AMP
+guidelines [@Richards2015] when evaluating exon spanning deletions
+[@Cheerie2025] and when interpreting the effects of splice altering
+variants [@Walker2023]. Creating transcript visualizations must be
+quick and easy if they are to be utilized in clinical and day to day settings,
+rather than to create a bespoke figure for a manuscript or presentation.
 
-There currently are no easily usable tools which allows the users to draw all
-features required for a comprehensive overview of a transcript’s structure and
-the localisation of variants of interest.
+To our knowledge, there currently are no easily usable tools which allows the
+users to draw all features required for a comprehensive overview of a
+transcript’s structure and the localisation of variants of interest.
 
 # Method
+As shown in Figure \ref{explainer}, exon boundaries in frame 0 are drawn with a
+straight edge, as is the case of exon 1 and 2. Exon 2 ends one base into the
+codon (in frame 1), which is drawn using an arrow on the end of the exon. Exon
+3 starts in frame 1, and is drawn with a notch on the left side. This is the
+other way around for the boundary between exons 3 and 4, which is in frame 2.
+Since the exons of a transcript should fit together, exons in conflicting
+frames (e.g., because of a frame shift inducing variant) are easily spotted
+because of their non-fitting boundaries.
 
-The start and end frames, which refers to the alignment between the exon
-boundary and the codon boundaries, are indicated by the shape of the exon, as
-can be seen in Figure \ref{abstract}. If the first base of an exon is also the
-first base of a codon, the start frame of the exon is 0. If an exon starts at
-the second base of a codon, the start frame is 1, etc. The same holds for the
-end frames. This is illustrated in Figure \ref{explainer}.
-
-![Visualization of the relation between codons and exon frames. The shapes of the exons illustrate the relation between the exon boundaries and the codon boundaries.\label{explainer}](docs/figures/exonviz-explainer.svg)
+![Visualization of the relation between codons and exon frames. The shapes of
+the exons illustrate the relation between the exon boundaries and the codon
+boundaries.\label{explainer}](docs/figures/exonviz-explainer.svg)
 
 The output of ExonViz is an SVG figure generated using the svg-py library,
 which can be used directly or modified using modern graphical editing programs.
