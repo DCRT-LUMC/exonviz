@@ -6,17 +6,14 @@ tags:
 authors:
  - name: Redmar van den Berg
    orcid:
-   equal-contrib: true
    affiliation: "1, 2, 3"
 
  - name: Marlen C. Lauffer
    orcid:
-   equal-contrib: true
    affiliation: "1, 2"
 
  - name: Jeroen F.J. Laros
    orcid:
-   equal-contrib: true
    affiliation: "1, 4"
 
 affiliations:
