@@ -48,7 +48,7 @@ across many species, ranging from human and mouse to fruit fly and coelacanth.
 Transcripts and annotations defined on the reverse strand are reversed on the
 fly, so ExonViz always visualizes transcripts in their forward orientation.
 
-![Example transcript highlighting ExonViz features](docs/figures/abstract.svg){#abstract}
+![Example transcript highlighting ExonViz features\label{abstract}](docs/figures/abstract.svg)
 
 # Statement of need
 Visualization of genes and genetic variants as well as transcript structure is
@@ -61,12 +61,15 @@ features required for a comprehensive overview of a transcript’s structure and
 the localisation of variants of interest.
 
 # Method
+
 The start and end frames, which refers to the alignment between the exon
 boundary and the codon boundaries, are indicated by the shape of the exon, as
-can be seen in [Figure 1](#abstract). If the first base of an exon is also the
+can be seen in Figure \ref{abstract}. If the first base of an exon is also the
 first base of a codon, the start frame of the exon is 0. If an exon starts at
 the second base of a codon, the start frame is 1, etc. The same holds for the
-end frames.
+end frames. This is illustrated in Figure \ref{explainer}.
+
+![Visualization of the relation between codons and exon frames. The shapes of the exons illustrate the relation between the exon boundaries and the codon boundaries.\label{explainer}](docs/figures/exonviz-explainer.svg)
 
 The output of ExonViz is an SVG figure generated using the svg-py library,
 which can be used directly or modified using modern graphical editing programs.
