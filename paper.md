@@ -37,15 +37,16 @@ bibliography: paper.bib
 ---
 
 # Summary
-Genes in many organisms consist of **exons**, which encode the functional parts of
-the gene, and **introns**, which are removed in a process called **splicing**. A single
-gene typically encodes multiple **transcripts** by including different exons.
-Protein coding genes include one or more coding exons, which encode the protein
-using three-letter sequences called **codons**. It is important to realize that
-exon boundaries and codon boundaries do not coincide, *i.e.* a codon can span two
-exons. The relation between the codon boundaries and exons boundaries is called
-the **exon reading frame**. The exon reading frame has important implications
-when considering the effect of mutations and when designing genetic therapies.
+Genes in many organisms consist of **exons**, which encode the functional parts
+of the gene, and **introns**, which are removed in a process called
+**splicing**. A single gene typically encodes multiple **transcripts** by
+including different exons. Protein coding genes include one or more coding
+exons, which encode the protein using three-letter sequences called **codons**.
+It is important to realize that exon boundaries and codon boundaries do not
+coincide, *i.e.* a codon can span two exons. The relation between the codon
+boundaries and exons boundaries is called the **exon reading frame**. The exon
+reading frame has important implications when considering the effect of
+mutations and when designing genetic therapies.
 
 `ExonViz` is a Python package and web application which creates biologically
 accurate transcript figures, including features such as coding regions, genetic
@@ -64,10 +65,10 @@ the end of the transcript.\label{abstract}](docs/figures/abstract.svg)
 
 # Statement of need
 Visualization of transcripts, including features like coding and non coding
-regions, exon reading frames and the mutational landscape is important within the
-field of clinical and human genetics [@Walker2023]. Illustrating the
-exon structure and the distribution of variants over the gene is common
-practice, especially when new genes or transcripts have been discovered. These
+regions, exon reading frames and the mutational landscape is important within
+the field of clinical and human genetics [@Walker2023]. Illustrating the exon
+structure and the distribution of variants over the gene is common practice,
+especially when new genes or transcripts have been discovered. These
 illustrations are also used to assess potential genetic treatment options
 (e.g., canonical exon skipping), in teaching settings, in diagnostics, to
 identify mutational hotspots and for genetic counseling. To date, most people
@@ -76,29 +77,30 @@ Photoshop or BioRender, or forgo illustrations altogether. Some tools have been
 made available that aid in drawing transcripts (ggtranscript [@Gustavsson2022]
 and wiggleplotr [@Alasoo2017]), visualize different transcript isoforms
 (genepainter [@Muhlhausen2015]), or visualize variants (Variant View
-[@Ferstay2013]). However, none of these tools can
-automatically draw exon reading frames. Knowledge about the exon frames aids in
-the assessment of the pathogenicity of genetic variants using the ACMG-AMP
-guidelines [@Richards2015] when evaluating exon spanning deletions
-[@Cheerie2025] and when interpreting the effects of splice altering
-variants [@Walker2023]. Creating transcript visualizations must be
-quick and easy if they are to be utilized in clinical and day to day settings,
-rather than to create a bespoke figure for a manuscript or presentation.
+[@Ferstay2013]). However, none of these tools can automatically draw exon
+reading frames. Knowledge about the exon frames aids in the assessment of the
+pathogenicity of genetic variants using the ACMG-AMP guidelines [@Richards2015]
+when evaluating exon spanning deletions [@Cheerie2025] and when interpreting
+the effects of splice altering variants [@Walker2023]. Creating transcript
+visualizations must be quick and easy if they are to be utilized in clinical
+and day to day settings, rather than to create a bespoke figure for a
+manuscript or presentation.
 
 To our knowledge, there currently are no easily usable tools which allows the
 users to draw all features required for a comprehensive overview of a
 transcript’s structure and the localisation of variants of interest.
 
 # Method
-<!-- ML: Introduce exon frames before explaining the figure -->
-As shown in Figure \ref{explainer}, exon boundaries in frame 0 are drawn with a
-straight edge, as is the case of exon 1 and 2. Exon 2 ends one base into the
-codon (in frame 1), which is drawn using an arrow on the end of the exon. Exon
-3 starts in frame 1, and is drawn with a notch on the left side. This is the
-other way around for the boundary between exons 3 and 4, which is in frame 2.
-Since the exons of a transcript should fit together, exons in conflicting
-frames (e.g., because of a frame shift inducing variant) are easily spotted
-due to the fact that their boundaries do not fit together.
+ExonViz visualizes the exon reading frames by using different shapes for the
+start and end of exons. Figure \ref{explainer} shows all the ways exon and
+codon boundaries can relate, and the corresponding exon shapes. Exon boundaries
+in frame 0 are drawn with a straight edge, as is the case of exon 1 and 2. Exon
+2 ends one base into the codon (in frame 1), which is drawn using an arrow on
+the end of the exon. Exon 3 starts in frame 1, and is drawn with a notch at the
+start of the exon. This reversed for the boundary between exons 3 and 4, which
+is in frame 2. Since the exons of a transcript should fit together, exons in
+conflicting frames (*e.g.* because of a frame shift inducing variant) are
+easily spotted due to the fact that the exon boundaries do not fit together.
 
 ![Visualization of the relation between codons and exon frames. The shapes of
 the exons illustrate the relation between the exon boundaries and the codon
