@@ -1,5 +1,5 @@
 ---
-title: 'ExonViz: A Python package for visualizing transcripts'
+title: 'ExonViz: A Python package and web application for visualizing transcripts'
 tags:
   - Python
 
@@ -38,7 +38,7 @@ bibliography: paper.bib
 
 # Summary
 
-`ExonViz` is a Python package and online application that creates biologically
+`ExonViz` is a Python package and web application which creates biologically
 accurate transcript figures, including features such as coding regions, genetic
 variants and exon reading frames. ExonViz is written in Python 3, its web
 interface is built using Flask. It uses the public Mutalyzer API [@Lefter2021]
@@ -78,6 +78,7 @@ users to draw all features required for a comprehensive overview of a
 transcript’s structure and the localisation of variants of interest.
 
 # Method
+<!-- ML: Introduce exon frames before explaining the figure -->
 As shown in Figure \ref{explainer}, exon boundaries in frame 0 are drawn with a
 straight edge, as is the case of exon 1 and 2. Exon 2 ends one base into the
 codon (in frame 1), which is drawn using an arrow on the end of the exon. Exon
@@ -85,7 +86,7 @@ codon (in frame 1), which is drawn using an arrow on the end of the exon. Exon
 other way around for the boundary between exons 3 and 4, which is in frame 2.
 Since the exons of a transcript should fit together, exons in conflicting
 frames (e.g., because of a frame shift inducing variant) are easily spotted
-because of their non-fitting boundaries.
+due to the fact that their boundaries do not fit together.
 
 ![Visualization of the relation between codons and exon frames. The shapes of
 the exons illustrate the relation between the exon boundaries and the codon
@@ -117,6 +118,6 @@ We would like to thank the members of the Dutch Center for RNA Therapeutics for
 their ideas, suggestions and their feedback on earlier versions of ExonViz. We
 also thank Maximilian Haeussler and his colleagues at the UCSC for their
 efforts implementing exon frame information into the UCSC Genome Browser. We
-also thank Nanieke van den Berg for creating the figure for this manuscript.
+also thank Nanieke van den Berg for creating Figure \ref{abstract}.
 
 # References
