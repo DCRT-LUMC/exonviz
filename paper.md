@@ -42,7 +42,7 @@ the gene, and **introns**, which are removed in a process called **splicing**. A
 gene typically encodes multiple **transcripts** by including different exons.
 Protein coding genes include one or more coding exons, which encode the protein
 using three-letter sequences called **codons**. It is important to realize that
-exon boundaries and codon boundaries do not coincide, i.e. a codon can span two
+exon boundaries and codon boundaries do not coincide, *i.e.* a codon can span two
 exons. The relation between the codon boundaries and exons boundaries is called
 the **exon reading frame**. The exon reading frame has important implications
 when considering the effect of mutations and when designing genetic therapies.
@@ -57,7 +57,10 @@ across many species, ranging from human and mouse to fruit fly and coelacanth.
 Transcripts and annotations defined on the reverse strand are reversed on the
 fly, so ExonViz always visualizes transcripts in their forward orientation.
 
-![Example transcript highlighting ExonViz features\label{abstract}](docs/figures/abstract.svg)
+![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
+region at the start of the transcript. **CDS start**: Start of the coding
+region. **CDS end**: End of the coding region. **3' UTR**: Non coding region at
+the end of the transcript.\label{abstract}](docs/figures/abstract.svg)
 
 # Statement of need
 Visualization of transcripts, including features like coding and non coding
