@@ -92,15 +92,16 @@ transcript’s structure and the localisation of variants of interest.
 
 # Method
 ExonViz visualizes the exon reading frames by using different shapes for the
-start and end of exons. Figure \ref{explainer} shows all the ways exon and
-codon boundaries can relate, and the corresponding exon shapes. Exon boundaries
-in frame 0 are drawn with a straight edge, as is the case of exon 1 and 2. Exon
-2 ends one base into the codon (in frame 1), which is drawn using an arrow on
-the end of the exon. Exon 3 starts in frame 1, and is drawn with a notch at the
-start of the exon. This reversed for the boundary between exons 3 and 4, which
-is in frame 2. Since the exons of a transcript should fit together, exons in
-conflicting frames (*e.g.* because of a frame shift inducing variant) are
-easily spotted due to the fact that the exon boundaries do not fit together.
+start and end of exons. Figure \ref{explainer} shows all possible combinations
+of exon and codon boundaries, and the corresponding exon shapes. When the exon
+and codon boundaries coincide (frame 0) the exons are drawn with a straight
+edge, as is the case of exon 1 and 2. Exon 2 ends one base into the codon (in
+frame 1), which is drawn using an arrow on the end of the exon. Exon 3 starts
+in frame 1, and is drawn with a notch at the start of the exon. This reversed
+for the boundary between exons 3 and 4, which is in frame 2. Since the exons of
+a transcript should fit together, exons in conflicting frames (*e.g.* because
+of a frame shift inducing variant) are easily spotted due to the fact that the
+exon boundaries do not fit together.
 
 ![Visualization of the relation between codons and exon frames. The shapes of
 the exons illustrate the relation between the exon boundaries and the codon
