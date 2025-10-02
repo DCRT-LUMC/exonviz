@@ -50,13 +50,17 @@ mutations and when designing genetic therapies.
 
 `ExonViz` is a Python package and web application which creates biologically
 accurate transcript figures, including features such as coding regions, genetic
-variants and exon reading frames. ExonViz is written in Python 3, its web
-interface is built using Flask. It uses the public Mutalyzer API [@Lefter2021]
-to fetch transcript information. This gives ExonViz access to all transcripts
-defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024] databases
-across many species, ranging from human and mouse to fruit fly and coelacanth.
-Transcripts and annotations defined on the reverse strand are reversed on the
-fly, so ExonViz always visualizes transcripts in their forward orientation.
+variants and exon reading frames. The [ExonViz
+website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
+transcript figures between September 2023 and September 2025.
+
+ExonViz is written in Python 3, its web interface is built using Flask. It uses
+the public Mutalyzer API [@Lefter2021] to fetch transcript information. This
+gives ExonViz access to all transcripts defined in the RefSeq [@OLeary2016] and
+Ensembl [@Harrison2024] databases across many species, ranging from human and
+mouse to fruit fly and coelacanth. Transcripts and annotations defined on the
+reverse strand are reversed on the fly, so ExonViz always visualizes
+transcripts in their forward orientation.
 
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
