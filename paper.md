@@ -1,5 +1,5 @@
 ---
-title: 'ExonViz: A Python package and web application for visualizing transcripts'
+title: 'ExonViz: Transcript visualization made easy'
 tags:
   - Python
 
@@ -37,16 +37,17 @@ bibliography: paper.bib
 ---
 
 # Summary
-Genes in many organisms consist of **exons**, which encode the functional parts
-of the gene, and **introns**, which are removed in a process called
-**splicing**. A single gene typically encodes multiple **transcripts** by
-including different exons. Protein coding genes include one or more coding
+Transcripts of a gene contain one or more **exons**, which encode the
+functional parts of the gene, and **introns**, which are removed in a process
+called **splicing**. A single gene typically encodes multiple **transcripts**
+by including different exons. Protein coding genes include one or more coding
 exons, which encode the protein using three-letter sequences called **codons**.
 It is important to realize that exon boundaries and codon boundaries do not
-coincide, *i.e.* a codon can span two exons. The relation between the codon
-boundaries and exons boundaries is called the **exon reading frame**. The exon
-reading frame has important implications when considering the effect of
-mutations and when designing genetic therapies.
+coincide, *i.e.* a codon can span two exons. If the codon boundaries of
+adjacent exons are not complementary, this will introduce a shift in the
+reading frame, which is often detrimental. The exon reading frame has important
+implications when considering the effect of mutations and when designing
+genetic therapies.
 
 `ExonViz` is a Python package and web application which creates biologically
 accurate transcript figures, including features such as coding regions, genetic
