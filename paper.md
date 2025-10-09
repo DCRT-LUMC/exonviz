@@ -50,8 +50,8 @@ implications when considering the effect of mutations and when designing
 genetic therapies.
 
 `ExonViz` is a Python package and web application which creates biologically
-accurate transcript figures, including features such as coding regions, genetic
-variants and exon reading frames. The [ExonViz
+accurate RNA transcript figures, including features such as coding regions,
+genetic variants and exon reading frames. The [ExonViz
 website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
 transcript figures between September 2023 and September 2025.
 
@@ -97,15 +97,17 @@ transcript’s structure and the localisation of variants of interest.
 
 # Method
 ExonViz visualizes the exon reading frames by using different shapes for the
-start and end of exons. Figure \ref{explainer} shows all possible combinations
-of exon and codon boundaries, and the corresponding exon shapes. When the exon
-and codon boundaries coincide (frame 0) the exons are drawn with a straight
-edge, as is the case of exon 1 and 2. Exon 2 ends one base into the codon (in
-frame 1), which is drawn using an arrow on the end of the exon. Exon 3 starts
-in frame 1, and is drawn with a notch at the start of the exon. This reversed
-for the boundary between exons 3 and 4, which is in frame 2. Since the exons of
-a transcript should fit together, exons in conflicting frames (*e.g.* because
-of a frame shift inducing variant) are easily spotted due to the fact that the
+start and end of exons. It is important that adjacent exons have complementary
+codon boundaries, to prevent a shift in the reading frame of the protein.
+Figure \ref{explainer} shows all possible combinations of exon and codon
+boundaries, and the corresponding exon shapes. When the exon and codon
+boundaries coincide (frame 0) the exons are drawn with a straight edge, as is
+the case of exon 1 and 2. Exon 2 ends one base into the codon (in frame 1),
+which is drawn using an arrow on the end of the exon. Exon 3 starts in frame 1,
+and is drawn with a notch at the start of the exon. This reversed for the
+boundary between exons 3 and 4, which is in frame 2. Since the exons of a
+transcript should fit together, exons in conflicting frames (*e.g.* because of
+a frame shift inducing variant) are easily spotted due to the fact that the
 exon boundaries do not fit together.
 
 ![Visualization of the relation between codons and exon frames. The shapes of
