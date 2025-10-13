@@ -13,6 +13,15 @@ and non-coding regions. All exons are to scale and the reading frames of the
 exons are visible. Single or multiple variants along the transcript can be
 drawn and will automatically be shown in the correct location.
 
+## Manuscript dependencies
+To build the manuscript describing ExonViz, please ensure that the following
+dependencies are installed and run `make`.
+
+- make
+- pandoc
+- texlive-latex-recommended
+- librsvg2-bin
+
 ## Online version
 You can try out ExonViz online at [exonviz.rnatherapy.nl](https://exonviz.rnatherapy.nl).
 
