@@ -32,7 +32,6 @@ affiliations:
  - name: Department of Bioinformatics and Computational Services, National Institute of Public Health and the Environment, The Netherlands
    index: 4
 
-date: 29 September 2025
 bibliography: paper.bib
 ---
 
@@ -45,7 +44,7 @@ or more coding exons, which encode the protein using three-letter sequences
 called **codons**. It is important to realize that exon boundaries and codon
 boundaries do not coincide, *i.e.* a codon can span two exons. If the codon
 boundaries of adjacent exons are not aligned, an often detrimental **frame
-shift** is introduced. Taking exon boundary reading frames, or simply
+shift** is introduced. Taking exon boundary reading frames, which we will call
 **exon boundary frames** into account is crucial when considering the effect of
 mutations and when designing genetic therapies.
 
@@ -55,57 +54,48 @@ genetic variants and exon boundary frames. The [ExonViz
 website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
 transcript figures between September 2023 and September 2025.
 
-ExonViz is written in Python 3, its web interface is built using Flask. It uses
-the public Mutalyzer API [@Lefter2021] to fetch transcript annotation. This
+ExonViz is written in Python 3, its web interface is build using Flask. It uses
+the public Mutalyzer API [@Lefter2021] to fetch transcript annotations. This
 gives ExonViz access to all transcripts defined in the RefSeq [@OLeary2016] and
 Ensembl [@Harrison2024] databases across many species, ranging from human and
 mouse to fruit fly and coelacanth. Transcripts and annotations defined on the
 reverse strand are reversed, so ExonViz always visualizes transcripts in their
 forward orientation.
 
-<!-- JL: Comments on Figure 1.
-- Can we also include straight edges (e.g., joining exon 1 and 2)?
-- Can we replace the text above the exon boundaries by:
-  ---
-  **Exon boundary frames**
-  Reading frames are indicated by **notches**, **arrows** and **straight** edges.
-  ---
--->
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
 region. **CDS end**: End of the coding region. **3' UTR**: Non coding region at
 the end of the transcript.\label{abstract}](docs/figures/abstract.svg)
 
 # Statement of need
-Visualization of transcripts, including features like coding and non coding
-regions, exon boundary frames and the mutational landscape is important within
-the field of clinical and human genetics [@Walker2023]. Illustrating the exon
-structure and the distribution of variants over the gene is common practice,
-especially when new genes or transcripts have been discovered. These
-illustrations are also used to assess potential genetic treatment options
-(e.g., canonical exon skipping), in teaching settings, in diagnostics, to
-identify mutational hotspots and for genetic counseling. To date, most people
-have to resort to manually drawing transcripts with tools like Illustrator,
-Photoshop or BioRender, or forgo illustrations altogether. Some tools have been
-made available that aid in drawing transcripts (ggtranscript [@Gustavsson2022]
-and wiggleplotr [@Alasoo2017]), visualize different transcript isoforms
-(genepainter [@Muhlhausen2015]), or visualize variants (Variant View
-[@Ferstay2013]). However, none of these tools can draw exon boundary
-frames. Knowledge about the exon boundary frames aids in the assessment of the
-pathogenicity of genetic variants using the ACMG-AMP guidelines [@Richards2015]
-when evaluating exon spanning deletions [@Cheerie2025] and when interpreting
-the effects of splice altering variants [@Walker2023]. Creating transcript
-visualizations must be quick and easy if they are to be utilized in clinical
-and day to day settings, rather than to create a bespoke figure for a
-manuscript or presentation.
+Visualization of transcripts, including features like exon boundary frames,
+coding and non coding regions is important within the field of clinical and
+human genetics [@Walker2023]. Illustrating the exon structure and the location
+of variants is common practice, especially when new genes or transcripts have
+been discovered. These illustrations are also used to assess potential genetic
+treatment options (e.g., canonical exon skipping), in teaching settings, in
+diagnostics, to identify mutational hotspots and for genetic counseling. To
+date, most people have to resort to manually drawing transcripts with tools
+like Illustrator, Photoshop or BioRender, or forgo illustrations altogether.
+Some tools have been made available that aid in drawing transcripts
+(ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017]), visualize
+different transcript isoforms (genepainter [@Muhlhausen2015]), or visualize
+variants (Variant View [@Ferstay2013]). However, none of these tools can draw
+exon boundary frames. Knowledge about the exon boundary frames aids in the
+assessment of the pathogenicity of genetic variants using the ACMG-AMP
+guidelines [@Richards2015] when evaluating exon spanning deletions
+[@Cheerie2025] and when interpreting the effects of splice altering variants
+[@Walker2023]. Creating transcript visualizations must be quick and easy if
+they are to be utilized in clinical and day to day settings, rather than to
+create a bespoke figure for a manuscript or presentation.
 
 To our knowledge, there currently are no easily usable tools which allow the
 user to draw all features required for a comprehensive overview of a
-transcript’s structure and the localisation of variants of interest.
+transcript’s structure and the location of variants of interest.
 
 # Method
 ExonViz visualizes the exon boundary frames by using different shapes for the
-boundary of exons. It is important that adjacent exons have aligning
+boundary of exons. It is important that adjacent coding exons have aligning
 codon boundaries, to prevent a shift in the reading frame of the protein.
 Figure \ref{explainer} shows all possible combinations of exon and codon
 boundaries, and the corresponding exon boundary shapes. When the exon and codon
@@ -137,13 +127,11 @@ as exon boundary frames and variants along the transcript. ExonViz can be used f
 illustrations within publications, assessment of treatment options,
 teaching purposes and genetic counseling. Figures generated by ExonViz are free
 to use under the Creative Commons BY license . Furthermore, we allow the user
-<!-- JL: Poison and cryptic exons are not defined. Perhaps mention them in the
-main text and add a reference? -->
-to construct their own transcripts to incorporate features like poison or
-cryptic exons and alternative isoforms. ExonViz can be accessed as a web
-application via [exonviz.rnatherapy.nl](https://exonviz.rnatherapy.nl) or
-installed via [PyPI](https://pypi.org/project/exonviz/). The source code is
-available on [Github](https://github.com/DCRT-LUMC/exonviz).
+to construct their own transcripts, for example to visualize non-standard exons
+or alternative isoforms. ExonViz can be accessed as a web application via
+[exonviz.rnatherapy.nl](https://exonviz.rnatherapy.nl) or installed via
+[PyPI](https://pypi.org/project/exonviz/). The source code is available on
+[Github](https://github.com/DCRT-LUMC/exonviz).
 
 # Acknowledgments
 We would like to thank the members of the Dutch Center for RNA Therapeutics for
