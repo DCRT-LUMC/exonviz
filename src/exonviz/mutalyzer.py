@@ -1,4 +1,4 @@
-from typing import Dict, Any, List, Tuple, cast
+from typing import Any, cast
 import urllib.request
 from urllib.error import HTTPError
 import json
@@ -15,7 +15,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-Range = Tuple[int, int]
+Range = tuple[int, int]
 
 
 def parse_error_payload(error: HTTPError) -> str:
@@ -28,7 +28,7 @@ def parse_error_payload(error: HTTPError) -> str:
     return msg if msg else str(error)
 
 
-def fetch_exons(transcript: str) -> Dict[str, Any]:
+def fetch_exons(transcript: str) -> dict[str, Any]:
     """Fetch transcript information from mutalyzer"""
 
     url = f"https://mutalyzer.nl/api/normalize/{transcript}"
@@ -44,11 +44,11 @@ def fetch_exons(transcript: str) -> Dict[str, Any]:
     if "selector_short" not in js:
         msg = f"No exons found for {transcript} (is it a genomic variant?)"
         raise RuntimeError(msg)
-    selector: Dict[str, Any] = js["selector_short"]
+    selector: dict[str, Any] = js["selector_short"]
     return selector
 
 
-def fetch_variants(transcript: str) -> Dict[str, Any]:
+def fetch_variants(transcript: str) -> dict[str, Any]:
     """Fetch variant view from mutalyzer"""
 
     url = f"https://mutalyzer.nl/api/view_variants/{transcript}"
@@ -59,11 +59,11 @@ def fetch_variants(transcript: str) -> Dict[str, Any]:
         msg = parse_error_payload(e)
         raise RuntimeError(msg)
     else:
-        js: Dict[str, Any] = json.loads(response.read())
+        js: dict[str, Any] = json.loads(response.read())
     return js
 
 
-def convert_mutalyzer_range(start: str, end: str) -> Tuple[int, int]:
+def convert_mutalyzer_range(start: str, end: str) -> tuple[int, int]:
     """Convert a mutalyzer range to 0-based coordinates"""
 
     if is_reverse(start, end):
@@ -77,7 +77,7 @@ def is_reverse(start: str, end: str) -> bool:
     return int(start) > int(end)
 
 
-def convert_exon_positions(positions: List[List[str]]) -> List[Tuple[int, int]]:
+def convert_exon_positions(positions: list[list[str]]) -> list[tuple[int, int]]:
     """Convert exon positions from Mutalyzer to a list of Ranges
 
     This function also accounts for reverse transcripts
@@ -106,7 +106,7 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     )
 
 
-def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
+def exon_variant(exons: list[list[str]], variant: dict[str, Any]) -> bool:
     """Determine if a given variant falls in an exon"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
@@ -120,8 +120,8 @@ def exon_variant(exons: List[List[str]], variant: Dict[str, Any]) -> bool:
 
 
 def variants_outside_exons(
-    exons: List[List[str]], payload: List[Dict[str, Any]]
-) -> List[str]:
+    exons: list[list[str]], payload: list[dict[str, Any]]
+) -> list[str]:
     """Determine description of variants that fall outside the exons"""
     # Exclude the regions that flank the variants
     variants = [x for x in payload if x["type"] == "variant"]
@@ -134,8 +134,8 @@ def variants_outside_exons(
 
 
 def parse_view_variants(
-    exons: List[List[str]], payload: List[Dict[str, Any]]
-) -> List[Dict[str, Any]]:
+    exons: list[list[str]], payload: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Extract only the exonic variants from the mutalyzer view_variants API payload"""
     # Exclude the regions that flank the variants
     variants = [x for x in payload if x["type"] == "variant"]
@@ -152,7 +152,7 @@ def parse_view_variants(
     return variants
 
 
-def inside(exon: Range, variant: Dict[str, Any]) -> bool:
+def inside(exon: Range, variant: dict[str, Any]) -> bool:
     pos = variant["start"]
     return cast(bool, pos >= exon[0] and pos < exon[1])
 
@@ -163,8 +163,8 @@ def transcript_to_coordinate(transcript: str) -> str:
 
 
 def exon_variants(
-    exon: Range, variants: List[Dict[str, Any]], coordinate: str
-) -> List[Variant]:
+    exon: Range, variants: list[dict[str, Any]], coordinate: str
+) -> list[Variant]:
     """Create a list of Variants that fall within the exon
 
     The position of the variants is relative to the Exon start position
@@ -178,7 +178,7 @@ def exon_variants(
     return vars
 
 
-def exons_to_ranges(exons: List[List[str]], cds: List[str]) -> List[Tuple[int, int]]:
+def exons_to_ranges(exons: list[list[str]], cds: list[str]) -> list[tuple[int, int]]:
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
@@ -196,7 +196,7 @@ def exons_to_ranges(exons: List[List[str]], cds: List[str]) -> List[Tuple[int, i
     return output_exons
 
 
-def cds_to_ranges(exons: List[List[str]], cds: List[str]) -> Tuple[int, int]:
+def cds_to_ranges(exons: list[list[str]], cds: list[str]) -> tuple[int, int]:
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(cds[0], cds[1])
 
@@ -210,8 +210,8 @@ def cds_to_ranges(exons: List[List[str]], cds: List[str]) -> Tuple[int, int]:
 
 
 def variant_to_ranges(
-    exons: List[List[str]], var_start: int, var_end: int
-) -> Tuple[int, int]:
+    exons: list[list[str]], var_start: int, var_end: int
+) -> tuple[int, int]:
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
@@ -226,7 +226,7 @@ def variant_to_ranges(
         return (new_start, new_end)
 
 
-def rewrite_reverse_variants(view_variants: Dict[str, Any]) -> None:
+def rewrite_reverse_variants(view_variants: dict[str, Any]) -> None:
     if not view_variants.get("inverted"):
         return
 
@@ -238,12 +238,12 @@ def rewrite_reverse_variants(view_variants: Dict[str, Any]) -> None:
 
 def build_exons(
     transcript: str,
-    mutalyzer: Dict[str, Any],
-    view_variants: Dict[str, Any],
-    config: Dict[str, Any],
-) -> Tuple[List[Exon], List[str]]:
+    mutalyzer: dict[str, Any],
+    view_variants: dict[str, Any],
+    config: dict[str, Any],
+) -> tuple[list[Exon], list[str]]:
     """Build Exons from the mutalyzer payload"""
-    Exons: List[Exon] = list()
+    Exons: list[Exon] = list()
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
@@ -320,7 +320,7 @@ def build_exons(
     return Exons, dropped
 
 
-def pos_to_tuple(position: str) -> Tuple[int, int, int]:
+def pos_to_tuple(position: str) -> tuple[int, int, int]:
     """Convert a HGVS position to a tuple of three positions
     The meaning of the three positions is as follows
 
@@ -354,7 +354,7 @@ def less_than(a: str, b: str) -> bool:
     return pos_to_tuple(a) < pos_to_tuple(b)
 
 
-def get_variants(hgvs: str) -> List[str]:
+def get_variants(hgvs: str) -> list[str]:
     """Get a list of variants from a HGVS description"""
     reference, description = hgvs.split(":")
     description = description[2:].strip(" ")

@@ -17,7 +17,7 @@ import logging
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-from typing import List, Dict, Any, cast
+from typing import Any, cast
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
 from .mutalyzer import fetch_exons, fetch_variants, build_exons, less_than
@@ -26,7 +26,7 @@ from mutalyzer_hgvs_parser import parse, to_model
 from .draw import _config
 
 
-def get_MANE() -> Dict[str, str]:
+def get_MANE() -> dict[str, str]:
     mane = dict()
 
     my_resources = importlib.resources.files("exonviz") / "data"
@@ -122,7 +122,7 @@ def sort_variants(transcript: str) -> str:
     return transcript[:start] + f"[{vars}]"
 
 
-def make_exons(transcript: str, config: Dict[str, Any]) -> List[Exon]:
+def make_exons(transcript: str, config: dict[str, Any]) -> list[Exon]:
     """Make or fetch the requested exons"""
 
     # If the transcript is actually the gene name, substitute the MANE transcript
@@ -196,7 +196,7 @@ def make_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def dump_exons(exons: List[Exon], fname: str) -> None:
+def dump_exons(exons: list[Exon], fname: str) -> None:
     """Write the exons to the specified file"""
     header = [
         "size",
@@ -213,7 +213,7 @@ def dump_exons(exons: List[Exon], fname: str) -> None:
             print(exon.tsv(sep="\t"), file=fout)
 
 
-def dump_variants(exons: List[Exon], fname: str) -> None:
+def dump_variants(exons: list[Exon], fname: str) -> None:
     """Write the variants to the specified file"""
     header = [
         "exon",
@@ -229,7 +229,7 @@ def dump_variants(exons: List[Exon], fname: str) -> None:
                 print(variant.tsv(sep="\t"), file=fout)
 
 
-def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
+def exons_from_mutalyzer(transcript: str, config: dict[str, Any]) -> list[Exon]:
     """Attempt to create exons from mutalyzer"""
     try:
         exons = make_exons(transcript, config)
@@ -239,13 +239,13 @@ def exons_from_mutalyzer(transcript: str, config: Dict[str, Any]) -> List[Exon]:
     return exons
 
 
-def exons_from_tsv_file(fname: str) -> List[Exon]:
+def exons_from_tsv_file(fname: str) -> list[Exon]:
     """Read Exons from a tsv file"""
     with open(fname) as fin:
         return exons_from_tsv(fin)
 
 
-def variants_from_tsv_file(fname: str) -> Dict[int, List[Variant]]:
+def variants_from_tsv_file(fname: str) -> dict[int, list[Variant]]:
     """Read Variants from a tsv file"""
     variants = defaultdict(list)
     with open(fname) as fin:

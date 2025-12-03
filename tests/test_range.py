@@ -1,5 +1,3 @@
-from typing import List
-
 import pytest
 
 from exonviz.range import Range, intersect, overlap, subtract
@@ -61,7 +59,7 @@ intersections = [
 
 
 @pytest.mark.parametrize("a, b, intersection", intersections)
-def test_intersect_ranges(a: Range, b: Range, intersection: List[Range]) -> None:
+def test_intersect_ranges(a: Range, b: Range, intersection: list[Range]) -> None:
     assert intersect(a, b) == intersection
     assert intersect(b, a) == intersection
 
@@ -214,5 +212,5 @@ range_subtract = [
 
 
 @pytest.mark.parametrize("a, b, expected", range_subtract)
-def test_subtract_ranges(a: List[Range], b: List[Range], expected: List[Range]) -> None:
+def test_subtract_ranges(a: list[Range], b: list[Range], expected: list[Range]) -> None:
     assert subtract(a, b) == expected

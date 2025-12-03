@@ -1,25 +1,10 @@
 from dataclasses import dataclass
-from typing import (
-    Any,
-    List,
-    Optional,
-    Sequence,
-    Dict,
-    Tuple,
-    no_type_check,
-    Union,
-    cast,
-)
+from typing import Any, Sequence, no_type_check
 import copy
 import math
 from decimal import Decimal, ROUND_UP
 
-import sys
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 from _io import TextIOWrapper
 from svg import Rect, Polygon, Text, Style, Circle
@@ -30,7 +15,7 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element: TypeAlias = Union[Circle, Rect, Polygon, Text, Style]
+Element = Circle | Rect | Polygon | Text | Style
 
 
 @dataclass()
@@ -132,8 +117,8 @@ class Exon:
     def __init__(
         self,
         size: int,
-        coding: Optional[Coding] = None,
-        variants: Optional[Sequence[Variant]] = None,
+        coding: Coding | None = None,
+        variants: Sequence[Variant] | None = None,
         name: str = "",
         color: str = "#4C72B7",
     ) -> None:
@@ -209,12 +194,12 @@ class Exon:
         x: float = 0,
         y: float = 0,
         variant_shape: str = "pin",
-    ) -> List[Element]:
+    ) -> list[Element]:
         """Draw the Exon, in SVG format
 
         Returns a list of SVG elements
         """
-        elements: List[Any] = list()
+        elements: list[Element] = list()
 
         # If the coding size is not the entire exon
         if self.coding.size != self.size:
@@ -302,7 +287,7 @@ class Exon:
             raise ValueError(msg)
 
         # fmt: off
-        start: List[List[float]] = [
+        start: list[list[float]] = [
             [ # Square
                 cx, y + height,
                 cx, y
@@ -319,7 +304,7 @@ class Exon:
             ]
         ]
 
-        end: List[List[float]] = [
+        end: list[list[float]] = [
             [ # Square
                 cx + size, y,
                 cx + size, y + height,
@@ -353,7 +338,7 @@ class Exon:
         shape: str = "bar",
     ) -> Sequence[Element]:
         """Draw Variants for the Exon"""
-        elements: List[Element] = list()
+        elements: list[Element] = list()
         c_size = 0.25 * height
         for variant in self.variants:
             if shape == "pin":
@@ -434,7 +419,7 @@ class Exon:
             variants=new_variants,
         )
 
-    def valid_splits(self, height: float = 20, scale: float = 1) -> List[Range]:
+    def valid_splits(self, height: float = 20, scale: float = 1) -> list[Range]:
         """Determine which splits of this exon can be drawn"""
 
         def meaningfull(split: Range) -> bool:
@@ -497,14 +482,14 @@ class Exon:
         return sep.join(map(str, records))
 
 
-def _pick_split(splits: List[Range], page_size: int) -> int:
+def _pick_split(splits: list[Range], page_size: int) -> int:
     """
     Pick a legal split from the allowed splits and the page size
 
     For now, we just pick the biggest possible split
     """
     # Intersect each valid split with the page
-    splits_that_fit: List[Range] = list()
+    splits_that_fit: list[Range] = list()
     page = (0, page_size + 1)
     for split in splits:
         splits_that_fit += intersect(split, page)
@@ -519,19 +504,19 @@ def _pick_split(splits: List[Range], page_size: int) -> int:
 
 
 def group_exons(
-    exons: List[Exon],
+    exons: list[Exon],
     height: int,
     gap: int,
     width: int,
     scale: float = 1.0,
     page_full: float = 0.15,
-    gap_offset: Optional[int] = None,
-) -> List[List[Exon]]:
+    gap_offset: int | None = None,
+) -> list[list[Exon]]:
     """Group exons on a page, so that they do not go over width"""
     if not exons:
         return [[]]
     page = list()
-    row: List[Exon] = list()
+    row: list[Exon] = list()
 
     # Additional gap offset for exons that end with phase-0
     if gap_offset is None:
@@ -591,13 +576,13 @@ def group_exons(
 
 
 def draw_exons(
-    exons: List[Exon],
+    exons: list[Exon],
     width: int,
     height: int,
     scale: float,
     gap: int,
     variant_shape: str,
-) -> List[Element]:
+) -> list[Element]:
     x: float = height
     y: float = height
     elements = list()
@@ -618,7 +603,7 @@ def draw_exons(
     return elements
 
 
-def parse_coding_region(exon_dict: Dict[Any, Any]) -> None:
+def parse_coding_region(exon_dict: dict[Any, Any]) -> None:
     """Extract the coding fields into a Coding object, rewrites exon_dict"""
     # Get the coding values out of the exon dictionary
     coding_dict = dict()
@@ -635,9 +620,9 @@ def parse_coding_region(exon_dict: Dict[Any, Any]) -> None:
     exon_dict["coding"] = Coding(**{k: int(v) for k, v in coding_dict.items()})
 
 
-def parse_variants(exon_dict: Dict[Any, Any]) -> None:
+def parse_variants(exon_dict: dict[Any, Any]) -> None:
     """Extract the variant fields into a list of Variants, rewrites exon_dict"""
-    variants: List[Variant] = list()
+    variants: list[Variant] = list()
 
     if "variant_pos" not in exon_dict:
         exon_dict["variants"] = variants
@@ -656,9 +641,9 @@ def parse_variants(exon_dict: Dict[Any, Any]) -> None:
     exon_dict["variants"] = variants
 
 
-def exon_from_dict(d: Dict[str, str]) -> Exon:
+def exon_from_dict(d: dict[str, str]) -> Exon:
     """Create an Exon from a dictionary"""
-    exon_dict: Dict[Any, Any] = d.copy()
+    exon_dict: dict[Any, Any] = d.copy()
     parse_coding_region(exon_dict)
     parse_variants(exon_dict)
     # Convert exon size to int
@@ -666,7 +651,7 @@ def exon_from_dict(d: Dict[str, str]) -> Exon:
     return Exon(**exon_dict)
 
 
-def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
+def exons_from_tsv(fin: TextIOWrapper) -> list[Exon]:
     header = next(fin).strip("\n").split("\t")
     expected = [
         "size",
@@ -680,7 +665,7 @@ def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
     if not header == expected:
         raise RuntimeError("Unexpected header in TSV file")
 
-    exons: List[Exon] = list()
+    exons: list[Exon] = list()
     for line in fin:
         d = {k: v for k, v in zip(header, line.strip("\n").split("\t")) if v}
         exons.append(exon_from_dict(d))
@@ -689,7 +674,7 @@ def exons_from_tsv(fin: TextIOWrapper) -> List[Exon]:
 
 
 @no_type_check
-def element_xy(element: Element) -> Tuple[float, float]:
+def element_xy(element: Element) -> tuple[float, float]:
     """Determine the furthest x,y coordinates for various svg objects"""
     if isinstance(element, Rect):
         x = element.x + element.width
