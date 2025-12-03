@@ -25,7 +25,7 @@ from exonviz.mutalyzer import (
 )
 from exonviz.exon import Coding, Variant
 
-from typing import Any, Dict, List, Tuple
+from typing import Any
 from http.client import HTTPMessage
 
 # Example mutalyzer payload
@@ -47,7 +47,7 @@ mut_positions = [
 
 @pytest.mark.parametrize("positions, expected", mut_positions)
 def test_convert_mutalyzer_positions(
-    positions: List[str], expected: Tuple[int, int]
+    positions: list[str], expected: tuple[int, int]
 ) -> None:
     assert convert_mutalyzer_range(positions[0], positions[1]) == expected
 
@@ -150,7 +150,7 @@ view_variants: Any = [
 
 @pytest.mark.parametrize("payload, exons, expected", view_variants)
 def test_parse_view_variants(
-    payload: List[Dict[str, Any]], exons: List[List[str]], expected: List[Any]
+    payload: list[dict[str, Any]], exons: list[list[str]], expected: list[Any]
 ) -> None:
     # exons = [["5027", "5113"], ["6011", "6127"], ["7021", "7165"], ["12959", "13948"]]
     assert parse_view_variants(exons, payload) == expected
@@ -177,8 +177,8 @@ variants = [
 @pytest.mark.parametrize("exon, variants, coordinate, expected", variants)
 def test_exon_variants(
     exon: Range,
-    variants: List[Dict[str, Any]],
-    expected: List[Variant],
+    variants: list[dict[str, Any]],
+    expected: list[Variant],
     coordinate: str,
 ) -> None:
     assert exon_variants(exon, variants, coordinate) == expected
@@ -192,7 +192,7 @@ inside_exon_variants = [
 
 
 @pytest.mark.parametrize("variant, expected", inside_exon_variants)
-def test_variant_inside_exon(variant: Dict[str, Any], expected: bool) -> None:
+def test_variant_inside_exon(variant: dict[str, Any], expected: bool) -> None:
     exon = (0, 10)
     assert inside(exon, variant) == expected
 
@@ -300,7 +300,7 @@ variants_exons = [
 
 @pytest.mark.parametrize("exons, variant, expected", variants_exons)
 def test_detect_exon_variant(
-    exons: List[List[str]], variant: Dict[str, Any], expected: bool
+    exons: list[list[str]], variant: dict[str, Any], expected: bool
 ) -> None:
     assert exon_variant(exons, variant) == expected
 
@@ -338,7 +338,7 @@ rewrite_rev_vars = [
 
 @pytest.mark.parametrize("view_variants, expected", rewrite_rev_vars)
 def test_rewrite_reverse_variants(
-    view_variants: Dict[str, Any], expected: Dict[str, Any]
+    view_variants: dict[str, Any], expected: dict[str, Any]
 ) -> None:
     """Test rewriting variant payload on the reverse strand"""
     rewrite_reverse_variants(view_variants)
@@ -393,7 +393,7 @@ ERRORS = [
 
 @pytest.mark.parametrize("error, payload, expected", ERRORS)
 def test_parse_error_payload(
-    error: str, payload: Dict[str, Any], expected: str
+    error: str, payload: dict[str, Any], expected: str
 ) -> None:
     # Convert dict into a bytes representation of json
     fp_io = io.BytesIO(bytes(json.dumps(payload), "utf-8"))
@@ -415,7 +415,7 @@ TO_TUP = [
 
 
 @pytest.mark.parametrize("pos, expected", TO_TUP)
-def test_pos_to_tuple(pos: str, expected: Tuple[int, ...]) -> None:
+def test_pos_to_tuple(pos: str, expected: tuple[int, ...]) -> None:
     assert pos_to_tuple(pos) == expected
 
 
@@ -477,5 +477,5 @@ VARS = [
 
 
 @pytest.mark.parametrize("hgvs, expected", VARS)
-def test_get_variants(hgvs: str, expected: List[str]) -> None:
+def test_get_variants(hgvs: str, expected: list[str]) -> None:
     assert get_variants(hgvs) == expected

@@ -1,6 +1,6 @@
 import pytest
 
-from typing import List, Dict, cast, Tuple, Any
+from typing import cast, Any
 import copy
 
 from exonviz.exon import (
@@ -128,7 +128,7 @@ class TestExon:
         ]
         # fmt: on
         @pytest.mark.parametrize("end_phase, points", coding_region_frames)
-        def test_draw_coding(self, end_phase: int, points: List[int]) -> None:
+        def test_draw_coding(self, end_phase: int, points: list[int]) -> None:
             """
             Test drawing the coding region with scale 1.2
             Since the start_phase will be drawn the same, we only vary the end phase
@@ -265,7 +265,7 @@ class TestExon:
 
         @pytest.mark.parametrize("exon, valid_splits", splits)
         def test_valid_splits_scale_one(
-            self, exon: Exon, valid_splits: List[Range]
+            self, exon: Exon, valid_splits: list[Range]
         ) -> None:
             """
             GIVEN an exon
@@ -322,7 +322,7 @@ class TestExon:
 
         @pytest.mark.parametrize("exon, valid_splits", splits)
         def test_valid_splits_scale_one_point_seven(
-            self, exon: Exon, valid_splits: List[Range]
+            self, exon: Exon, valid_splits: list[Range]
         ) -> None:
             """
             GIVEN an exon
@@ -543,7 +543,7 @@ class TestExon:
     # fmt: on
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding(
-        self, start_phase: int, end_phase: int, points: List[int]
+        self, start_phase: int, end_phase: int, points: list[int]
     ) -> None:
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         coding = E._draw_coding()
@@ -552,7 +552,7 @@ class TestExon:
 
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding_offset(
-        self, start_phase: int, end_phase: int, points: List[int]
+        self, start_phase: int, end_phase: int, points: list[int]
     ) -> None:
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         # Test setting x or y offset
@@ -760,7 +760,7 @@ class TestExon:
     ]
 
     @pytest.mark.parametrize("d, exon", exon_dict)
-    def test_exon_from_dict(self, d: Dict[str, str], exon: Exon) -> None:
+    def test_exon_from_dict(self, d: dict[str, str], exon: Exon) -> None:
         """
         GIVEN an exon dictionary
         WHEN the the dictionary is used to initialise the exon
@@ -996,7 +996,7 @@ class TestDrawing:
 
     @pytest.mark.parametrize("exons, width, gap, page", to_page)
     def test_exons_on_page(
-        self, exons: List[Exon], width: int, gap: int, page: List[List[Exon]]
+        self, exons: list[Exon], width: int, gap: int, page: list[list[Exon]]
     ) -> None:
         new_page = group_exons(
             exons, height=20, scale=1, gap=gap, width=width, page_full=0, gap_offset=0
@@ -1004,7 +1004,7 @@ class TestDrawing:
 
         assert new_page == page
 
-    invalid_splits: List[Tuple[List[Range], int]] = [
+    invalid_splits: list[tuple[list[Range], int]] = [
         # Splits, page_size
         # There are no valid splits
         (list(), 10),
@@ -1013,7 +1013,7 @@ class TestDrawing:
     ]
 
     @pytest.mark.parametrize("splits, page_size", invalid_splits)
-    def test_pick_split_invalid(self, splits: List[Range], page_size: int) -> None:
+    def test_pick_split_invalid(self, splits: list[Range], page_size: int) -> None:
         """
         GIVEN an empty list of valid splits
         WHEN we pick a split
@@ -1037,7 +1037,7 @@ class TestDrawing:
 
     @pytest.mark.parametrize("splits, page_size, expected", splits)
     def test_pick_split(
-        self, splits: List[Range], page_size: int, expected: int
+        self, splits: list[Range], page_size: int, expected: int
     ) -> None:
         assert _pick_split(splits, page_size) == expected
 
@@ -1096,7 +1096,7 @@ class TestDrawing:
     ]
 
     @pytest.mark.parametrize("invalid, msg", invalid_configs)
-    def test_invalid_drawing_config(self, invalid: Dict[str, Any], msg: str) -> None:
+    def test_invalid_drawing_config(self, invalid: dict[str, Any], msg: str) -> None:
         # Default (correct) configuration
         config = {
             "width": 1000,

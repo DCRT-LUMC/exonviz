@@ -1,4 +1,4 @@
-from typing import List, Union, Tuple, Any, Dict, no_type_check
+from typing import Any, no_type_check
 import svg
 from .exon import element_xy, Element, Exon, Variant
 import exonviz.exon
@@ -29,13 +29,13 @@ config = {key: value for key, value, description in _config}
 
 
 def shift(
-    points: List[Union[float, int]], x_offset: float, y_offset: float
-) -> List[Union[float, int]]:
+    points: list[float | int], x_offset: float, y_offset: float
+) -> list[float | int]:
     """Shift the x- and y position by the supplied offsets"""
     return [x + y_offset if i % 2 else x + x_offset for i, x in enumerate(points)]
 
 
-def bottom_right(elements: List[Element], height: int) -> Tuple[int, int]:
+def bottom_right(elements: list[Element], height: int) -> tuple[int, int]:
     """
     Determine the bottom right x and y position for a list of svg Elements
     """
@@ -60,11 +60,11 @@ def _guess_width(name: str, height: int) -> float:
 
 
 def draw_legend(
-    exons: List[Exon], width: int, height: int, y: float = 0
-) -> List[Element]:
+    exons: list[Exon], width: int, height: int, y: float = 0
+) -> list[Element]:
     """Draw the legend for variants in Exons"""
 
-    def get_legend_keys(exons: List[Exon]) -> List[Tuple[str, str]]:
+    def get_legend_keys(exons: list[Exon]) -> list[tuple[str, str]]:
         """Extract the legend keys from the Exon Variants"""
         keys = list()
         for exon in exons:
@@ -74,7 +74,7 @@ def draw_legend(
                     keys.append(key)
         return keys
 
-    elements: List[Element] = list()
+    elements: list[Element] = list()
 
     # The x-position where we will draw the first entry of the legend
     x_pos: float = height
@@ -109,8 +109,8 @@ def draw_legend(
 
 @no_type_check
 def draw_exons(
-    exons: List[Exon],
-    config: Dict[str, Any],
+    exons: list[Exon],
+    config: dict[str, Any],
 ) -> svg.SVG:
     """Draw a list of Exons based on the specified configuration
 
