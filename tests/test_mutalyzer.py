@@ -4,6 +4,7 @@ import json
 import pytest
 import itertools
 from exonviz.mutalyzer import (
+    cdot_to_tuple,
     convert_exon_positions,
     convert_mutalyzer_range,
     transcript_to_coordinate,
@@ -479,3 +480,26 @@ VARS = [
 @pytest.mark.parametrize("hgvs, expected", VARS)
 def test_get_variants(hgvs: str, expected: list[str]) -> None:
     assert get_variants(hgvs) == expected
+
+
+@pytest.mark.parametrize(
+    "variant, expected",
+    [
+        ("-10del", (-10, 0, -1, 0)),
+        ("-5+30del", (-5, 30, -1, 0)),
+        ("-6-6del", (-6, -6, -1, 0)),
+        ("-6del", (-6, 0, -1, 0)),
+        ("-1del", (-1, 0, -1, 0)),
+        ("1del", (1, 0, 0, 0)),
+        ("10del", (10, 0, 0, 0)),
+        ("10+1del", (10, 1, 0, 0)),
+        ("11-10del", (11, -10, 0, 0)),
+        ("11del", (11, 0, 0, 0)),
+        ("*1del", (1, 0, 1, 0)),
+        ("*2+10del", (2, 10, 1, 0)),
+        ("*3-11del", (3, -11, 1, 0)),
+    ],
+)
+def test_cdot_to_tuple(variant: str, expected: tuple[int, ...]) -> None:
+    """Test converting c. hgvs variant descriptions into a tuple"""
+    assert cdot_to_tuple(variant) == expected
