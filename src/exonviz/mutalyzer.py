@@ -369,3 +369,37 @@ def get_variants(hgvs: str) -> list[str]:
     # If there is a single variant
     else:
         return [description]
+
+
+def cdot_to_tuple(variant: str) -> tuple[int, int, int, int]:
+    """
+    Convert an HGVS variant in c. notation to a 4-part tuple for use with the
+    mutalyzer crossmapper
+    """
+    m = to_model(variant, "variant")
+    loc = m["location"]
+
+    # Determine the position
+    outside_cds = loc.get("outside_cds")
+    position = int(loc["position"])
+    if outside_cds == "upstream":
+        position *= -1
+
+    # Determine the (intron) offset
+    offset = loc.get("offset", dict()).get("value", 0)
+
+    # Determine the region, -1 is upstream of cds, 0 is in cds, 1 is after the CDS
+    outside_cds = loc.get("outside_cds")
+    if outside_cds is None:
+        region = 0
+    elif outside_cds == "downstream":
+        region = 1
+    elif outside_cds == "upstream":
+        region = -1
+    else:
+        raise ValueError(m)
+
+    # We assume the offset outside of the transcript is always 0
+    outside_transcript = 0
+
+    return (position, offset, region, outside_transcript)
