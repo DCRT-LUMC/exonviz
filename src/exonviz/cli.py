@@ -48,14 +48,18 @@ def check_input(transcript: str) -> str:
     # Is transcript already valid HGVS
     try:
         parse(transcript)
-        return transcript
+        # Rewrite the HGVS description with variants to put the variants in order,
+        # which they might not be
+        return sort_variants(transcript)
     except Exception:
         pass
 
     # Maybe we got a bare transcript, we should make it a variant description
     var_transcript = f"{transcript}:c.="
     parse(var_transcript)
-    return var_transcript
+    # Rewrite the HGVS description with variants to put the variants in order,
+    # which they might not be
+    return sort_variants(var_transcript)
 
 
 def trim_variants(transcript: str) -> str:
@@ -132,10 +136,6 @@ def make_exons(hgvs: str, config: dict[str, Any]) -> list[Exon]:
 
     # Make the HGVS description without variants for the normalizer
     no_variants = trim_variants(hgvs)
-
-    # Rewrite the HGVS description with variants to put the variants in order,
-    # which they might not be
-    hgvs = sort_variants(hgvs)
 
     exon_payload = fetch_exons(no_variants)
 
