@@ -122,23 +122,24 @@ def sort_variants(transcript: str) -> str:
     return transcript[:start] + f"[{vars}]"
 
 
-def make_exons(transcript: str, config: dict[str, Any]) -> list[Exon]:
+def make_exons(hgvs: str, config: dict[str, Any]) -> list[Exon]:
     """Make or fetch the requested exons"""
-
     # If the transcript is actually the gene name, substitute the MANE transcript
     MANE = get_MANE()
-    transcript = MANE.get(transcript, transcript)
+    hgvs = MANE.get(hgvs, hgvs)
     # Does the transcript format make sense?
-    transcript = check_input(transcript)
+    hgvs = check_input(hgvs)
 
     # Make the HGVS description without variants for the normalizer
-    no_variants = trim_variants(transcript)
+    no_variants = trim_variants(hgvs)
 
     # Rewrite the HGVS description with variants to put the variants in order,
     # which they might not be
+    hgvs = sort_variants(hgvs)
+
     exon_payload = fetch_exons(no_variants)
 
-    exons, dropped = build_exons(transcript, exon_payload, config)
+    exons, dropped = build_exons(hgvs, exon_payload, config)
 
     for variant in dropped:
         log.warning(f"Dropped variant {variant}, which falls outside the exons")

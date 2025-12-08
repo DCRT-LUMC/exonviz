@@ -163,7 +163,7 @@ def variants_from_hgvs(hgvs: str) -> list[str]:
 
 
 def build_exons(
-    transcript: str,
+    hgvs: str,
     mutalyzer: dict[str, Any],
     config: dict[str, Any],
 ) -> tuple[list[Exon], list[str]]:
@@ -172,9 +172,9 @@ def build_exons(
 
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
-    coordinate_system = transcript_to_coordinate(transcript)
+    coordinate_system = transcript_to_coordinate(hgvs)
 
-    variants = variants_from_hgvs(transcript)
+    variants = variants_from_hgvs(hgvs)
 
     # Convert to ranges
     exon_ranges = exons_to_ranges(exons, cds)
@@ -233,7 +233,7 @@ def build_exons(
     # Determine which variants have been dropped
     dropped = list()
 
-    hgvs_variants = variants_from_hgvs(transcript)
+    hgvs_variants = variants_from_hgvs(hgvs)
 
     for variant in hgvs_variants:
         if variant not in exon_vars:
