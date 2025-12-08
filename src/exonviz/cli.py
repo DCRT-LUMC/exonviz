@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 from typing import Any, cast
 from .draw import draw_exons
 from .exon import Exon, Variant, exons_from_tsv
-from .mutalyzer import fetch_exons, fetch_variants, build_exons, less_than
+from .mutalyzer import fetch_exons, build_exons, less_than
 from mutalyzer_hgvs_parser import parse, to_model
 
 from .draw import _config
@@ -136,12 +136,9 @@ def make_exons(transcript: str, config: dict[str, Any]) -> list[Exon]:
 
     # Rewrite the HGVS description with variants to put the variants in order,
     # which they might not be
-    ordered_variants = sort_variants(transcript)
-
     exon_payload = fetch_exons(no_variants)
-    variants = fetch_variants(ordered_variants)
 
-    exons, dropped = build_exons(transcript, exon_payload, variants, config)
+    exons, dropped = build_exons(transcript, exon_payload, config)
 
     for variant in dropped:
         log.warning(f"Dropped variant {variant}, which falls outside the exons")

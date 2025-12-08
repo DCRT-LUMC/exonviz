@@ -48,21 +48,6 @@ def fetch_exons(transcript: str) -> dict[str, Any]:
     return selector
 
 
-def fetch_variants(transcript: str) -> dict[str, Any]:
-    """Fetch variant view from mutalyzer"""
-
-    url = f"https://mutalyzer.nl/api/view_variants/{transcript}"
-
-    try:
-        response = urllib.request.urlopen(url)
-    except HTTPError as e:
-        msg = parse_error_payload(e)
-        raise RuntimeError(msg)
-    else:
-        js: dict[str, Any] = json.loads(response.read())
-    return js
-
-
 def convert_mutalyzer_range(start: str, end: str) -> tuple[int, int]:
     """Convert a mutalyzer range to 0-based coordinates"""
 
@@ -104,57 +89,6 @@ def make_coding(exon: Range, coding_region: Range, start_phase: int) -> Coding:
     return Coding(
         start=coding_start, end=coding_end, start_phase=start_phase, end_phase=end_phase
     )
-
-
-def exon_variant(exons: list[list[str]], variant: dict[str, Any]) -> bool:
-    """Determine if a given variant falls in an exon"""
-    reverse = is_reverse(exons[0][0], exons[0][1])
-
-    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
-
-    position, exon_offset, transcript_offset = x.coordinate_to_noncoding(
-        variant["start"]
-    )
-
-    return not exon_offset
-
-
-def variants_outside_exons(
-    exons: list[list[str]], payload: list[dict[str, Any]]
-) -> list[str]:
-    """Determine description of variants that fall outside the exons"""
-    # Exclude the regions that flank the variants
-    variants = [x for x in payload if x["type"] == "variant"]
-
-    outside = list()
-    for var in variants:
-        if not exon_variant(exons, var):
-            outside.append(var["description"])
-    return outside
-
-
-def parse_view_variants(
-    exons: list[list[str]], payload: list[dict[str, Any]]
-) -> list[dict[str, Any]]:
-    """Extract only the exonic variants from the mutalyzer view_variants API payload"""
-    # Exclude the regions that flank the variants
-    variants = [x for x in payload if x["type"] == "variant"]
-
-    # Variants outside of the exons
-    outside = variants_outside_exons(exons, payload)
-
-    for var in variants:
-        # Exclude variants that do not fall inside an exon
-        if var["description"] in outside:
-            continue
-        var["start"], var["end"] = variant_to_ranges(exons, var["start"], var["end"])
-
-    return variants
-
-
-def inside(exon: Range, variant: dict[str, Any]) -> bool:
-    pos = variant["start"]
-    return cast(bool, pos >= exon[0] and pos < exon[1])
 
 
 def transcript_to_coordinate(transcript: str) -> str:
@@ -213,33 +147,6 @@ def cds_to_ranges(exons: list[list[str]], cds: list[str]) -> tuple[int, int]:
     return (cds_start, cds_end)
 
 
-def variant_to_ranges(
-    exons: list[list[str]], var_start: int, var_end: int
-) -> tuple[int, int]:
-    """Convert mutalyzer exons to python ranges, for both strands"""
-    reverse = is_reverse(exons[0][0], exons[0][1])
-
-    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
-    g = mutalyzer_crossmapper.Genomic()
-
-    new_start = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_start)[0])
-    new_end = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_end)[0])
-    if reverse:
-        return (new_end, new_start)
-    else:
-        return (new_start, new_end)
-
-
-def rewrite_reverse_variants(view_variants: dict[str, Any]) -> None:
-    if not view_variants.get("inverted"):
-        return
-
-    seq_length = view_variants["seq_length"]
-    for view in view_variants["views"]:
-        view["start"] = seq_length - view["start"] - 1
-        view["end"] = seq_length - view["end"] - 1
-
-
 def variants_from_hgvs(hgvs: str) -> list[str]:
     """Extract a list of variants from an hgvs description"""
     variants = hgvs.strip(" ").split(":")[1][2:]
@@ -258,7 +165,6 @@ def variants_from_hgvs(hgvs: str) -> list[str]:
 def build_exons(
     transcript: str,
     mutalyzer: dict[str, Any],
-    view_variants: dict[str, Any],
     config: dict[str, Any],
 ) -> tuple[list[Exon], list[str]]:
     """Build Exons from the mutalyzer payload"""
@@ -267,7 +173,6 @@ def build_exons(
     exons = mutalyzer["exon"]["g"]
     cds = mutalyzer["cds"]["g"][0]
     coordinate_system = transcript_to_coordinate(transcript)
-    rewrite_reverse_variants(view_variants)
 
     variants = variants_from_hgvs(transcript)
 
