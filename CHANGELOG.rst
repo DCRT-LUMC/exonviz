@@ -9,6 +9,7 @@ Changelog
 v0.2.16-dev
 -----------
 + Add API documentation
++ Fix a bug with variant positions in transcripts with exons
 
 v0.2.15
 -------
