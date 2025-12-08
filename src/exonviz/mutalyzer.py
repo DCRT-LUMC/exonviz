@@ -163,7 +163,7 @@ def transcript_to_coordinate(transcript: str) -> str:
 
 
 def exon_variants(
-    exon: Range, variants: list[dict[str, Any]], coordinate: str
+    exons: list[Range], cds: Range, exon: Range, variants: list[str], coordinate: str
 ) -> list[Variant]:
     """Create a list of Variants that fall within the exon
 
@@ -171,10 +171,14 @@ def exon_variants(
     """
     vars = list()
     for var in variants:
-        if inside(exon, var):
-            relative_position = var["start"] - exon[0]
-            desc = var["description"]
-            vars.append(Variant(relative_position, f"{coordinate}.{desc}", "red"))
+        position = cdot_to_position(exons, cds, var)
+        # Intronic variant
+        if position is None:
+            continue
+        # Variant falls within the exon
+        if position >= exon[0] and position < exon[1]:
+            relative_position = position - exon[0]
+            vars.append(Variant(relative_position, f"{coordinate}.{var}", "red"))
     return vars
 
 
@@ -236,6 +240,21 @@ def rewrite_reverse_variants(view_variants: dict[str, Any]) -> None:
         view["end"] = seq_length - view["end"] - 1
 
 
+def variants_from_hgvs(hgvs: str) -> list[str]:
+    """Extract a list of variants from an hgvs description"""
+    variants = hgvs.strip(" ").split(":")[1][2:]
+
+    # Empty HGVS description
+    if variants == "=":
+        return list()
+    # List of variants
+    elif variants.startswith("["):
+        return variants[1:-1].split(";")
+    # Single variant
+    else:
+        return [variants]
+
+
 def build_exons(
     transcript: str,
     mutalyzer: dict[str, Any],
@@ -249,7 +268,8 @@ def build_exons(
     cds = mutalyzer["cds"]["g"][0]
     coordinate_system = transcript_to_coordinate(transcript)
     rewrite_reverse_variants(view_variants)
-    vars = view_variants["views"]
+
+    variants = variants_from_hgvs(transcript)
 
     # Convert to ranges
     exon_ranges = exons_to_ranges(exons, cds)
@@ -263,9 +283,6 @@ def build_exons(
     color_index = 0
     colors = config["variantcolors"]
 
-    # Get the variants
-    variants = parse_view_variants(exons, vars)
-
     for exon in exon_ranges:
         # Determine the name of this exon
         index += 1
@@ -276,7 +293,7 @@ def build_exons(
         # Determine the coding region for this exon
         coding = make_coding(exon, cds_ranges, start_phase)
         # Determine the variants for this exon
-        vars = exon_variants(exon, variants, coordinate_system)
+        vars = exon_variants(exon_ranges, cds_ranges, exon, variants, coordinate_system)
         # Set the variant colors
         for var in vars:
             i = color_index % len(colors)
@@ -311,7 +328,7 @@ def build_exons(
     # Determine which variants have been dropped
     dropped = list()
 
-    hgvs_variants = get_variants(transcript)
+    hgvs_variants = variants_from_hgvs(transcript)
 
     for variant in hgvs_variants:
         if variant not in exon_vars:
@@ -352,23 +369,6 @@ def pos_to_tuple(position: str) -> tuple[int, int, int]:
 
 def less_than(a: str, b: str) -> bool:
     return pos_to_tuple(a) < pos_to_tuple(b)
-
-
-def get_variants(hgvs: str) -> list[str]:
-    """Get a list of variants from a HGVS description"""
-    reference, description = hgvs.split(":")
-    description = description[2:].strip(" ")
-
-    # If there are no variants
-    if description == "=":
-        return list()
-
-    # If there are multiple variants
-    if description.startswith("["):
-        return description[1:-1].split(";")
-    # If there is a single variant
-    else:
-        return [description]
 
 
 def cdot_to_tuple(variant: str) -> tuple[int, int, int, int]:

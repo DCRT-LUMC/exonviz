@@ -23,7 +23,7 @@ from exonviz.mutalyzer import (
     parse_error_payload,
     less_than,
     pos_to_tuple,
-    get_variants,
+    variants_from_hgvs,
 )
 from exonviz.exon import Coding, Variant
 
@@ -160,30 +160,56 @@ def test_parse_view_variants(
 
 variants = [
     # exon: Range, variants, coordinate, expected
-    ((0, 10), [{"start": 100}], "coordinate", list()),
-    (
-        (0, 10),
-        [{"start": 0, "description": "274G>T"}],
+    (  # Exon 1
+        (0, 87),
         "c",
-        [Variant(0, "c.274G>T", color="red")],
+        [
+            Variant(0, "c.-35del", color="red"),
+            Variant(35, "c.1del", color="red"),
+            Variant(86, "c.52del", color="red"),
+        ],
     ),
-    (
-        (100, 110),
-        [{"start": 105, "description": "274g>u"}],
-        "r",
-        [Variant(5, "r.274g>u", color="red")],
+    (  # Exon 2
+        (87, 204),
+        "c",
+        [
+            Variant(0, "c.53del", color="red"),
+            Variant(116, "c.169del", color="red"),
+        ],
     ),
 ]
 
 
-@pytest.mark.parametrize("exon, variants, coordinate, expected", variants)
+@pytest.mark.parametrize("exon, coordinate, expected", variants)
 def test_exon_variants(
     exon: Range,
-    variants: list[dict[str, Any]],
     expected: list[Variant],
     coordinate: str,
 ) -> None:
-    assert exon_variants(exon, variants, coordinate) == expected
+    # SDHD with the introns removed
+    exons = [(0, 87), (87, 204), (204, 349), (349, 1339)]
+    cds = (35, 515)
+    # Variants on the modified SDHD transcript
+    variants = [
+        "-35del",
+        "1del",
+        "52del",
+        "52+15del",
+        "53-10del",
+        "53del",
+        "169del",
+        "169+10del",
+        "170-10del",
+        "170del",
+        "314del",
+        "314+5del",
+        "315-5del",
+        "315del",
+        "480del",
+        "481del",
+        "*824del",
+    ]
+    assert exon_variants(exons, cds, exon, variants, coordinate) == expected
 
 
 inside_exon_variants = [
@@ -462,27 +488,6 @@ def test_sort_positions_smaller(a: str, b: str) -> None:
     assert not less_than(a, b)
 
 
-VARS = [
-    ("NC_123:c.=", []),
-    ("NC_123:c.100A>T", ["100A>T"]),
-    ("NC_123:c.100_200delinsATCGT", ["100_200delinsATCGT"]),
-    ("NC_123:c.[1del;2A>T]", ["1del", "2A>T"]),
-    ("NC_123:c.(10_12)insN", ["(10_12)insN"]),
-    ("NC_123:g.*1281_*1283A[13]", ["*1281_*1283A[13]"]),
-    ("NC_123:g.[100del;*1281_*1283A[13]]", ["100del", "*1281_*1283A[13]"]),
-    # Strip trailing spaces
-    (
-        "NC_123:c.[*333_*338delinsAGGGCTG;*402G>T] ",
-        ["*333_*338delinsAGGGCTG", "*402G>T"],
-    ),
-]
-
-
-@pytest.mark.parametrize("hgvs, expected", VARS)
-def test_get_variants(hgvs: str, expected: list[str]) -> None:
-    assert get_variants(hgvs) == expected
-
-
 @pytest.mark.parametrize(
     "variant, expected",
     [
@@ -552,3 +557,30 @@ def test_cdot_to_position_forward(variant: str, expected: int | None) -> None:
     sdhd_cds = (35, 515)
 
     assert cdot_to_position(sdhd_exons, sdhd_cds, variant) == expected
+
+
+@pytest.mark.parametrize(
+    "hgvs, expected",
+    [
+        ("ENST:c.=", []),
+        ("ENST:c.10del", ["10del"]),
+        ("ENST:c.-10+12_*18-29del", ["-10+12_*18-29del"]),
+        ("ENST:c.[10del;11del]", ["10del", "11del"]),
+        ("ENST:c.[10del]", ["10del"]),
+        ("NC_123:c.=", []),
+        ("NC_123:c.100A>T", ["100A>T"]),
+        ("NC_123:c.100_200delinsATCGT", ["100_200delinsATCGT"]),
+        ("NC_123:c.[1del;2A>T]", ["1del", "2A>T"]),
+        ("NC_123:c.(10_12)insN", ["(10_12)insN"]),
+        ("NC_123:g.*1281_*1283A[13]", ["*1281_*1283A[13]"]),
+        ("NC_123:g.[100del;*1281_*1283A[13]]", ["100del", "*1281_*1283A[13]"]),
+        # Strip trailing spaces
+        (
+            "NC_123:c.[*333_*338delinsAGGGCTG;*402G>T] ",
+            ["*333_*338delinsAGGGCTG", "*402G>T"],
+        ),
+    ],
+)
+def test_variants_from_hgvs(hgvs: str, expected: list[str]) -> None:
+    """Test extracting variants from an hgvs description"""
+    assert variants_from_hgvs(hgvs) == expected
