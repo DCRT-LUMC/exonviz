@@ -4,6 +4,7 @@ import json
 import pytest
 import itertools
 from exonviz.mutalyzer import (
+    cdot_to_position,
     cdot_to_tuple,
     convert_exon_positions,
     convert_mutalyzer_range,
@@ -503,3 +504,37 @@ def test_get_variants(hgvs: str, expected: list[str]) -> None:
 def test_cdot_to_tuple(variant: str, expected: tuple[int, ...]) -> None:
     """Test converting c. hgvs variant descriptions into a tuple"""
     assert cdot_to_tuple(variant) == expected
+
+
+@pytest.mark.parametrize(
+    "variant, expected",
+    [
+        ("-35del", 0),
+        ("1del", 35),
+        ("52del", 86),
+        ("52+15del", None),
+        ("53-10del", None),
+        ("53del", 87),
+        ("169del", 203),
+        ("169+10del", None),
+        ("170-10del", None),
+        ("170del", 204),
+        ("314del", 348),
+        ("314+5del", None),
+        ("315-5del", None),
+        ("315del", 349),
+        ("480del", 514),
+        ("481del", 515),
+        ("*824del", 1338),
+    ],
+)
+def test_cdot_to_position_forward(variant: str, expected: int | None) -> None:
+    """Test converting a cdot variant to position for the forward strand
+
+    Note that the exons and cds positions have been modified to remove introns
+    """
+    # SDHD, with positions modified to remove introns
+    sdhd_exons = [(0, 87), (87, 204), (204, 349), (349, 1339)]
+    sdhd_cds = (35, 515)
+
+    assert cdot_to_position(sdhd_exons, sdhd_cds, variant) == expected

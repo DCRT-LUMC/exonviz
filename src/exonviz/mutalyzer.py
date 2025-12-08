@@ -5,7 +5,7 @@ import json
 
 import re
 
-from mutalyzer_crossmapper import NonCoding, Genomic
+import mutalyzer_crossmapper
 from mutalyzer_hgvs_parser import to_model
 from .exon import Exon, Coding, Variant
 from .range import intersect
@@ -110,7 +110,7 @@ def exon_variant(exons: list[list[str]], variant: dict[str, Any]) -> bool:
     """Determine if a given variant falls in an exon"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons), reverse)
+    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
 
     position, exon_offset, transcript_offset = x.coordinate_to_noncoding(
         variant["start"]
@@ -182,8 +182,8 @@ def exons_to_ranges(exons: list[list[str]], cds: list[str]) -> list[tuple[int, i
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons), reverse)
-    g = Genomic()
+    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
+    g = mutalyzer_crossmapper.Genomic()
 
     output_exons = list()
     for exon in exons:
@@ -200,8 +200,8 @@ def cds_to_ranges(exons: list[list[str]], cds: list[str]) -> tuple[int, int]:
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(cds[0], cds[1])
 
-    x = NonCoding(convert_exon_positions(exons), reverse)
-    g = Genomic()
+    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
+    g = mutalyzer_crossmapper.Genomic()
 
     cds_start = x.coordinate_to_noncoding(g.genomic_to_coordinate(int(cds[0])))[0] - 1
     cds_end = x.coordinate_to_noncoding(g.genomic_to_coordinate(int(cds[1])))[0]
@@ -215,8 +215,8 @@ def variant_to_ranges(
     """Convert mutalyzer exons to python ranges, for both strands"""
     reverse = is_reverse(exons[0][0], exons[0][1])
 
-    x = NonCoding(convert_exon_positions(exons), reverse)
-    g = Genomic()
+    x = mutalyzer_crossmapper.NonCoding(convert_exon_positions(exons), reverse)
+    g = mutalyzer_crossmapper.Genomic()
 
     new_start = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_start)[0])
     new_end = g.genomic_to_coordinate(x.coordinate_to_noncoding(var_end)[0])
@@ -403,3 +403,19 @@ def cdot_to_tuple(variant: str) -> tuple[int, int, int, int]:
     outside_transcript = 0
 
     return (position, offset, region, outside_transcript)
+
+
+def cdot_to_position(exons: list[Range], cds: Range, variant: str) -> int | None:
+    """Convert a variant in c. format to a position on the transcript
+
+    This function assumes that exons are adjacent, i.e. that introns have
+    been removed from ENST and NC(NM) transcripts
+    """
+    t = cdot_to_tuple(variant)
+
+    # Return None for intronic variants, which are not supported
+    if t[1]:
+        return None
+
+    crossmap = mutalyzer_crossmapper.Coding(exons, cds)
+    return int(crossmap.coding_to_coordinate(t))
