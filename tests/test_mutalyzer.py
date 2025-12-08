@@ -499,6 +499,20 @@ def test_get_variants(hgvs: str, expected: list[str]) -> None:
         ("*1del", (1, 0, 1, 0)),
         ("*2+10del", (2, 10, 1, 0)),
         ("*3-11del", (3, -11, 1, 0)),
+        # For variants which are larger than 1 position, we create the tuple
+        # based on the start
+        ("-10_-8del", (-10, 0, -1, 0)),
+        ("-5+30_-5+35del", (-5, 30, -1, 0)),
+        ("-6-6_-6-3del", (-6, -6, -1, 0)),
+        ("-6_3del", (-6, 0, -1, 0)),
+        ("-1_5+12del", (-1, 0, -1, 0)),
+        ("1_10-8del", (1, 0, 0, 0)),
+        ("10+1_10+12del", (10, 1, 0, 0)),
+        ("10+1_11-8del", (10, 1, 0, 0)),
+        ("11-10_11-5del", (11, -10, 0, 0)),
+        ("*1_*5del", (1, 0, 1, 0)),
+        ("*2+10_*2+20del", (2, 10, 1, 0)),
+        ("*3-11_*5+8del", (3, -11, 1, 0)),
     ],
 )
 def test_cdot_to_tuple(variant: str, expected: tuple[int, ...]) -> None:

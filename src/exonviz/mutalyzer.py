@@ -377,7 +377,8 @@ def cdot_to_tuple(variant: str) -> tuple[int, int, int, int]:
     mutalyzer crossmapper
     """
     m = to_model(variant, "variant")
-    loc = m["location"]
+    # If the variant is a range, we take the start
+    loc = m["location"] if m["location"]["type"] == "point" else m["location"]["start"]
 
     # Determine the position
     outside_cds = loc.get("outside_cds")
