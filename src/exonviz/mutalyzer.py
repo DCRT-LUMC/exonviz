@@ -3,8 +3,6 @@ import urllib.request
 from urllib.error import HTTPError
 import json
 
-import re
-
 import mutalyzer_crossmapper
 from mutalyzer_hgvs_parser import to_model
 from .exon import Exon, Coding, Variant
@@ -242,38 +240,40 @@ def build_exons(
     return Exons, dropped
 
 
-def pos_to_tuple(position: str) -> tuple[int, int, int]:
-    """Convert a HGVS position to a tuple of three positions
-    The meaning of the three positions is as follows
+def variant_to_tuple(variant: str) -> tuple[int, int, int]:
+    """Convert a 'point' dictionary from parse_hgvs into a Location"""
 
-    The first int is 1 if after the CDS end, and 0 otherwise
-    The second int is the c. position, e.g. the 'normal' hgvs position
-    The third position is the intronic position, or 0
-    """
+    # Default values
+    downstream = 0
+    position = 0
+    offset = 0
 
-    # Initialise the 'special' positions
-    after_cds = 0
-    intronic = 0
+    variant_model = to_model(variant, "variant")
 
-    # If we are after the coding region
-    if position.startswith("*"):
-        after_cds = 1
-        position = position[1:]
+    # If the variant is a range, we take the start as the position
+    if variant_model["location"]["type"] == "point":
+        point = variant_model["location"]
+    elif variant_model["location"]["type"] == "range":
+        point = variant_model["location"]["start"]
+    else:
+        raise ValueError(f"Unable to parse {variant}")
 
-    # If the position is a 'regular' c. position
-    if re.match(r"^-?\d+$", position):
-        c_pos = int(position)
+    position = point["position"]
+    if "outside_cds" in point:
+        if point["outside_cds"] == "upstream":
+            position *= -1
+        elif point["outside_cds"] == "downstream":
+            downstream = 1
+        else:
+            raise RuntimeError
+    if "offset" in point:
+        offset = point["offset"]["value"]
 
-    # If the position has a intronic component
-    if m := re.match(r"^(-?\d+)([-\+]\d+)", position):
-        c_pos = int(m.group(1))
-        intronic = int(m.group(2))
-
-    return after_cds, c_pos, intronic
+    return (downstream, position, offset)
 
 
 def less_than(a: str, b: str) -> bool:
-    return pos_to_tuple(a) < pos_to_tuple(b)
+    return variant_to_tuple(a) < variant_to_tuple(b)
 
 
 def cdot_to_tuple(variant: str) -> tuple[int, int, int, int]:

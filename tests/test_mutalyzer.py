@@ -17,7 +17,7 @@ from exonviz.mutalyzer import (
     Range,
     parse_error_payload,
     less_than,
-    pos_to_tuple,
+    variant_to_tuple,
     variants_from_hgvs,
 )
 from exonviz.exon import Coding, Variant
@@ -245,12 +245,14 @@ TO_TUP = [
     ("*1", (1, 1, 0)),
     ("*5+1", (1, 5, 1)),
     ("*6-1", (1, 6, -1)),
+    ("*8+10_*15-800", (1, 8, 10)),
+    ("-8-10_*15-800", (0, -8, -10)),
 ]
 
 
 @pytest.mark.parametrize("pos, expected", TO_TUP)
 def test_pos_to_tuple(pos: str, expected: tuple[int, ...]) -> None:
-    assert pos_to_tuple(pos) == expected
+    assert variant_to_tuple(pos) == expected
 
 
 # Sorted list of HGVS positions, in increasing position
