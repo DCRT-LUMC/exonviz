@@ -57,9 +57,7 @@ def check_input(transcript: str) -> str:
     # Maybe we got a bare transcript, we should make it a variant description
     var_transcript = f"{transcript}:c.="
     parse(var_transcript)
-    # Rewrite the HGVS description with variants to put the variants in order,
-    # which they might not be
-    return sort_variants(var_transcript)
+    return var_transcript
 
 
 def trim_variants(transcript: str) -> str:
@@ -99,29 +97,14 @@ def sort_variants(transcript: str) -> str:
     # Find the variants
     start = transcript.find("[")
     end = transcript.find("]")
-    variants = transcript[start + 1 : end]
-
-    # Store position -> variant mappings to reconstruct the description
-    lookup = dict()
-
-    # Pattern to split of the position from the rest of the description
-    pattern = r"^([-\*]?\d+)(.*)$"
-
-    # Split of the position from the variant description, since we can sort
-    # the positions
-    for var in variants.split(";"):
-        m = re.match(pattern, var)
-        if not m:
-            raise ValueError(f"Unhandled variant {var}")
-        pos = m.group(1)
-        lookup[pos] = var
+    variants = transcript[start + 1 : end].split(";")
 
     # Sort by position
     compare = cmp_to_key(
         lambda a, b: -1 if less_than(cast(str, a), cast(str, b)) else 1
     )
-    sorted_positions = sorted(lookup.keys(), key=compare)
-    vars = ";".join(f"{lookup[x]}" for x in sorted_positions)
+    sorted_positions = sorted(variants, key=compare)
+    vars = ";".join(sorted_positions)
 
     return transcript[:start] + f"[{vars}]"
 
