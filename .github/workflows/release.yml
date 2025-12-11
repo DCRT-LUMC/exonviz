@@ -39,8 +39,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          python3 release_notes.py CHANGELOG.rst ${{ env.RELEASE_VERSION }} > release-notes.rst
+
           gh release create \
             ${{ env.RELEASE_VERSION}} \
+            --notes-file release-notes.rst \
             --generate-notes
 
   publish:
