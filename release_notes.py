@@ -7,6 +7,7 @@ from collections import OrderedDict
 
 def main(changelog_file, version):
     changes = changelog_by_release(changelog_file)
+    print(changes)
 
     for change in changes.get(version, list()):
         print(change)
