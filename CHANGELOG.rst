@@ -6,9 +6,9 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
-v0.2.17-dev
------------
-+ Fix a rare bug where variants were lost
+v0.2.17
+-------
++ Fix a rare bug where variants are lost
 
 v0.2.16
 -----------
