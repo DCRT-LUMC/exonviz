@@ -50,10 +50,7 @@ mutations and when designing genetic therapies.
 
 `ExonViz` is a Python package and web application that creates biologically
 accurate RNA transcript figures, including features such as coding regions,
-genetic variants and exon boundary frames. The [ExonViz
-website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
-transcript figures between September 2023 and September 2025.
-
+genetic variants and exon boundary frames.
 
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
@@ -139,8 +136,9 @@ ExonViz has proven to be a useful resource to quickly visualize exon reading
 frames and check the location of variants in a transcript. ExonViz is actively
 being used in the field of personalized medicine and has been added to the
 consensus guidelines for assessing pathogenic variants [@Cheerie2025] as one of
-the recommended resources. In addition, the ExonViz website has been used to
-generate over 8000 figures in the first two years it has been online.
+the recommended resources. In addition, the [ExonViz
+website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
+transcript figures between September 2023 and September 2025.
 
 # Conclusion
 To our knowledge, ExonViz is the first publicly available application that
