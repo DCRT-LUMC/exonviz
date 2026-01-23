@@ -135,12 +135,12 @@ documentation](https://exonviz.readthedocs.io/en/latest/examples.html) has a
 number of examples of custom transcripts that can be visualized this way.
 
 # Research impact statement
-ExonViz has proven to be a useful resource to quickly check the location of
-variants in a transcript, and to visualize the exon reading frames. ExonViz is
-actively being used in the field of personalized medicine and will be added to
-the next version of the guidelines as one of the recommended resources. In
-addition, the ExonViz website has been used to generate over 8000 figures in
-the first two years it has been online.
+ExonViz has proven to be a useful resource to quickly visualize exon reading
+frames and check the location of variants in a transcript. ExonViz is actively
+being used in the field of personalized medicine and has been added to the
+consensus guidelines for assessing pathogenic variants [@Cheerie2025] as one of
+the recommended resources. In addition, the ExonViz website has been used to
+generate over 8000 figures in the first two years it has been online.
 
 # Conclusion
 To our knowledge, ExonViz is the first publicly available application that
