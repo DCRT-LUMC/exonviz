@@ -54,13 +54,6 @@ genetic variants and exon boundary frames. The [ExonViz
 website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
 transcript figures between September 2023 and September 2025.
 
-ExonViz is written in Python 3, its web interface is build using Flask. It uses
-the public Mutalyzer API [@Lefter2021] to fetch transcript annotations. This
-gives ExonViz access to all transcripts defined in the RefSeq [@OLeary2016] and
-Ensembl [@Harrison2024] databases across many species, ranging from human and
-mouse to fruit fly and coelacanth. Transcripts and annotations defined on the
-reverse strand are reversed, so ExonViz always visualizes transcripts in their
-forward orientation.
 
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
@@ -93,6 +86,27 @@ To our knowledge, there currently are no easily usable tools which allow the
 user to draw all features required for a comprehensive overview of a
 transcript’s structure and the location of variants of interest.
 
+# Software design
+ExonViz is written in Python 3, its web interface is build using Flask. To
+avoid the complexities of supporting various different transcript definitions,
+ExonViz uses the public Mutalyzer API [@Lefter2021] to fetch transcript
+annotations. This gives ExonViz access to all transcripts defined in the RefSeq
+[@OLeary2016] and Ensembl [@Harrison2024] databases across many species,
+ranging from human and mouse to fruit fly and coelacanth.
+
+Reverse strand transcript are inverted so that ExonViz always visualizes
+transcripts in their forward orientation. This avoids the complications that
+come with the (reversed) annotations for transcripts which are annotated on the
+reverse strand of the chromosome. Variants are assigned to their corresponding
+Exon, which also contains the size, coding region and other features which are
+required to draw an Exon. Exons can be split to ensure they do not go over the
+specified page with, analogous to how long words can be split over multiple
+lines.
+
+ExonViz can also read and write the normalized Exon and Variant models,
+allowing the user to specify custom transcripts and exons in a simple TSV
+format.
+
 # Method
 ExonViz visualizes the exon boundary frames by using different shapes for the
 boundary of exons. It is important that adjacent coding exons have aligning
@@ -120,6 +134,14 @@ modified transcript using ExonViz. The [online
 documentation](https://exonviz.readthedocs.io/en/latest/examples.html) has a
 number of examples of custom transcripts that can be visualized this way.
 
+# Research impact statement
+ExonViz has proven to be a useful resource to quickly check the location of
+variants in a transcript, and to visualize the exon reading frames. ExonViz is
+actively being used in the field of personalized medicine and will be added to
+the next version of the guidelines as one of the recommended resources. In
+addition, the ExonViz website has been used to generate over 8000 figures in
+the first two years it has been online.
+
 # Conclusion
 To our knowledge, ExonViz is the first publicly available application that
 allows for automatic visualization of transcripts with additional features such
@@ -132,6 +154,10 @@ or alternative isoforms. ExonViz can be accessed as a web application via
 [exonviz.rnatherapy.nl](https://exonviz.rnatherapy.nl) or installed via
 [PyPI](https://pypi.org/project/exonviz/). The source code is available on
 [Github](https://github.com/DCRT-LUMC/exonviz).
+
+# AI usage disclosure
+No generative AI tools have been used for ExonViz, the documentation or this
+manuscript.
 
 # Acknowledgments
 We would like to thank the members of the Dutch Center for RNA Therapeutics for
