@@ -77,13 +77,15 @@ clinical and day to day settings, rather than to create a bespoke figure for a
 manuscript or presentation.
 
 # State of the field
-Several tools have been made available that aid in drawing transcripts
-(ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017]), visualize
-different transcript isoforms (genepainter [@Muhlhausen2015]), or visualize
-variants (Variant View [@Ferstay2013]). However, these tools require
-substantial expertise to setup and retrieve the required transcript models,
-which make them hard to use for users with minimal technical expertise.
-Furthermore, none of these tools can draw exon boundary frames.
+Several tools have been made available to visualize various aspects of genes
+and transcripts. ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017])
+can visualize transcripts and exons, while tools like genepainter
+[@Muhlhausen2015] or Swan [@Reese] can be used to visualize different
+transcript isoforms. Variants can be shown on the transcript with Variant View
+[@Ferstay2013]. However, all of these tools require substantial expertise to
+setup and retrieve the required transcript models, which make them hard to use
+for users with minimal technical expertise. Furthermore, none of them have the
+option to indicate exon boundary frames.
 
 To our knowledge there are currently no easily usable tools which allow the
 user to draw all features required for a comprehensive overview of a
@@ -99,7 +101,7 @@ across many species, ranging from human and mouse to fruit fly and coelacanth.
 
 Reverse strand transcript are inverted so that ExonViz always visualizes
 transcripts in their forward orientation. This avoids the complications that
-come with the (reversed) annotations for transcripts which are annotated on the
+come with the inverted annotations for transcripts which are annotated on the
 reverse strand of the chromosome. Variants are assigned to their corresponding
 Exon, which also contains the size, coding region and other features which are
 required to draw an Exon. Exons can be split to ensure they do not go over the
