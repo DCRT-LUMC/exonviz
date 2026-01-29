@@ -64,20 +64,26 @@ human genetics [@Walker2023]. Illustrating the exon structure and the location
 of variants is common practice, especially when new genes, variants or transcripts have
 been discovered. These illustrations are also used to assess potential genetic
 treatment options (e.g., canonical exon skipping), in teaching settings, in
-diagnostics, to identify mutational hotspots and for genetic counseling. To
-date, most people have to resort to manually drawing transcripts with tools
+diagnostics, to identify mutational hotspots and for genetic counseling. In
+particular knowledge about the exon boundary frames aids in the assessment of
+the pathogenicity of genetic variants using the ACMG-AMP guidelines
+[@Richards2015], when evaluating exon spanning deletions [@Cheerie2025] and
+when interpreting the effects of splice altering variants [@Walker2023].
+
+To date, most people have to resort to manually drawing transcripts with tools
 like Illustrator, Photoshop or BioRender, or forgo illustrations altogether.
-Some tools have been made available that aid in drawing transcripts
+Creating transcript visualizations must be quick and easy to be utilized in
+clinical and day to day settings, rather than to create a bespoke figure for a
+manuscript or presentation.
+
+# State of the field
+Several tools have been made available that aid in drawing transcripts
 (ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017]), visualize
 different transcript isoforms (genepainter [@Muhlhausen2015]), or visualize
-variants (Variant View [@Ferstay2013]). However, none of these tools can draw
-exon boundary frames. Knowledge about the exon boundary frames aids in the
-assessment of the pathogenicity of genetic variants using the ACMG-AMP
-guidelines [@Richards2015], when evaluating exon spanning deletions
-[@Cheerie2025] and when interpreting the effects of splice altering variants
-[@Walker2023]. Creating transcript visualizations must be quick and easy
-to be utilized in clinical and day to day settings, rather than to
-create a bespoke figure for a manuscript or presentation.
+variants (Variant View [@Ferstay2013]). However, these tools require
+substantial expertise to setup and retrieve the required transcript models,
+which make them hard to use for users with minimal technical expertise.
+Furthermore, none of these tools can draw exon boundary frames.
 
 To our knowledge there are currently no easily usable tools which allow the
 user to draw all features required for a comprehensive overview of a
@@ -85,7 +91,7 @@ transcript’s structure and the location of variants of interest.
 
 # Software design
 ExonViz is written in Python 3, its web interface is build using Flask. To
-avoid the complexities of retrieving and proccessing various different
+avoid the complexities of retrieving and processing various different
 transcript definitions, ExonViz uses the public Mutalyzer API [@Lefter2021] to
 fetch transcript annotations. This gives ExonViz access to all transcripts
 defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024] databases
