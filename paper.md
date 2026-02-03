@@ -80,16 +80,17 @@ manuscript or presentation.
 Several tools have been made available to visualize various aspects of genes
 and transcripts. ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017])
 can visualize transcripts and exons, while tools like genepainter
-[@Muhlhausen2015] or Swan [@Reese] can be used to visualize different
+[@Muhlhausen2015] or Swan [@Reese2021] can be used to visualize different
 transcript isoforms. Variants can be shown on the transcript with Variant View
 [@Ferstay2013]. However, all of these tools require substantial expertise to
 setup and retrieve the required transcript models, which make them hard to use
 for users with minimal technical expertise. Furthermore, none of them have the
 option to indicate exon boundary frames.
 
-To our knowledge there are currently no easily usable tools which allow the
-user to draw all features required for a comprehensive overview of a
-transcript’s structure and the location of variants of interest.
+To our knowledge there are currently no easily usable tools available which
+allow a non-technical user to quickly draw all features required for a
+comprehensive overview of a transcript’s structure and the location of variants
+of interest.
 
 # Software design
 ExonViz is written in Python 3, its web interface is build using Flask. To
