@@ -41,12 +41,12 @@ functional parts of the transcript, and **introns**, which are removed in a
 process called **splicing**. A single gene typically encodes multiple
 **transcripts** by including different exons. Protein coding genes include one
 or more coding exons, which encode a protein using three-letter sequences
-called **codons**. It is important to realize that exon boundaries and codon
-boundaries do not coincide, *i.e.* single a codon can span two exons. If the codon
-boundaries of adjacent exons are not aligned, an often detrimental **frame
-shift** is introduced. Taking exon boundary reading frames, which we will call
-**exon boundary frames**, into account is crucial when considering the effect of
-mutations and when designing genetic therapies.
+called **codons**. These codons do not necessarily coincide with exon
+boundaries, because a single codon can span two exons. If the codon boundaries
+of adjacent exons are not aligned, an often detrimental **frame shift** is
+introduced. Taking exon boundary reading frames, which we will call **exon
+boundary frames**, into account is crucial when considering the effect of
+mutations and when designing genetic therapies such as exon skipping.
 
 `ExonViz` is a Python package and web application that creates biologically
 accurate RNA transcript figures, including features such as coding regions,
@@ -61,18 +61,19 @@ the end of the transcript.\label{abstract}](docs/figures/abstract.svg)
 Visualization of transcripts, including features like exon boundary frames,
 coding and non coding regions is important within the field of clinical and
 human genetics [@Walker2023]. Illustrating the exon structure and the location
-of variants is common practice, especially when new genes, variants or transcripts have
-been discovered. These illustrations are also used to assess potential genetic
-treatment options (e.g., canonical exon skipping), in teaching settings, in
-diagnostics, to identify mutational hotspots and for genetic counseling. In
-particular knowledge about the exon boundary frames aids in the assessment of
-the pathogenicity of genetic variants using the ACMG-AMP guidelines
-[@Richards2015], when evaluating exon spanning deletions [@Cheerie2025] and
-when interpreting the effects of splice altering variants [@Walker2023].
+of variants is common practice, especially when new genes, variants or
+transcripts have been discovered. These illustrations are also used to assess
+potential genetic treatment options (e.g., canonical exon skipping), in
+teaching settings, in diagnostics, to identify mutational hotspots and for
+genetic counseling. In particular knowledge about the exon boundary frames aids
+in the assessment of the pathogenicity of genetic variants using the ACMG-AMP
+guidelines [@Richards2015], when evaluating exon spanning deletions
+[@Cheerie2025] and when interpreting the effects of splice altering variants
+[@Walker2023].
 
 To date, most people have to resort to manually drawing transcripts with tools
 like Illustrator, Photoshop or BioRender, or forgo illustrations altogether.
-Creating transcript visualizations must be quick and easy to be utilized in
+Creating transcript visualizations should be quick and easy to be utilized in
 clinical and day to day settings, rather than to create a bespoke figure for a
 manuscript or presentation.
 
@@ -104,12 +105,12 @@ Reverse strand transcript are inverted so that ExonViz always visualizes
 transcripts in their forward orientation. This avoids the complications that
 come with the inverted annotations for transcripts which are annotated on the
 reverse strand of the chromosome. Variants are assigned to their corresponding
-Exon, which also contains the size, coding region and other features which are
-required to draw an Exon. Exons can be split to ensure they do not go over the
+exon, which also contains the size, coding region and other features which are
+required to draw an exon. Exons can be split to ensure they do not go over the
 specified page width, analogous to how long words can be split over multiple
 lines.
 
-ExonViz can also read and write the normalized Exon and Variant models,
+ExonViz can also read and write the normalized exon and variant models,
 allowing the user to specify custom transcripts and exons in a simple TSV
 format.
 
@@ -144,7 +145,7 @@ ExonViz has proven to be a useful resource to quickly visualize exon reading
 frames and check the location of variants in a transcript. ExonViz is actively
 being used in the field of personalized medicine and is one of the recommended
 resources in the latest consensus guidelines for assessing pathogenic variants
-[@Cheerie2025]. In addition, the [ExonViz
+for RNA therapies [@Cheerie2025]. In addition, the [ExonViz
 website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
 transcript figures between September 2023 and September 2025.
 
