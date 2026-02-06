@@ -106,7 +106,7 @@ transcripts in their forward orientation. This avoids the complications that
 come with the inverted annotations for transcripts which are annotated on the
 reverse strand of the chromosome. Variants are assigned to their corresponding
 exon, which also contains the size, coding region and other features which are
-required to draw an exon. Exons can be split to ensure they do not go over the
+required to draw an exon. Exons can be split to ensure they do not exceed the
 specified page width, analogous to how long words can be split over multiple
 lines.
 
@@ -122,7 +122,7 @@ boundaries, and the corresponding exon boundary shapes. When the exon and codon
 boundaries coincide (frame 0) the exons are drawn with a straight edge, as is
 the case of exon 1 and 2. Exon 2 ends one base into the codon (in frame 1),
 which is drawn using an arrow on the end of the exon. Exon 3 starts in frame 1,
-and is drawn with a notch at the start of the exon. This reversed for the
+and is drawn with a notch at the start of the exon. This is reversed for the
 boundary between exons 3 and 4, which is in frame 2. Since the exons of a
 transcript should fit together, exons in conflicting frames (*e.g.* because of
 a frame shift inducing variant) are easily spotted due to the fact that the
