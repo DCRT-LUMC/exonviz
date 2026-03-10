@@ -65,7 +65,7 @@ of variants is common practice, especially when new genes, variants or
 transcripts have been discovered. These illustrations are also used to assess
 potential genetic treatment options (e.g., canonical exon skipping), in
 teaching settings, in diagnostics, to identify mutational hotspots and for
-genetic counseling. In particular knowledge about the exon boundary frames aids
+genetic counseling. In particular, knowledge about the exon boundary frames aids
 in the assessment of the pathogenicity of genetic variants using the ACMG-AMP
 guidelines [@Richards2015], when evaluating exon spanning deletions
 [@Cheerie2025] and when interpreting the effects of splice altering variants
@@ -79,7 +79,7 @@ manuscript or presentation.
 
 # State of the field
 Several tools have been made available to visualize various aspects of genes
-and transcripts. ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017])
+and transcripts. ggtranscript [@Gustavsson2022] and wiggleplotr [@Alasoo2017]
 can visualize transcripts and exons, while tools like genepainter
 [@Muhlhausen2015] or Swan [@Reese2021] can be used to visualize different
 transcript isoforms. Variants can be shown on the transcript with Variant View
