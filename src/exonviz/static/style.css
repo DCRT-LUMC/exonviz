@@ -1,0 +1,38 @@
+.content {
+  font-family: arial;
+}
+
+.flash {
+  margin: 1em 0;
+  padding: 1em;
+  background: #d97553;
+  border: 1px solid inherit;
+}
+
+.float-container {
+  padding: 20px;
+}
+
+.sidebar {
+  width: 25%;
+  float: left;
+  padding: 20px;
+}
+
+.float-child {
+  width: 50%;
+  float: left;
+  padding: 20px;
+}
+
+th, td {
+  padding: 1px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+
+table {
+  border-collapse: collapse;
+}
