@@ -40,7 +40,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     include_package_data=True,
     package_data={
-        "exonviz": ["py.typed", "data/mane.txt.gz"]
+        "exonviz": ["py.typed", "data/mane.txt.gz"] + glob("src/exonviz/templates/*") + glob("src/exonviz/static/*"),
     },
     zip_safe=False,
     classifiers=[
@@ -78,9 +78,7 @@ setup(
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
-        # eg:
-        #   'rst': ['docutils>=0.11'],
-        #   ':python_version=="2.6"': ['argparse'],
+        "webserver": ["flask"],
     },
     setup_requires=[
         "pytest-runner",
@@ -88,6 +86,7 @@ setup(
     entry_points={
         "console_scripts": [
             "exonviz=exonviz.cli:main",
+            "exonviz-webserver=exonviz.app:main",
         ]
     },
 )
