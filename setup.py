@@ -74,7 +74,7 @@ setup(
         "svg-py",
         "mutalyzer_crossmapper",
         "mutalyzer_hgvs_parser",
-        "setuptools"
+        "setuptools<82"
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
