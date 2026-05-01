@@ -71,7 +71,7 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        "svg-py",
+        "svg-py==1.10",
         "mutalyzer_crossmapper",
         "mutalyzer_hgvs_parser",
         "setuptools<82"
