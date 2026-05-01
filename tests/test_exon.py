@@ -17,7 +17,7 @@ from exonviz.exon import (
 from exonviz.draw import draw_exons as draw_exons_config
 
 from exonviz.range import Range
-from svg import Rect, Text, Polygon, Style
+from svg import Rect, Text, Polygon, Style, Point
 
 
 class TestExon:
@@ -104,31 +104,31 @@ class TestExon:
         coding_region_frames = [
             # start phase, points
             (0, [
-                0, 20,
-                0, 0,
-                120, 0,
-                120, 20,
+                Point(0, 20),
+                Point(0, 0),
+                Point(120, 0),
+                Point(120, 20),
             ]),
             (1, [
-                0, 20,
-                0, 0,
-                115, 0,
-                120, 10,
-                115, 20
+                Point(0, 20),
+                Point(0, 0),
+                Point(115, 0),
+                Point(120, 10),
+                Point(115, 20)
             ]),
             (2, [
-                0, 20,
-                0, 0,
-                115.0, 0,
-                120.0, 0,
-                115.0, 10.0,
-                120.0, 20,
-                115, 20
+                Point(0, 20),
+                Point(0, 0),
+                Point(115.0, 0),
+                Point(120.0, 0),
+                Point(115.0, 10.0),
+                Point(120.0, 20),
+                Point(115, 20)
             ])
         ]
         # fmt: on
         @pytest.mark.parametrize("end_phase, points", coding_region_frames)
-        def test_draw_coding(self, end_phase: int, points: list[int]) -> None:
+        def test_draw_coding(self, end_phase: int, points: list[Point]) -> None:
             """
             Test drawing the coding region with scale 1.2
             Since the start_phase will be drawn the same, we only vary the end phase
@@ -137,7 +137,7 @@ class TestExon:
             E = Exon(size=100, coding=c, color="blue")
             coding = E._draw_coding(scale=1.2)
 
-            assert coding == Polygon(points=list(points), fill="blue")
+            assert coding == Polygon(points=points, fill="blue")
 
         def test_draw_variants_scale(self, all: Exon) -> None:
             """
@@ -460,90 +460,90 @@ class TestExon:
         # (x and y are interleaved)
         # ||||
         (0, 0, [
-            0, 20,
-            0, 0,
-            100, 0,
-            100, 20,
+            Point(0, 20),
+            Point(0, 0),
+            Point(100, 0),
+            Point(100, 20),
         ]),
         # |||>
         (0, 1, [
-            0, 20,
-            0, 0,
-            95, 0,
-            100, 10,
-            95, 20
+            Point(0, 20),
+            Point(0, 0),
+            Point(95, 0),
+            Point(100, 10),
+            Point(95, 20)
         ]),
         # |||<
         (0, 2, [
-            0, 20,
-            0, 0,
-            95, 0,
-            100, 0,
-            95, 10,
-            100, 20,
-            95, 20
+            Point(0, 20),
+            Point(0, 0),
+            Point(95, 0),
+            Point(100, 0),
+            Point(95, 10),
+            Point(100, 20),
+            Point(95, 20)
         ]),
         # >|||
         (1, 0, [
-            0, 20,
-            5, 10,
-            0, 0,
-            100, 0,
-            100, 20,
+            Point(0, 20),
+            Point(5, 10),
+            Point(0, 0),
+            Point(100, 0),
+            Point(100, 20),
         ]),
         # >||>
         (1, 1, [
-            0, 20,
-            5, 10,
-            0, 0,
-            95, 0,
-            100, 10,
-            95, 20
+            Point(0, 20),
+            Point(5, 10),
+            Point(0, 0),
+            Point(95, 0),
+            Point(100, 10),
+            Point(95, 20)
         ]),
         # >||<
         (1, 2, [
-            0, 20,
-            5, 10,
-            0, 0,
-            95, 0,
-            100, 0,
-            95, 10,
-            100, 20,
-            95, 20
+            Point(0, 20),
+            Point(5, 10),
+            Point(0, 0),
+            Point(95, 0),
+            Point(100, 0),
+            Point(95, 10),
+            Point(100, 20),
+            Point(95, 20)
         ]),
         # <|||
         (2, 0, [
-            5, 20,
-            0, 10,
-            5, 0,
-            100, 0,
-            100, 20,
+            Point(5, 20),
+            Point(0, 10),
+            Point(5, 0),
+            Point(100, 0),
+            Point(100, 20),
         ]),
         # <||>
         (2, 1, [
-            5, 20,
-            0, 10,
-            5, 0,
-            95, 0,
-            100, 10,
-            95, 20
+            Point(5, 20),
+            Point(0, 10),
+            Point(5, 0),
+            Point(95, 0),
+            Point(100, 10),
+            Point(95, 20)
         ]),
         # <||<
         (2, 2, [
-            5, 20,
-            0, 10,
-            5, 0,
-            95, 0,
-            100, 0,
-            95, 10,
-            100, 20,
-            95, 20
+            Point(5, 20),
+            Point(0, 10),
+            Point(5, 0),
+            Point(95, 0),
+            Point(100, 0),
+            Point(95, 10),
+            Point(100, 20),
+            Point(95, 20)
         ])
     ]
     # fmt: on
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding(
-        self, start_phase: int, end_phase: int, points: list[int]
+        self, start_phase: int, end_phase: int, points: list[Point]
     ) -> None:
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         coding = E._draw_coding()
@@ -552,7 +552,7 @@ class TestExon:
 
     @pytest.mark.parametrize("start_phase, end_phase, points", coding_region_frames)
     def test_draw_coding_offset(
-        self, start_phase: int, end_phase: int, points: list[int]
+        self, start_phase: int, end_phase: int, points: list[Point]
     ) -> None:
         E = Exon(size=100, coding=Coding(0, 100, start_phase, end_phase), color="blue")
         # Test setting x or y offset
@@ -561,15 +561,12 @@ class TestExon:
 
         coding = E._draw_coding(x=x_offset, y=y_offset)
 
-        # Shift the expected points (x and y are interleaved)
-        shifted = list()
-        for i, number in enumerate(points):
-            if i % 2 == 0:
-                shifted.append(number + x_offset)
-            else:
-                shifted.append(number + y_offset)
+        # Shift the expected points
+        for point in points:
+            point.x += x_offset
+            point.y += y_offset
 
-        assert coding == Polygon(points=list(shifted), fill="blue")
+        assert coding == Polygon(points=points, fill="blue")
 
     def test_draw_coding_too_small(self) -> None:
         """
@@ -1045,7 +1042,19 @@ class TestDrawing:
         # element, max_x, max_y
         (Rect(x=1, y=2, width=11.0, height=23), 12, 25),
         (Text(x=1, y=1, text="text"), 1, 1),
-        (Polygon(points=[0, 0, 10, 5, 0, 15, 20, 25, 13, 17]), 20, 25),
+        (
+            Polygon(
+                points=[
+                    Point(0, 0),
+                    Point(10, 5),
+                    Point(0, 15),
+                    Point(20, 25),
+                    Point(13, 17),
+                ]
+            ),
+            20,
+            25,
+        ),
         # Empty polygon
         (Polygon(fill="yellow"), 0, 0),
         # Style for exon number

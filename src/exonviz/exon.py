@@ -7,7 +7,7 @@ from decimal import Decimal, ROUND_UP
 from typing import TypeAlias
 
 from _io import TextIOWrapper
-from svg import Rect, Polygon, Text, Style, Circle
+from svg import Rect, Polygon, Text, Style, Circle, Point
 
 from .range import intersect, Range
 
@@ -15,7 +15,8 @@ import logging
 
 logging.basicConfig(level="DEBUG")
 log = logging.getLogger(__name__)
-Element = Circle | Rect | Polygon | Text | Style
+
+Element: TypeAlias = Circle | Rect | Polygon | Text | Style
 
 
 @dataclass()
@@ -287,39 +288,39 @@ class Exon:
             raise ValueError(msg)
 
         # fmt: off
-        start: list[list[float]] = [
+        start: list[list[Point]] = [
             [ # Square
-                cx, y + height,
-                cx, y
+                Point(cx, y + height),
+                Point(cx, y)
             ],
             [ # Notch
-                cx, y + height,
-                cx + cap_size, y + height/2,
-                cx, y
+                Point(cx, y + height),
+                Point(cx + cap_size, y + height/2),
+                Point(cx, y)
             ],
             [ # Arrow
-                cx + cap_size, y + height,
-                cx, y + height/2,
-                cx + cap_size, y
+                Point(cx + cap_size, y + height),
+                Point(cx, y + height/2),
+                Point(cx + cap_size, y)
             ]
         ]
 
-        end: list[list[float]] = [
+        end: list[list[Point]] = [
             [ # Square
-                cx + size, y,
-                cx + size, y + height,
+                Point(cx + size, y),
+                Point(cx + size, y + height),
             ],
             [ # Arrow
-                cx + size - cap_size, y,
-                cx + size, y + height/2,
-                cx + size - cap_size, y + height
+                Point(cx + size - cap_size, y),
+                Point(cx + size, y + height/2),
+                Point(cx + size - cap_size, y + height)
             ],
             [ # Notch
-                cx + size - cap_size, y,
-                cx + size, y,
-                cx + size - cap_size, y + height/2,
-                cx + size, y + height,
-                cx + size - cap_size, y + height,
+                Point(cx + size - cap_size, y),
+                Point(cx + size, y),
+                Point(cx + size - cap_size, y + height/2),
+                Point(cx + size, y + height),
+                Point(cx + size - cap_size, y + height),
             ]
         ]
         # fmt: on
@@ -687,10 +688,8 @@ def element_xy(element: Element) -> tuple[float, float]:
             x = 0
             y = 0
         else:
-            x = max(
-                (element.points[i] for i in range(len(element.points)) if not i % 2)
-            )
-            y = max((element.points[i] for i in range(len(element.points)) if i % 2))
+            x = max((point.x for point in element.points))
+            y = max((point.y for point in element.points))
     elif isinstance(element, Style):
         x = 0
         y = 0
