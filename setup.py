@@ -63,7 +63,7 @@ setup(
         "Topic :: Utilities",
     ],
     project_urls={
-        "Changelog": "https://github.com/DCRT-LUMC/exonviz/blob/main/CHANGELOG.md",
+        "Changelog": "https://github.com/DCRT-LUMC/exonviz/blob/main/CHANGELOG.rst",
         "Issue Tracker": "https://github.com/DCRT-LUMC/exonviz/issues",
     },
     keywords=[
