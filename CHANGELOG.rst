@@ -7,9 +7,9 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
------------
-v0.2.18-dev
------------
+-------
+v0.2.18
+-------
 + Add ability to run the ExonViz website using ``exonviz-website``
 
 -------
