@@ -10,7 +10,7 @@ Changelog
 -----------
 v0.2.18-dev
 -----------
-+ Add ability to run the ExonViz website using ``exonviz-webserver``
++ Add ability to run the ExonViz website using ``exonviz-website``
 
 -------
 v0.2.17

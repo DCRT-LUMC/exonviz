@@ -20,6 +20,9 @@ You can try out ExonViz online at [exonviz.rnatherapy.nl](https://exonviz.rnathe
 ExonViz only requires Python, and can be installed using PIP:
 ```
 pip install exonviz
+
+# If you want to run the exonviz website locally, use
+pip install exonviz[website]
 ```
 
 ## Usage
