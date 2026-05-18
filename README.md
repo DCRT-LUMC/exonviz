@@ -41,15 +41,22 @@ exonviz --transcript "NM_003002.4:r.[274G>T;300del]" > SHDH.svg
 ![Figure for SHDH](https://exonviz.readthedocs.io/en/latest/_images/SDHD.svg)
 
 ### Documentation
-The documentation for ExonViz is available on
-[Readthedocs](https://exonviz.readthedocs.org), including some
-[examples](https://exonviz.readthedocs.io/en/latest/examples.html) of what is
-possible using the command line version of ExonViz.
+The documentation for ExonViz is available on [Readthedocs][readthedocs],
+including some [examples][examples] of what is possible using the command line
+version of ExonViz.
 
+
+## Contributions and support
+Please see our [contribution guidelines][contribution] report bugs, suggest new features or ask for support.
 
 ## Citation
-Please cite our [pre-print](https://www.medrxiv.org/content/10.1101/2024.09.18.24313945v1) if you use ExonViz:
+Please cite our [pre-print][pre-print] if you use ExonViz:
 
 >ExonViz: A website and Python package to visualize transcripts and genetic variants
 >Redmar R. van den Berg, Marlen C. Lauffer, Jeroen F.J. Laros
 >medRxiv 2024.09.18.24313945; doi: https://doi.org/10.1101/2024.09.18.24313945
+
+[contribution]: https://github.com/DCRT-LUMC/exonviz/blob/master/.github/CONTRIBUTING.md
+[pre-print]: https://www.medrxiv.org/content/10.1101/2024.09.18.24313945v1
+[readthedocs]: https://exonviz.readthedocs.org
+[examples]: https://exonviz.readthedocs.io/en/latest/examples.html
