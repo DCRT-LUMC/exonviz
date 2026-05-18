@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="exonviz",
-    version="0.2.18-dev",
+    version="0.2.18",
     license="AGPL-3.0",
     description="Visualise exons and their reading frames",
     long_description=long_description,
@@ -63,7 +63,7 @@ setup(
         "Topic :: Utilities",
     ],
     project_urls={
-        "Changelog": "https://github.com/DCRT-LUMC/exonviz/blob/main/CHANGELOG.md",
+        "Changelog": "https://github.com/DCRT-LUMC/exonviz/blob/main/CHANGELOG.rst",
         "Issue Tracker": "https://github.com/DCRT-LUMC/exonviz/issues",
     },
     keywords=[
@@ -78,7 +78,7 @@ setup(
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
     ],
     extras_require={
-        "webserver": ["flask"],
+        "website": ["flask"],
     },
     setup_requires=[
         "pytest-runner",
@@ -86,7 +86,7 @@ setup(
     entry_points={
         "console_scripts": [
             "exonviz=exonviz.cli:main",
-            "exonviz-webserver=exonviz.app:main",
+            "exonviz-website=exonviz.app:main",
         ]
     },
 )

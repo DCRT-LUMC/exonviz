@@ -10,7 +10,7 @@ try:
         url_for,
     )
 except ModuleNotFoundError:
-    print(f"Missing modules, please install with 'pip install exonviz[webserver]'")
+    print(f"Missing modules, please install with 'pip install exonviz[website]'")
     exit(-1)
 
 

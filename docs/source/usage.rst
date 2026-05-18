@@ -59,3 +59,17 @@ Command line
      --exon-tsv EXON_TSV   TSV file containing exons (default: None)
      --variant-tsv VARIANT_TSV
                            TSV file containing variants (default: None)
+
+Website
+-------
+The website for ExonViz can be installed using pip:
+
+.. code-block:: console
+
+   pip install exonviz[website]
+
+To run the website locally, use the command below:
+
+.. code-block:: console
+
+   exonviz-website

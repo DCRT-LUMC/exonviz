@@ -7,10 +7,13 @@ Changelog
 .. This document is user facing. Please word the changes in such a way
 .. that users understand how the changes affect the new version.
 
------------
-v0.2.18-dev
------------
-+ Add ability to run the ExonViz website using ``exonviz-webserver``
+-------
+v0.2.18
+-------
++ Add ability to run the ExonViz website using ``exonviz-website``
++ Fix bug in generation of release notes
++ Fix link to changelog
++ Add additional checks for automated release
 
 -------
 v0.2.17
