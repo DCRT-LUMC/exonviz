@@ -94,25 +94,28 @@ comprehensive overview of a transcript’s structure and the location of variant
 of interest.
 
 # Software design
-ExonViz is written in Python 3, its web interface is build using Flask. To
-avoid the complexities of retrieving and processing various different
-transcript definitions, ExonViz uses the public Mutalyzer API [@Lefter2021] to
-fetch transcript annotations. This gives ExonViz access to all transcripts
-defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024] databases
-across many species, ranging from human and mouse to fruit fly and coelacanth.
+ExonViz is written in Python 3, its web interface is build using Flask.
 
-Reverse strand transcript are inverted so that ExonViz always visualizes
-transcripts in their forward orientation. This avoids the complications that
-come with the inverted annotations for transcripts which are annotated on the
-reverse strand of the chromosome. Variants are assigned to their corresponding
-exon, which also contains the size, coding region and other features which are
-required to draw an exon. Exons can be split to ensure they do not exceed the
-specified page width, analogous to how long words can be split over multiple
-lines.
+The design of ExonViz is centered around the `Exon` class, which as the name
+suggests holds all the relevant biological information for a given exon.
+`Exons` consist only of a size, with optional coding region, variants, name and
+color. The `Exon` class also hold the required functionality for drawing an exon,
+such as the rendered size of the exon, the minimum scale at which the exon can
+be drawn, as well as methods to split an `Exon` (analogous to how long words
+can be split over multiple lines).
 
-ExonViz can also read and write the normalized exon and variant models,
-allowing the user to specify custom transcripts and exons in a simple TSV
-format.
+Since the `Exon` class requires minimal data, ExonViz supports a simple TSV format
+which allows users to define and draw their own transcripts.
+
+To give users access to existing transcript definitions, ExonViz also supports
+automatic retrieval of transcript definitions from the Mutalyzer API
+[@Lefter2021], which helps avoid the complexities of retrieving and
+processing various different transcript definition formats. This gives ExonViz
+access to all transcripts defined in the RefSeq [@OLeary2016] and Ensembl
+[@Harrison2024] databases across many species, ranging from human and mouse to
+fruit fly and coelacanth. When using Mutalyzer, reverse strand transcript are
+rewritten so that ExonViz always visualizes transcripts in their forward
+orientation. Variants are automatically assigned to their corresponding exon.
 
 # Method
 ExonViz visualizes the exon boundary frames by using different shapes for the
