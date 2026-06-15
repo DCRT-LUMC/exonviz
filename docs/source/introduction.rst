@@ -1,7 +1,16 @@
 Introduction
 ============
 
-ExonViz is a simple tool to generate and draw transcripts that include coding
+Visualization of transcripts, including features like exon boundary frames,
+coding and non coding regions is important within the field of clinical and
+human genetics. Illustrating the exon structure and the location
+of variants is common practice, especially when new genes, variants or
+transcripts have been discovered. These illustrations are also used to assess
+potential genetic treatment options (e.g., canonical exon skipping), in
+teaching settings, in diagnostics, to identify mutational hotspots and for
+genetic counseling.
+
+ExonViz aims to be an easy to use tool to generate and draw transcripts that include coding
 and non-coding regions. All exons are to scale and the reading frames of the
 exons are visible. Single or multiple variants along the transcript can be
 drawn and will automatically be shown in the correct location. Further, we
