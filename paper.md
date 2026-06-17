@@ -187,4 +187,11 @@ also thank Maximilian Haeussler and his colleagues at the UCSC for their
 efforts implementing exon boundary frame information into the UCSC Genome
 Browser. We also thank Nanieke van den Berg for creating Figure \ref{abstract}.
 
+# Financial support
+Redmar R. van den Berg is supported by a ZonMW PSIDER grant and a grant from
+the Human Genetics department of the Leiden University Medical Center. Marlen
+C. Lauffer is supported by a Walter Benjamin Fellowship from the German
+Research Foundation and a Sectorplannen position in the Neuroscience Theme from
+the Dutch government.
+
 # References
