@@ -103,10 +103,10 @@ For ExonViz, we opted to hide this complexity and focus on the exon as the
 central unit, with a transcript being defined simply as a sequence of Exons. We
 also ignore the strand of the transcript on the reference sequence, effectively
 rewriting all transcripts to be defined on the forward orientation. The
-information of each exon is stored in the `Exon` class. `Exon`s consist only of
-a size and optional coding region, without a specified location on the
-reference sequence. For visualization purposes, `Exon`s can also have a name,
-color and a list of (named) variants which occur in the exon.
+information of each exon is stored in the `Exon` class, which consist only of a
+size and optional coding region, without a specified location on the reference
+sequence. `Exon`s can also have a name, color and a list of (named) variants
+which will be included in the visualization.
 
 The `Exon` class also hold the required functionality for drawing an exon, such
 as the rendered size of the exon, the minimum scale at which the exon can be
@@ -115,7 +115,7 @@ be split over multiple lines).
 
 The `Exon` class can be imported and used directly and users can also specify
 exons in a simple TSV format as described in the documentation of ExonViz. To
-give users access to existing transcript definitions, ExonViz also supports
+give users access to existing transcript definitions, ExonViz supports
 automatic retrieval of transcript definitions from the Mutalyzer API
 [@Lefter2021], which helps avoid the complexities of retrieving and processing
 various different transcript definition formats. This gives ExonViz access to
