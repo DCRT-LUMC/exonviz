@@ -14,7 +14,7 @@ Please read through these guidelines before you get started:
 
 ## Questions & Concerns
 If you have any questions about using or developing for this project, reach out
-to @Redmar-van-den-Berg or send an [email][email].
+to [@Redmar-van-den-Berg](https://github.com/Redmar-van-den-Berg) or send an [email][email].
 
 ## Issues & Bugs
 Submit an [issue][issues] or [pull request][compare] with a fix if you find any
@@ -33,7 +33,7 @@ requests][pull] to ensure you are not duplicating anyone's work. Then, do the
 following:
 
 1. Fork the repository and make your changes in a git branch: `git checkout -b
-   my-branch base-branch`
+   my-branch main`
 2. Make sure your feature or fix does not break the project! Test thoroughly.
 3. Commit your changes, and be sure to leave a detailed commit message.
 4. Push your branch to your forked repo on GitHub: `git push origin my-branch`
