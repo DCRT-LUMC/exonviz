@@ -50,7 +50,7 @@ Please cite our [pre-print][pre-print] if you use ExonViz:
 >Redmar R. van den Berg, Marlen C. Lauffer, Jeroen F.J. Laros
 >medRxiv 2024.09.18.24313945; doi: https://doi.org/10.1101/2024.09.18.24313945
 
-[contribution]: https://github.com/DCRT-LUMC/exonviz/blob/master/.github/CONTRIBUTING.md
+[contribution]: https://github.com/DCRT-LUMC/exonviz/blob/main/.github/CONTRIBUTING.md
 [pre-print]: https://www.medrxiv.org/content/10.1101/2024.09.18.24313945v1
 [readthedocs]: https://exonviz.readthedocs.org
 [examples]: https://exonviz.readthedocs.io/en/latest/examples.html
