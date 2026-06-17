@@ -121,12 +121,18 @@ automatic retrieval of transcript definitions from the Mutalyzer API
 various different transcript definition formats. This gives ExonViz access to
 all transcripts defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024]
 databases across many species, ranging from human and mouse to fruit fly and
-coelacanth.
+coelacanth. This wide range of supported transcripts is also why we decided not
+to bundle any transcript definitions with ExonViz itself.
+
 
 Mutalyzer is actively being developed in our group and will be maintained for
-the foreseeable future, which made it an obvious choice to use. Due to the
-simple structure of the `Exon` class, it will be easy to add alternative sources
-of transcripts such as gtf or gff files in the future.
+the foreseeable future, which made it an obvious choice to use. Should the
+mutalyzer website become unavailable, it is also possible to run a local
+install of mutalyzer with caching for offline usage.
+
+Due to the simple structure of the `Exon` class, adding novel sources of
+trancript information in the future, such as gtf or gff files, should not be
+too difficult.
 
 # Method
 ExonViz visualizes the exon boundary frames by using different shapes for the
