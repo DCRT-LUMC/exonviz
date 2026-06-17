@@ -94,28 +94,39 @@ comprehensive overview of a transcript’s structure and the location of variant
 of interest.
 
 # Software design
-ExonViz is written in Python 3, its web interface is build using Flask.
+Biological transcripts are deceptively complex and can consist of introns,
+exons and a coding region defined on either the forward or reverse strand of a
+reference sequence. Introns are usually the largest structures in a transcript,
+as a single intron can be larger than all exons of a transcript combined.
 
-The design of ExonViz is centered around the `Exon` class, which as the name
-suggests holds all the relevant biological information for a given exon.
-`Exons` consist only of a size, with optional coding region, variants, name and
-color. The `Exon` class also hold the required functionality for drawing an exon,
-such as the rendered size of the exon, the minimum scale at which the exon can
-be drawn, as well as methods to split an `Exon` (analogous to how long words
-can be split over multiple lines).
+For ExonViz, we opted to hide this complexity and focus on the exon as the
+central unit, with a transcript being defined simply as a sequence of Exons. We
+also ignore the strand of the transcript on the reference sequence, effectively
+rewriting all transcripts to be defined on the forward orientation. The
+information of each exon is stored in the `Exon` class. `Exon`s consist only of
+a size and optional coding region, without a specified location on the
+reference sequence. For visualization purposes, `Exon`s can also have a name,
+color and a list of (named) variants which occur in the exon.
 
-Since the `Exon` class requires minimal data, ExonViz supports a simple TSV format
-which allows users to define and draw their own transcripts.
+The `Exon` class also hold the required functionality for drawing an exon, such
+as the rendered size of the exon, the minimum scale at which the exon can be
+drawn, as well as methods to split an `Exon` (analogous to how long words can
+be split over multiple lines).
 
-To give users access to existing transcript definitions, ExonViz also supports
+The `Exon` class can be imported and used directly and users can also specify
+exons in a simple TSV format as described in the documentation of ExonViz. To
+give users access to existing transcript definitions, ExonViz also supports
 automatic retrieval of transcript definitions from the Mutalyzer API
-[@Lefter2021], which helps avoid the complexities of retrieving and
-processing various different transcript definition formats. This gives ExonViz
-access to all transcripts defined in the RefSeq [@OLeary2016] and Ensembl
-[@Harrison2024] databases across many species, ranging from human and mouse to
-fruit fly and coelacanth. When using Mutalyzer, reverse strand transcript are
-rewritten so that ExonViz always visualizes transcripts in their forward
-orientation. Variants are automatically assigned to their corresponding exon.
+[@Lefter2021], which helps avoid the complexities of retrieving and processing
+various different transcript definition formats. This gives ExonViz access to
+all transcripts defined in the RefSeq [@OLeary2016] and Ensembl [@Harrison2024]
+databases across many species, ranging from human and mouse to fruit fly and
+coelacanth.
+
+Mutalyzer is actively being developed in our group and will be maintained for
+the foreseeable future, which made it an obvious choice to use. Due to the
+simple structure of the `Exon` class, it will be easy to add alternative sources
+of transcripts such as gtf or gff files in the future.
 
 # Method
 ExonViz visualizes the exon boundary frames by using different shapes for the
