@@ -129,10 +129,10 @@ to bundle any transcript definitions with ExonViz itself.
 Mutalyzer is actively being developed in our group and will be maintained for
 the foreseeable future, which made it an obvious choice to use. Should the
 mutalyzer website become unavailable, it is also possible to run a local
-install of mutalyzer with caching for offline usage.
+installation of mutalyzer with caching for offline usage.
 
 Due to the simple structure of the `Exon` class, adding novel sources of
-trancript information in the future, such as gtf or gff files, should not be
+transcript information in the future, such as gtf or gff files, should not be
 too difficult.
 
 # Method
