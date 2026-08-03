@@ -167,8 +167,8 @@ frames and check the location of variants in a transcript. ExonViz is actively
 being used in the field of personalized medicine and is one of the recommended
 resources in the latest consensus guidelines for assessing pathogenic variants
 for RNA therapies [@Cheerie2025]. In addition, the [ExonViz
-website](https://exonviz.rnatherapy.nl) has been used to generate over 8000
-transcript figures between September 2023 and September 2025.
+website](https://exonviz.rnatherapy.nl) has been used to generate over 14000
+transcript figures between September 2023 and August 2026.
 
 # Conclusion
 To our knowledge, ExonViz is the first publicly available application that
