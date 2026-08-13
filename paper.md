@@ -49,10 +49,11 @@ boundary frames**, into account is crucial when considering the effect of
 mutations and when designing genetic therapies such as exon skipping.
 
 `ExonViz` is a Python package and web application that creates biologically
-accurate RNA transcript figures, including features such as coding regions,
-genetic variants and exon boundary frames. Any transcript defined by Ensembl
-[@Harrison2024] or RefSeq [@OLeary2016] (which contains over 150.000 species as
-of 2026) can be retrieved and visualized automatically.
+accurate RNA transcript figures, including features such as coding region
+(CDS), untranslated regions (UTR), genetic variants and exon boundary frames.
+Any transcript defined by Ensembl [@Harrison2024] or RefSeq [@OLeary2016]
+(which contains over 150.000 species as of 2026) can be retrieved and
+visualized automatically.
 
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
@@ -149,9 +150,12 @@ transcript should fit together, exons in conflicting frames (*e.g.* because of
 a frame shift inducing variant) are easily spotted due to the fact that the
 exon boundaries do not fit together.
 
-![Visualization of the relation between codons and exon boundary frames. The shapes of
-the exons illustrate the relation between the exon boundaries and the codon
-boundaries.\label{explainer}](docs/figures/exonviz-explainer.svg)
+![Visualization of the relation between codons and exon boundary frames. The
+shapes of the exons illustrate the relation between the exon boundaries and the
+codon boundaries. Exon 1 ends in frame 0, Exon 2 ends in frame 1, Exon 3 ends
+in frame 2. The start and stop codon are colored in green and red, the
+other codons alternate between orange and
+blue.\label{explainer}](docs/figures/exonviz-explainer.svg)
 
 The output of ExonViz is an SVG figure generated using the svg-py library,
 which can be used directly or modified using modern graphical editing programs.
