@@ -50,9 +50,9 @@ mutations and when designing genetic therapies such as exon skipping.
 
 `ExonViz` is a Python package and web application that creates biologically
 accurate RNA transcript figures, including features such as coding regions,
-genetic variants and exon boundary frames. Any transcript defined by Ensembl or
-RefSeq (which contains over 150.000 species as of 2026) can be retrieved and
-visualized automatically.
+genetic variants and exon boundary frames. Any transcript defined by Ensembl
+[@Harrison2024] or RefSeq [@OLeary2016] (which contains over 150.000 species as
+of 2026) can be retrieved and visualized automatically.
 
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
