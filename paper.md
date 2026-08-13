@@ -11,12 +11,12 @@ authors:
 
  - name: Marlen C. Lauffer
    orcid:
-   affiliation: "1, 2"
+   affiliation: "1, 2, 4"
    orcid: 0000-0003-1607-0428
 
  - name: Jeroen F.J. Laros
    orcid:
-   affiliation: "1, 4"
+   affiliation: "1, 5"
    orcid: 0000-0002-8715-7371
 
 affiliations:
@@ -29,8 +29,11 @@ affiliations:
  - name: Department of Hematology, Leiden University Medical Center, The Netherlands
    index: 3
 
- - name: Department of Bioinformatics and Computational Services, National Institute of Public Health and the Environment, The Netherlands
+ - name: Institute of Developmental and Regenerative Medicine, Department of Peadiatrics, University of Oxford, Oxford, UK
    index: 4
+
+ - name: Department of Bioinformatics and Computational Services, National Institute of Public Health and the Environment, The Netherlands
+   index: 5
 
 bibliography: paper.bib
 ---
