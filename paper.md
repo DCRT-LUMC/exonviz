@@ -57,7 +57,7 @@ visualized automatically.
 ![Example transcript highlighting ExonViz features. **5' UTR**: Non coding
 region at the start of the transcript. **CDS start**: Start of the coding
 region. **CDS end**: End of the coding region. **3' UTR**: Non coding region at
-the end of the transcript.\label{abstract}](docs/figures/abstract.svg)
+the end of the transcript.\label{abstract}](abstract.png)
 
 # Statement of need
 Visualization of transcripts, including features like exon boundary frames,
