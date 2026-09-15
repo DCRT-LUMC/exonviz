@@ -26,7 +26,7 @@ affiliations:
  - name: Department of Hematology, Leiden University Medical Center, The Netherlands
    index: 3
 
- - name: Institute of Developmental and Regenerative Medicine, Department of Peadiatrics, University of Oxford, Oxford, UK
+ - name: Institute of Developmental and Regenerative Medicine, Department of Peadiatrics, University of Oxford, Oxford, United Kingdom
    index: 4
 
  - name: Department of Bioinformatics and Computational Services, National Institute of Public Health and the Environment, The Netherlands
