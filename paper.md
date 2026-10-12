@@ -4,7 +4,8 @@ tags:
   - Python
 
 authors:
- - name: Redmar R. van den Berg
+ - given-names: Redmar R.
+   surname: van den Berg
    affiliation: "1, 2, 3"
    orcid: 0000-0002-6590-9499
 
@@ -12,7 +13,7 @@ authors:
    affiliation: "1, 2, 4"
    orcid: 0000-0003-1607-0428
 
- - name: Jeroen F.J. Laros
+ - name: Jeroen {F.J.} Laros
    affiliation: "1, 5"
    orcid: 0000-0002-8715-7371
 
