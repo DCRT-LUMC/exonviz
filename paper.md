@@ -4,7 +4,7 @@ tags:
   - Python
 
 authors:
- - name: Redmar van den Berg
+ - name: Redmar R. van den Berg
    affiliation: "1, 2, 3"
    orcid: 0000-0002-6590-9499
 
